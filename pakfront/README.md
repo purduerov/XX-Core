@@ -2,10 +2,6 @@
 proxy that routes traffic between the frontend and ROV. Logs shit, passes image data to CV
 
 ## Setup
-Bee Movie Script
-
-  
-  
 According to all known laws
 of aviation,
 
