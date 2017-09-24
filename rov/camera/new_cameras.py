@@ -9,12 +9,13 @@ class Cameras(object):
         self.resolution = resolution
         self.framerate = framerate
         if not devices:
-            devices = ['/dev/video0']
-        self.devices = devices
+            self.devices = list(subprocess.check_output('ls /dev/video*', shell=True).splitlines())
+        else:
+            self.devices = devices
         self.port = port
         self.brightness = brightness
         self.contrast = contrast
-        self.input = ['input_uvc.so -d {device}'.format(device=d) for d in devices]
+        self.input = ['input_uvc.so -d {device}'.format(device=d) for d in self.devices]
         self.output = 'output_http.so -p {port} {web}'.format(
             port=port,
             web='-w /usr/local/www'
@@ -30,5 +31,5 @@ class Cameras(object):
         print command
         self.process = subprocess.Popen(command)
 
-if __name__=='__main__':
-    print Cameras(devices=['a', 'b', 'c']).start()
+if __name__ == '__main__':
+    print Cameras().start()
