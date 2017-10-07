@@ -8,7 +8,7 @@ from signal import signal, SIGPIPE, SIG_DFL
 signal(SIGPIPE,SIG_DFL) 
 
 def getframe():
-    imreq = subprocess.check_output(["/home/zhukov/Projects/rov/test/socket"])
+    imreq = subprocess.check_output(["./socket"])
     raw = io.BytesIO(imreq)
     data = np.fromstring(raw.getvalue(),dtype = np.uint8)
     return cv2.imdecode(data,1)
@@ -20,7 +20,7 @@ def pushframe(img):
 
     writeimage(imdata)
 
-    imreq = subprocess.Popen(["/home/zhukov/Projects/rov/test/tcpclient","1918"],stdin=subprocess.PIPE)
+    imreq = subprocess.Popen(["./stintotcp","1918"],stdin=subprocess.PIPE)
     imreq.stdin.write(bytearray([0 for i in range(0,5 - len(lenbytes))]))
     imreq.stdin.write(lenbytes)
     imreq.stdin.write(imdata)
