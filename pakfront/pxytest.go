@@ -27,9 +27,9 @@ func check(e error) {
 
 func (buff * imgbuffer) load (data []byte, num int) int {
 
-	if buff.sWptr == buff.sRptr {
+	if (buff.sWptr + 1)%buff.numsize == buff.sRptr {
 		buff.dRptr = (buff.dRptr + buff.sizes[buff.sRptr])%buff.datasize
-		buff.sRptr = (buff.sWptr + 1)%buff.numsize
+		buff.sRptr = (buff.sRptr + 1)%buff.numsize
 	}
 
 	for i := 0; i < num; i++ {
@@ -49,7 +49,7 @@ func (buff * imgbuffer) dump () (read int, img []byte ){
 		return 0, nil
 	}
 
-	if (buff.sRptr + 1)%buff.numsize == buff.sWptr{
+	if buff.sRptr == buff.sWptr{
 		return 0, nil
 	}
 
@@ -60,7 +60,7 @@ func (buff * imgbuffer) dump () (read int, img []byte ){
 		panic("ERROR: COPY SIZE AND SIZE DONT MATCH")
 	}
 
-	buff.sRptr += 1
+	buff.sRptr = (buff.sRptr+1)%buff.numsize
 	buff.dRptr = (buff.dRptr+size)%buff.datasize
 
 	return size, msg
@@ -105,6 +105,12 @@ func tcprec(port string,size int) (r int,b []byte) {
 	// will listen for message to process ending in newline (\n)
 	read, err := bufio.NewReader(conn).Read(buf)
 	check(err)
+	if read == 21845 {
+		fmt.Println("HIT HIT HIT")
+		readmore, err := bufio.NewReader(conn).Read(buf[read:])
+		read = readmore + read
+		check(err)
+	}
 	return read, buf
 }
 
@@ -122,18 +128,28 @@ func mjpegstreamprobe(){
 	check(err)
 }
 func main() {
-	numimg := 5
+	numimg := 6
 	sizeimg := 150000
 	var read int
 	var msg []byte
 
-	buf1 := imgbuffer{make([]int,numimg),make([]byte,numimg*sizeimg),0,0,numimg*sizeimg,0,1,numimg}
-	for {
+	buf1 := imgbuffer{make([]int,numimg),make([]byte,numimg*sizeimg),0,0,numimg*sizeimg,0,0,numimg}
+	for i:= 0;i<10;i++ {
 		read, msg = tcprec(":1918",sizeimg)
 		buf1.load(msg[:read],read)
 		fmt.Println(buf1)
+		fmt.Println()
 	}
 
-//	err := ioutil.WriteFile("/tmp/im.jpg", buf1.data[:read], 0644)
-//	check(err)
+	for i:= 0;i<6;i++ {
+		read, data := buf1.dump()
+		fmt.Println(read)
+		if read > 0 {
+			err := ioutil.WriteFile("/tmp/im.jpg", data, 0644)
+			check(err)
+		}
+		fmt.Println(buf1)
+		fmt.Println()
+	}
+
 }
