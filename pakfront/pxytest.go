@@ -9,10 +9,38 @@ import (
 	"time"
 )
 
+type imgbuffer struct {
+	sizes []int
+	data []byte
+	dRptr, dWptr, datasize int
+	sRptr, sWptr, numsize int
+}
+
+func (buff imgbuffer) String() string {
+	return fmt.Sprintf("R Point: %v, W Point: %v\nDR Point: %v, DW Point: %v\nSizes: %v",buff.sRptr, buff.sWptr, buff.dRptr,buff.dWptr,buff.sizes)
+}
 func check(e error) {
 	if e != nil {
 		panic(e)
 	}
+}
+
+func (buff * imgbuffer) load (data []byte, num int) int {
+
+	if buff.sWptr == buff.sRptr {
+		buff.dRptr = (buff.dRptr + buff.sizes[buff.sRptr])%buff.datasize
+		buff.sRptr = (buff.sWptr + 1)%buff.numsize
+	}
+
+	for i := 0; i < num; i++ {
+		buff.data[(i+buff.dWptr)%buff.datasize] = data[i]
+	}
+
+	buff.sizes[buff.sWptr] = num
+	buff.dWptr = (buff.dWptr + num)%buff.datasize
+	buff.sWptr = (buff.sWptr + 1)%buff.numsize
+
+	return num
 }
 
 func transreq(w http.ResponseWriter, r *http.Request) {
@@ -41,9 +69,12 @@ func transreq(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func tcprec(buf []byte) (read int) {
+func tcprec(port string,size int) (r int,b []byte) {
+	buf := make([]byte, size)
 	// listen on all interfaces
-	ln, _ := net.Listen("tcp", ":1918")
+	ln, err := net.Listen("tcp", port)
+	check(err)
+	defer ln.Close()
 
 	// accept connection on port
 	conn, _ := ln.Accept()
@@ -51,15 +82,35 @@ func tcprec(buf []byte) (read int) {
 	// will listen for message to process ending in newline (\n)
 	read, err := bufio.NewReader(conn).Read(buf)
 	check(err)
-	return read
+	return read, buf
 }
 
-func main() {
-	msg := make([]byte, 100000)
-	read := tcprec(msg)
-
-	fmt.Printf("%x, \nRead %d Bytes\n", msg, read)
-
-	err := ioutil.WriteFile("/tmp/im.jpg", msg, 0644)
+func mjpegstreamprobe(){
+	resp, err := http.Get("http://localhost:1917/?action=stream")
 	check(err)
+	data := make([]byte, 100000)
+	reader := bufio.NewReader(resp.Body)
+	for i := 0; i<100000;i++ {
+		d, err := reader.ReadByte()
+		data[i] = d
+		check(err)
+	}
+	err = ioutil.WriteFile("bytes", data, 0644)
+	check(err)
+}
+func main() {
+	numimg := 5
+	sizeimg := 150000
+	var read int
+	var msg []byte
+
+	buf1 := imgbuffer{make([]int,numimg),make([]byte,numimg*sizeimg),0,0,numimg*sizeimg,0,1,numimg}
+	for {
+		read, msg = tcprec(":1918",sizeimg)
+		buf1.load(msg[:read],read)
+		fmt.Println(buf1)
+	}
+
+//	err := ioutil.WriteFile("/tmp/im.jpg", buf1.data[:read], 0644)
+//	check(err)
 }
