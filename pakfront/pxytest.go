@@ -43,6 +43,29 @@ func (buff * imgbuffer) load (data []byte, num int) int {
 	return num
 }
 
+func (buff * imgbuffer) dump () (read int, img []byte ){
+	size := buff.sizes[buff.sRptr]
+	if size == 0 {
+		return 0, nil
+	}
+
+	if (buff.sRptr + 1)%buff.numsize == buff.sWptr{
+		return 0, nil
+	}
+
+	msg := make([]byte,size)
+	cp := copy(msg,buff.data[buff.dRptr:buff.dRptr+buff.sizes[buff.sRptr]])
+
+	if cp != size{
+		panic("ERROR: COPY SIZE AND SIZE DONT MATCH")
+	}
+
+	buff.sRptr += 1
+	buff.dRptr = (buff.dRptr+size)%buff.datasize
+
+	return size, msg
+}
+
 func transreq(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
 	resp, err := http.Get("http://localhost:1917/?action=stream")
