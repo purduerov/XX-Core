@@ -1,6 +1,14 @@
 # Packfront Proxy
 proxy that routes traffic between the frontend and ROV. Logs shit, passes image data to CV
 
+## TODO
+- Make circular buffer Async  (probably mutexes? or a semaphore)
+- remove the two c files, and replace socket.c with a couple lines of go (for consistency)
+- Functionallity to write out the buffer struct as a video stream
+- transparent handling of flask requests+responses
+- logging(and how we will log) functionallity for all processes
+- launching everything on goroutines, with a proper config file
+
 ## Setup
 According to all known laws
 of aviation,
