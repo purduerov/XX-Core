@@ -17,9 +17,6 @@ def pushframe(img):
     postdata = cv2.imencode(".jpg",img)
     imdata = bytearray([b[0] for b in postdata[1]])
     lenbytes = bytearray.fromhex('{:08x}'.format(len(imdata)))
-
-    writeimage(imdata)
-
     imreq = subprocess.Popen(["./stintotcp","1918"],stdin=subprocess.PIPE)
     imreq.stdin.write(bytearray([0 for i in range(0,5 - len(lenbytes))]))
     imreq.stdin.write(lenbytes)

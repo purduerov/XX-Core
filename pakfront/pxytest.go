@@ -10,14 +10,14 @@ import (
 )
 
 type imgbuffer struct {
-	sizes []int
-	data []byte
+	sizes                  []int
+	data                   []byte
 	dRptr, dWptr, datasize int
-	sRptr, sWptr, numsize int
+	sRptr, sWptr, numsize  int
 }
 
 func (buff imgbuffer) String() string {
-	return fmt.Sprintf("R Point: %v, W Point: %v\nDR Point: %v, DW Point: %v\nSizes: %v",buff.sRptr, buff.sWptr, buff.dRptr,buff.dWptr,buff.sizes)
+	return fmt.Sprintf("R Point: %v, W Point: %v\nDR Point: %v, DW Point: %v\nSizes: %v", buff.sRptr, buff.sWptr, buff.dRptr, buff.dWptr, buff.sizes)
 }
 func check(e error) {
 	if e != nil {
@@ -25,11 +25,11 @@ func check(e error) {
 	}
 }
 
-func (buff * imgbuffer) load (data []byte, num int) int {
+func (buff *imgbuffer) load(data []byte, num int) int {
 
-	if (buff.sWptr + 1)%buff.numsize == buff.sRptr {
-		buff.dRptr = (buff.dRptr + buff.sizes[buff.sRptr])%buff.datasize
-		buff.sRptr = (buff.sRptr + 1)%buff.numsize
+	if (buff.sWptr+1)%buff.numsize == buff.sRptr {
+		buff.dRptr = (buff.dRptr + buff.sizes[buff.sRptr]) % buff.datasize
+		buff.sRptr = (buff.sRptr + 1) % buff.numsize
 	}
 
 	for i := 0; i < num; i++ {
@@ -37,31 +37,31 @@ func (buff * imgbuffer) load (data []byte, num int) int {
 	}
 
 	buff.sizes[buff.sWptr] = num
-	buff.dWptr = (buff.dWptr + num)%buff.datasize
-	buff.sWptr = (buff.sWptr + 1)%buff.numsize
+	buff.dWptr = (buff.dWptr + num) % buff.datasize
+	buff.sWptr = (buff.sWptr + 1) % buff.numsize
 
 	return num
 }
 
-func (buff * imgbuffer) dump () (read int, img []byte ){
+func (buff *imgbuffer) dump() (read int, img []byte) {
 	size := buff.sizes[buff.sRptr]
 	if size == 0 {
 		return 0, nil
 	}
 
-	if buff.sRptr == buff.sWptr{
+	if buff.sRptr == buff.sWptr {
 		return 0, nil
 	}
 
-	msg := make([]byte,size)
-	cp := copy(msg,buff.data[buff.dRptr:buff.dRptr+buff.sizes[buff.sRptr]])
+	msg := make([]byte, size)
+	cp := copy(msg, buff.data[buff.dRptr:buff.dRptr+buff.sizes[buff.sRptr]])
 
-	if cp != size{
+	if cp != size {
 		panic("ERROR: COPY SIZE AND SIZE DONT MATCH")
 	}
 
-	buff.sRptr = (buff.sRptr+1)%buff.numsize
-	buff.dRptr = (buff.dRptr+size)%buff.datasize
+	buff.sRptr = (buff.sRptr + 1) % buff.numsize
+	buff.dRptr = (buff.dRptr + size) % buff.datasize
 
 	return size, msg
 }
@@ -92,7 +92,7 @@ func transreq(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func tcprec(port string,size int) (r int,b []byte) {
+func tcprec(port string, size int) (r int, b []byte) {
 	buf := make([]byte, size)
 	// listen on all interfaces
 	ln, err := net.Listen("tcp", port)
@@ -106,7 +106,6 @@ func tcprec(port string,size int) (r int,b []byte) {
 	read, err := bufio.NewReader(conn).Read(buf)
 	check(err)
 	if read == 21845 {
-		fmt.Println("HIT HIT HIT")
 		readmore, err := bufio.NewReader(conn).Read(buf[read:])
 		read = readmore + read
 		check(err)
@@ -114,12 +113,12 @@ func tcprec(port string,size int) (r int,b []byte) {
 	return read, buf
 }
 
-func mjpegstreamprobe(){
+func mjpegstreamprobe() {
 	resp, err := http.Get("http://localhost:1917/?action=stream")
 	check(err)
 	data := make([]byte, 100000)
 	reader := bufio.NewReader(resp.Body)
-	for i := 0; i<100000;i++ {
+	for i := 0; i < 100000; i++ {
 		d, err := reader.ReadByte()
 		data[i] = d
 		check(err)
@@ -127,21 +126,22 @@ func mjpegstreamprobe(){
 	err = ioutil.WriteFile("bytes", data, 0644)
 	check(err)
 }
+
 func main() {
 	numimg := 6
-	sizeimg := 150000
+	sizeimg := 100000
 	var read int
 	var msg []byte
 
-	buf1 := imgbuffer{make([]int,numimg),make([]byte,numimg*sizeimg),0,0,numimg*sizeimg,0,0,numimg}
-	for i:= 0;i<10;i++ {
-		read, msg = tcprec(":1918",sizeimg)
-		buf1.load(msg[:read],read)
+	buf1 := imgbuffer{make([]int, numimg), make([]byte, numimg*sizeimg), 0, 0, numimg * sizeimg, 0, 0, numimg}
+	for i := 0; i < 20; i++ {
+		read, msg = tcprec(":1918", sizeimg)
+		buf1.load(msg[:read], read)
 		fmt.Println(buf1)
 		fmt.Println()
 	}
 
-	for i:= 0;i<6;i++ {
+	for i := 0; i < 6; i++ {
 		read, data := buf1.dump()
 		fmt.Println(read)
 		if read > 0 {
