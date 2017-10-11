@@ -8,7 +8,7 @@ from signal import signal, SIGPIPE, SIG_DFL
 signal(SIGPIPE,SIG_DFL) 
 
 def getframe():
-    imreq = subprocess.check_output(["./socket"])
+    imreq = subprocess.check_output(["./tcptostdin"])
     raw = io.BytesIO(imreq)
     data = np.fromstring(raw.getvalue(),dtype = np.uint8)
     return cv2.imdecode(data,1)

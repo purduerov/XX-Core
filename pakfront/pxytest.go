@@ -134,14 +134,14 @@ func main() {
 	var msg []byte
 
 	buf1 := imgbuffer{make([]int, numimg), make([]byte, numimg*sizeimg), 0, 0, numimg * sizeimg, 0, 0, numimg}
-	for i := 0; i < 20; i++ {
+	for i := 0; i < 5; i++ {
 		read, msg = tcprec(":1918", sizeimg)
 		buf1.load(msg[:read], read)
 		fmt.Println(buf1)
 		fmt.Println()
 	}
 
-	for i := 0; i < 6; i++ {
+	for i := 0; i < 3; i++ {
 		read, data := buf1.dump()
 		fmt.Println(read)
 		if read > 0 {
