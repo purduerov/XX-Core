@@ -1,0 +1,17 @@
+{
+  "name": "frontend",
+  "version": "1.0.0",
+  "description": "ROV 2017-18 package.json for our nodejs based framework",
+  "main": "electron-setup.js",
+  "repository": "https://github.com/purduerov/XX-Core",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "Ian Sibley",
+  "license": "ISC",
+  "dependencies": {
+    "electron": "^1.7.9",
+    "path": "^0.12.7",
+    "url": "^0.11.0"
+  }
+}
