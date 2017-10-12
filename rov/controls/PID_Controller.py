@@ -4,26 +4,27 @@ import numpy
 class PID(object):
     """A generic PID loop controller which can be inherited and used in other control algorithms"""
 
-    def __init__(self):
+    def __init__(self, startingError):
         """Return a instance of a un tuned PID controller"""
         self._p = 1
         self._i = 0
         self._d = 0
+        self._esum = 0 #Error sum for integral term
+        self._le =startingError    #Last error value
 
-        self._desired_pos = 0
-
-    def calculate(self, time_intervale):
+    def calculate(self, error, dt):
         """Calculates the output of the PID controller"""
-        pass
+        self._esum += error*dt
+        dError = (error - self._le)/dt
+        u = self._p*error + self._i*self._esum + self._d *dError
+        self._le = error
+        return u
 
-    @property
-    def desired_pos(self):
-        return self._desired_pos
 
-    @desired_pos.setter
-    def desired_pos(self, value):
-        self._desired_pos = value
-
+    def reset(self, startingError):
+        """Resets the integral sum and the last error value"""
+        self._esum = 0
+        self._le = startingError
     @property
     def p(self):
         return self._p
