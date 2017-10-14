@@ -6,21 +6,9 @@ import (
 	"io/ioutil"
 	"net"
 	"net/http"
-	"sync"
 	"time"
+	"rovproxy/imbuff"
 )
-
-type imgbuffer struct {
-	sizes                  []int
-	data                   []byte
-	dRptr, dWptr, datasize int
-	sRptr, sWptr, numsize  int
-	mtx                    sync.Mutex
-}
-
-func (buff imgbuffer) String() string {
-	return fmt.Sprintf("R Point: %v, W Point: %v\nDR Point: %v, DW Point: %v\nSizes: %v", buff.sRptr, buff.sWptr, buff.dRptr, buff.dWptr, buff.sizes)
-}
 
 func check(e error) {
 	if e != nil {
@@ -28,50 +16,6 @@ func check(e error) {
 	}
 }
 
-func (buff *imgbuffer) load(data []byte, num int) int {
-	buff.mtx.Lock()
-	defer buff.mtx.Unlock()
-
-	if (buff.sWptr+1)%buff.numsize == buff.sRptr {
-		buff.dRptr = (buff.dRptr + buff.sizes[buff.sRptr]) % buff.datasize
-		buff.sRptr = (buff.sRptr + 1) % buff.numsize
-	}
-
-	for i := 0; i < num; i++ {
-		buff.data[(i+buff.dWptr)%buff.datasize] = data[i]
-	}
-
-	buff.sizes[buff.sWptr] = num
-	buff.dWptr = (buff.dWptr + num) % buff.datasize
-	buff.sWptr = (buff.sWptr + 1) % buff.numsize
-
-	return num
-}
-
-func (buff *imgbuffer) dump() (read int, img []byte) {
-	buff.mtx.Lock()
-	defer buff.mtx.Unlock()
-	size := buff.sizes[buff.sRptr]
-	if size == 0 {
-		return 0, nil
-	}
-
-	if buff.sRptr == buff.sWptr {
-		return 0, nil
-	}
-
-	msg := make([]byte, size)
-	cp := copy(msg, buff.data[buff.dRptr:buff.dRptr+buff.sizes[buff.sRptr]])
-
-	if cp != size {
-		panic("ERROR: COPY SIZE AND SIZE DONT MATCH")
-	}
-
-	buff.sRptr = (buff.sRptr + 1) % buff.numsize
-	buff.dRptr = (buff.dRptr + size) % buff.datasize
-
-	return size, msg
-}
 
 func transreq(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
@@ -134,17 +78,6 @@ func mjpegstreamprobe() {
 	check(err)
 }
 
-func mkbuffer(nImg int, nSize int) (buf imgbuffer ){
-	buf.sizes = make([]int, nImg)
-	buf.data = make([]byte, nImg*nSize)
-	buf.dRptr = 0
-	buf.dWptr = 0
-	buf.datasize = nImg * nSize
-	buf.sRptr = 0
-	buf.sWptr = 0
-	buf.numsize = nImg
-	return
-}
 
 func main() {
 	numimg := 6
@@ -152,18 +85,18 @@ func main() {
 	var read int
 	var msg []byte
 
-	buf1 := mkbuffer(numimg,sizeimg)
+	buf1 := imbuff.Mkbuffer(numimg,sizeimg)
 
 	for i := 0; i < 5; i++ {
 			read, msg = tcprec(":1918", sizeimg)
-			buf1.load(msg[:read], read)
+			buf1.Load(msg[:read], read)
 			fmt.Println(buf1)
 			fmt.Println()
 	}
 
 	for i := 0; i < 3; i++ {
 		go func(){
-			read, data := buf1.dump()
+			read, data := buf1.Dump()
 			fmt.Println(read)
 			if read > 0 {
 				err := ioutil.WriteFile("/tmp/im.jpg", data, 0644)
