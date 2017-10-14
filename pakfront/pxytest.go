@@ -80,20 +80,22 @@ func mjpegstreamprobe() {
 
 
 func main() {
-	numimg := 6
-	sizeimg := 100000
+	numimg := 60
+	sizeimg := 120000
 	var read int
 	var msg []byte
 
 	buf1 := imbuff.Mkbuffer(numimg,sizeimg)
 
-	for i := 0; i < 5; i++ {
+	go func(){
+		for {
 			read, msg = tcprec(":1918", sizeimg)
 			buf1.Load(msg[:read], read)
 			fmt.Println(buf1)
 			fmt.Println()
-	}
-
+		}
+	}()
+/*
 	for i := 0; i < 3; i++ {
 		go func(){
 			read, data := buf1.Dump()
@@ -108,4 +110,7 @@ func main() {
 		}()
 	}
 
+	*/
+	wait := time.NewTimer(time.Minute * 1 )
+	<-wait.C
 }
