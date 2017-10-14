@@ -4,7 +4,7 @@ import(
 	"fmt"
 )
 
-type imgbuffer struct {
+type Imgbuffer struct {
 	sizes                  []int
 	data                   []byte
 	dRptr, dWptr, datasize int
@@ -12,12 +12,12 @@ type imgbuffer struct {
 	mtx                    sync.Mutex
 }
 
-func (buff imgbuffer) String() string {
+func (buff Imgbuffer) String() string {
 	return fmt.Sprintf("R Point: %v, W Point: %v\nDR Point: %v, DW Point: %v\nSizes: %v", buff.sRptr, buff.sWptr, buff.dRptr, buff.dWptr, buff.sizes)
 }
 
 
-func (buff *imgbuffer) Load(data []byte, num int) int {
+func (buff *Imgbuffer) Load(data []byte, num int) int {
 	buff.mtx.Lock()
 	defer buff.mtx.Unlock()
 
@@ -37,7 +37,7 @@ func (buff *imgbuffer) Load(data []byte, num int) int {
 	return num
 }
 
-func (buff *imgbuffer) Dump() (read int, img []byte) {
+func (buff *Imgbuffer) Dump() (read int, img []byte) {
 	buff.mtx.Lock()
 	defer buff.mtx.Unlock()
 	size := buff.sizes[buff.sRptr]
@@ -62,7 +62,7 @@ func (buff *imgbuffer) Dump() (read int, img []byte) {
 	return size, msg
 }
 
-func Mkbuffer(nImg int, nSize int) (buf imgbuffer ){
+func Mkbuffer(nImg int, nSize int) (buf Imgbuffer ){
 	buf.sizes = make([]int, nImg)
 	buf.data = make([]byte, nImg*nSize)
 	buf.dRptr = 0

@@ -10,10 +10,22 @@ import (
 	"rovproxy/imbuff"
 )
 
+type chanwrite struct {
+	buffer imbuff.Imgbuffer
+	datastm chan byte
+}
+
 func check(e error) {
 	if e != nil {
 		panic(e)
 	}
+}
+
+
+func mkchanwrite (numimg int, sizeimg int) ( writer chanwrite){
+	writer.buffer = imbuff.Mkbuffer(numimg,sizeimg)
+	writer.datastm = make(chan byte, 100)
+	return
 }
 
 
@@ -43,6 +55,21 @@ func transreq(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (chanwrite) streamwrite(w http.ResponseWriter, r *http.Request) {
+	/*w.Header().Set("Pragma", "no-cache")
+	w.Header().Add("Expires", "Mon, 3 Jan 1917 12:34:56 GMT")
+	w.Header().Add("Content-Type", "multipart/x-mixed-replace;boundary=boundarydonotcross")
+	w.Header().Add("Access-Control-Allow-Origin", "*")
+	w.Header().Add("Connection", "close")
+	w.Header().Add("Server", "MJPG-Streamer/0.2")
+	w.Header().Add("Cache-Control", "no-store, no-cache, must-revalidate, pre-check=0, post-check=0, max-age=0")
+	*/
+
+	data := make([]byte, 1)
+	data[0] = 'A'
+	w.WriteHeader(http.StatusOK)
+	w.Write(data)
+}
 func tcprec(port string, size int) (r int, b []byte) {
 	buf := make([]byte, size)
 	// listen on all interfaces
@@ -85,13 +112,14 @@ func main() {
 	var read int
 	var msg []byte
 
-	buf1 := imbuff.Mkbuffer(numimg,sizeimg)
+	chanwrite1 := mkchanwrite(numimg,sizeimg)
+	go http.ListenAndServe(":8080",http.HandlerFunc(chanwrite1.streamwrite))
 
 	go func(){
 		for {
 			read, msg = tcprec(":1918", sizeimg)
-			buf1.Load(msg[:read], read)
-			fmt.Println(buf1)
+			chanwrite1.buffer.Load(msg[:read], read)
+			fmt.Println(chanwrite1.buffer)
 			fmt.Println()
 		}
 	}()
