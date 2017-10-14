@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net"
 	"net/http"
+	"sync"
 	"time"
 )
 
@@ -14,11 +15,13 @@ type imgbuffer struct {
 	data                   []byte
 	dRptr, dWptr, datasize int
 	sRptr, sWptr, numsize  int
+	mtx                    sync.Mutex
 }
 
 func (buff imgbuffer) String() string {
 	return fmt.Sprintf("R Point: %v, W Point: %v\nDR Point: %v, DW Point: %v\nSizes: %v", buff.sRptr, buff.sWptr, buff.dRptr, buff.dWptr, buff.sizes)
 }
+
 func check(e error) {
 	if e != nil {
 		panic(e)
@@ -26,6 +29,8 @@ func check(e error) {
 }
 
 func (buff *imgbuffer) load(data []byte, num int) int {
+	buff.mtx.Lock()
+	defer buff.mtx.Unlock()
 
 	if (buff.sWptr+1)%buff.numsize == buff.sRptr {
 		buff.dRptr = (buff.dRptr + buff.sizes[buff.sRptr]) % buff.datasize
@@ -44,6 +49,8 @@ func (buff *imgbuffer) load(data []byte, num int) int {
 }
 
 func (buff *imgbuffer) dump() (read int, img []byte) {
+	buff.mtx.Lock()
+	defer buff.mtx.Unlock()
 	size := buff.sizes[buff.sRptr]
 	if size == 0 {
 		return 0, nil
@@ -127,29 +134,45 @@ func mjpegstreamprobe() {
 	check(err)
 }
 
+func mkbuffer(nImg int, nSize int) (buf imgbuffer ){
+	buf.sizes = make([]int, nImg)
+	buf.data = make([]byte, nImg*nSize)
+	buf.dRptr = 0
+	buf.dWptr = 0
+	buf.datasize = nImg * nSize
+	buf.sRptr = 0
+	buf.sWptr = 0
+	buf.numsize = nImg
+	return
+}
+
 func main() {
 	numimg := 6
 	sizeimg := 100000
 	var read int
 	var msg []byte
 
-	buf1 := imgbuffer{make([]int, numimg), make([]byte, numimg*sizeimg), 0, 0, numimg * sizeimg, 0, 0, numimg}
+	buf1 := mkbuffer(numimg,sizeimg)
+
 	for i := 0; i < 5; i++ {
-		read, msg = tcprec(":1918", sizeimg)
-		buf1.load(msg[:read], read)
-		fmt.Println(buf1)
-		fmt.Println()
+			read, msg = tcprec(":1918", sizeimg)
+			buf1.load(msg[:read], read)
+			fmt.Println(buf1)
+			fmt.Println()
 	}
 
 	for i := 0; i < 3; i++ {
-		read, data := buf1.dump()
-		fmt.Println(read)
-		if read > 0 {
-			err := ioutil.WriteFile("/tmp/im.jpg", data, 0644)
-			check(err)
-		}
-		fmt.Println(buf1)
-		fmt.Println()
+		go func(){
+			read, data := buf1.dump()
+			fmt.Println(read)
+			if read > 0 {
+				err := ioutil.WriteFile("/tmp/im.jpg", data, 0644)
+				check(err)
+			}
+			fmt.Println(buf1)
+			fmt.Println()
+			return
+		}()
 	}
 
 }
