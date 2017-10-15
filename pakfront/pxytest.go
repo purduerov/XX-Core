@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"time"
 	"rovproxy/imbuff"
+	"strconv"
 )
 
 type chanwrite struct {
@@ -55,7 +56,7 @@ func transreq(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (chanwrite) streamwrite(w http.ResponseWriter, r *http.Request) {
+func (ch chanwrite) streamwrite(w http.ResponseWriter, r *http.Request) {
 	/*w.Header().Set("Pragma", "no-cache")
 	w.Header().Add("Expires", "Mon, 3 Jan 1917 12:34:56 GMT")
 	w.Header().Add("Content-Type", "multipart/x-mixed-replace;boundary=boundarydonotcross")
@@ -65,10 +66,11 @@ func (chanwrite) streamwrite(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Cache-Control", "no-store, no-cache, must-revalidate, pre-check=0, post-check=0, max-age=0")
 	*/
 
-	data := make([]byte, 1)
-	data[0] = 'A'
+	size :=[]byte(strconv.Itoa(ch.buffer.Sizes[ch.buffer.SWptr]))
 	w.WriteHeader(http.StatusOK)
-	w.Write(data)
+	w.Write(imbuff.Headp1)
+	w.Write(size)
+	w.Write(imbuff.Headp2)
 }
 func tcprec(port string, size int) (r int, b []byte) {
 	buf := make([]byte, size)
@@ -139,6 +141,6 @@ func main() {
 	}
 
 	*/
-	wait := time.NewTimer(time.Minute * 1 )
+	wait := time.NewTimer(time.Minute * 5 )
 	<-wait.C
 }
