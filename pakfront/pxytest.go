@@ -56,22 +56,33 @@ func transreq(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (ch chanwrite) streamwrite(w http.ResponseWriter, r *http.Request) {
-	/*w.Header().Set("Pragma", "no-cache")
+func (ch * chanwrite) streamwrite(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Pragma", "no-cache")
 	w.Header().Add("Expires", "Mon, 3 Jan 1917 12:34:56 GMT")
 	w.Header().Add("Content-Type", "multipart/x-mixed-replace;boundary=boundarydonotcross")
 	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Add("Connection", "close")
 	w.Header().Add("Server", "MJPG-Streamer/0.2")
 	w.Header().Add("Cache-Control", "no-store, no-cache, must-revalidate, pre-check=0, post-check=0, max-age=0")
-	*/
 
-	size :=[]byte(strconv.Itoa(ch.buffer.Sizes[ch.buffer.SWptr]))
-	w.WriteHeader(http.StatusOK)
-	w.Write(imbuff.Headp1)
-	w.Write(size)
-	w.Write(imbuff.Headp2)
+	for {
+		read, data := ch.buffer.Dump()
+		fmt.Println(ch.buffer)
+		fmt.Println()
+
+		if read > 0 {
+			size :=[]byte(strconv.Itoa(read))
+			w.WriteHeader(http.StatusOK)
+			w.Write(imbuff.Headp1)
+			w.Write(size)
+			w.Write(imbuff.Headp2)
+			w.Write(data)
+		}
+		wait := time.NewTimer(time.Nanosecond * 1000)
+		<-wait.C
+	}
 }
+
 func tcprec(port string, size int) (r int, b []byte) {
 	buf := make([]byte, size)
 	// listen on all interfaces
@@ -109,7 +120,7 @@ func mjpegstreamprobe() {
 
 
 func main() {
-	numimg := 60
+	numimg := 500
 	sizeimg := 120000
 	var read int
 	var msg []byte
@@ -125,22 +136,19 @@ func main() {
 			fmt.Println()
 		}
 	}()
-/*
+	wait := time.NewTimer(time.Minute * 1 )
+	<-wait.C
 	for i := 0; i < 3; i++ {
-		go func(){
-			read, data := buf1.Dump()
+			read, data := chanwrite1.buffer.Dump()
 			fmt.Println(read)
 			if read > 0 {
 				err := ioutil.WriteFile("/tmp/im.jpg", data, 0644)
 				check(err)
 			}
-			fmt.Println(buf1)
+			fmt.Println(chanwrite1.buffer)
 			fmt.Println()
 			return
-		}()
 	}
-
-	*/
-	wait := time.NewTimer(time.Minute * 5 )
+	wait = time.NewTimer(time.Minute * 60 )
 	<-wait.C
 }
