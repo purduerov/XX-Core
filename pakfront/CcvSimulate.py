@@ -1,20 +1,23 @@
-import promise
+from promise import Promise
 import subprocess
 import io
 import cv2
 import numpy as np
 from signal import signal, SIGPIPE, SIG_DFL
-from multiprocessing import Process
+from multiprocessing import Process, Pool
 signal(SIGPIPE, SIG_DFL)
 
 
+def get_image():
+    imreq = subprocess.check_output(["./tcptostdin"])
+    raw = io.BytesIO(imreq)
+    data = np.fromstring(raw.getvalue(), dtype=np.uint8)
+    return cv2.imdecode(data, 1)
+
+
 def getframe():
-    def get():
-        imreq = subprocess.check_output(["./tcptostdin"])
-        raw = io.BytesIO(imreq)
-        data = np.fromstring(raw.getvalue(), dtype=np.uint8)
-        return cv2.imdecode(data, 1)
-    return promise.promisify(get)
+    pool = Pool(processes=1)
+    return pool.apply_async(get_image)
 
 
 def pushframe(image):
@@ -28,7 +31,8 @@ def pushframe(image):
         imreq.stdin.write(imdata)
         imreq.stdin.close()
         return len(imdata)
-    Process(target=push, args=image).start()
+    p = Process(target=push, args=(image,))
+    p.start()
 
 
 def writeimage(data):
@@ -38,4 +42,4 @@ def writeimage(data):
 if __name__ == "__main__":
     curimage = getframe()
     # CV stuff goes here
-    print(pushframe(curimage))
+    print(pushframe(curimage.get()))
