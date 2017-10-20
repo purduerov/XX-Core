@@ -147,7 +147,7 @@ func main() {
 	//Channel is made with a certain buffer size
 	chanwrite1 := mkchanwrite(numimg, sizeimg)
 	//launch the server on a goroutine
-	go http.ListenAndServe(":8080", http.HandlerFunc(chanwrite1.streamwrite))
+	go http.ListenAndServe(":1945", http.HandlerFunc(chanwrite1.streamwrite))
 
 	//constantly wait for data to come in from the port 1918, and load it when it comes in
 	go func() {
