@@ -36,7 +36,6 @@ class MotorControl(object):
         # By default, set everything to off
         self.pwm.set_all_pwm(0, self.ZERO_POWER)
 
-
     # PUBLIC FUNCTION
     def set(self, pin, value):
         if pin < 0 or pin > 15:
@@ -48,6 +47,8 @@ class MotorControl(object):
         pwm_val = self._toPWM(value)
         self.pwm.set_pwm(pin, 0, pwm_val)
 
+        # Adds the new value of the pin to the map
+        self.__pin_values[pin] = value
 
     # PUBLIC FUNCTION
     def kill(self):

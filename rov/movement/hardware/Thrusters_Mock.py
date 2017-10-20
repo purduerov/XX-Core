@@ -9,5 +9,8 @@ class Thrusters(BaseThrusters):
     def set(self, values):
         pass
 
+    def get(self):
+        pass
+
     def stop(self):
         pass

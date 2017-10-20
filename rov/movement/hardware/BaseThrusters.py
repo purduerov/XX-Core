@@ -12,5 +12,9 @@ class BaseThrusters(object):
         pass
 
     @abstractmethod
+    def get(self):
+        pass
+
+    @abstractmethod
     def stop(self):
         pass

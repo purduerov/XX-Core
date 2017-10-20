@@ -54,9 +54,7 @@ class ROV(object):
             frequency=FREQUENCY
         )
 
-        self.controller = (
-            self.motor_control
-        )
+        self.controls = controller(self.motor_control)
 
         #""" Disabled until hardware is done and sw is tested
         # self.IMU = IMU()
