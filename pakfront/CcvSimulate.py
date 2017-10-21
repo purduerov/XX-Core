@@ -1,4 +1,3 @@
-from promise import Promise
 import subprocess
 import io
 import cv2
@@ -17,7 +16,9 @@ def get_image():
 
 def getframe():
     pool = Pool(processes=1)
-    return pool.apply_async(get_image)
+    p = pool.apply_async(get_image)
+    pool.close()
+    return p
 
 
 def pushframe(image):
@@ -33,11 +34,13 @@ def pushframe(image):
         return len(imdata)
     p = Process(target=push, args=(image,))
     p.start()
+    return "Push Initiated"
 
 
 def writeimage(data):
     with open("im.jpg", "wb+") as fh:
         fh.write(data)
+
 
 if __name__ == "__main__":
     curimage = getframe()
