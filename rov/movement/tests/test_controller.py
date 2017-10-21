@@ -41,6 +41,7 @@ def test_expect_no_thruster_force_with_no_user_input():
         assert value == 0
 
 
+
 def test_turning_on_vertical_thrusters_to_go_up():
     """Test that the vertical thrusters all go up when given a positive z input"""
     controls = controller(motor_controller())

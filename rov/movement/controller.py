@@ -7,6 +7,8 @@ class controller(object):
 
         self.motor_control = motor_control
 
+
+
         self.thrusters = Thrusters(
             self.motor_control,
             LIST_OF_THRUSTER
