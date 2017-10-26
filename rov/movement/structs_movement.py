@@ -38,7 +38,7 @@ class thrusters_struct():
         """Normalizes all thruster values so that the largest thruster value becomes 1 with
                 all other thruster values scaled accordingly"""
 
-        max_value = max(self.__all_thrusters)
+        max_value = max([abs(x) for x in self.__all_thrusters])
 
         # Only normalize the thruster values if one of them is over 1.0
         if max_value > 1:
@@ -77,3 +77,10 @@ if __name__ == "__main__":
 
     for thruster in thrusters:
         print thruster"""
+
+    thrusters4 = thrusters_struct([-2, -1, -0.5, 0, 0.5, 1, 0.5, 0])
+
+    thrusters4.normalize()
+
+    for thruster in thrusters4:
+        print thruster
