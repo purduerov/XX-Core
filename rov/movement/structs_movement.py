@@ -1,5 +1,7 @@
 class thrusters_struct():
     def __init__(self, thruster_values):
+        """Takes in an array of thruster values and returns a class that wraps all of the values in easy to read
+                mnemonics and provides some very useful helper classes"""
         self.horr_front_left = thruster_values[0]
         self.horr_front_right = thruster_values[1]
         self.horr_back_left = thruster_values[2]
@@ -12,6 +14,7 @@ class thrusters_struct():
         self.__all_thrusters = thruster_values
 
     def __iter__(self):
+        """Allows for iterations over all of the thrusters"""
         return iter(self.__all_thrusters)
 
     def __sub__(self, other):
@@ -19,12 +22,16 @@ class thrusters_struct():
         return thrusters_struct([a - b for a, b in zip(self.__all_thrusters, other.all_thrusters)])
 
     def __getitem__(self, index):
+        """Allows array like lookups of the class so previous code will still work. Basically, you can
+                still treat this class as a list and the code will still work"""
         return self.__all_thrusters[index]
 
     def get_vert_thruster_values(self):
+        """Returns all of the vertical thrusters"""
         return self.__all_thrusters[4:8]
 
     def get_horr_thruster_valeus(self):
+        """Returns all of the horizontal thrusters"""
         return self.__all_thrusters[0:4]
 
     def normalize(self):
@@ -60,7 +67,7 @@ if __name__ == "__main__":
         print "horr: " + str(thruster)
 
     for thruster in thrusters.get_vert_thruster_values():
-        print "vert: " + str(thruster)"""
+        print "vert: " + str(thruster)
 
     thrusters.normalize()
     for thruster in thrusters:
@@ -69,4 +76,4 @@ if __name__ == "__main__":
     thrusters.stop()
 
     for thruster in thrusters:
-        print thruster
+        print thruster"""
