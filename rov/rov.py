@@ -7,11 +7,16 @@ from controls import PID	#Tested
 from threading import Lock
 from time import time, sleep
 
+# Import constants to initiate the hardware
+from init_hw_constants import *
 
-from sensors import Pressure, IMU
-
+# Class that communicates to the i2c to pwm chip that controls the brushless motors
 from hardware.motor_control import MotorControl
 
+# Class that controls the rov movement
+from movement import controller
+
+from sensors import Pressure, IMU
 
 
 class ROV(object):
@@ -35,6 +40,7 @@ class ROV(object):
         self.init_hw()
 
     def init_hw(self):
+        pass
         #self.cameras = Cameras(
         #    resolution='640x480',
         #    framerate=30,
@@ -44,11 +50,13 @@ class ROV(object):
         #)
 
         self.motor_control = MotorControl(
-            zero_power=305,
-            neg_max_power=222,
-            pos_max_power=388,
-            frequency=47
+            zero_power=ZERO_POWER,
+            neg_max_power=NEG_MAX_POWER,
+            pos_max_power=POS_MAX_POWER,
+            frequency=FREQUENCY
         )
+
+        self.controls = controller(self.motor_control)
 
         #""" Disabled until hardware is done and sw is tested
         # self.IMU = IMU()
