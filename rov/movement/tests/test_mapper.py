@@ -7,19 +7,17 @@ be applicable.
 """
 
 import pytest
-
-@pytest.fixture()
-def get_mapper():
-    import rov.movement.mapper.Simple as Mapper
-
-    return Mapper()
-
+from rov.movement.mapper.Simple import Mapper
 
 def test_zero_input_expect_zero_output():
     """Tests that the thrust mapper outputs all zeros when inputted with all zeros"""
-    mapper = get_mapper()
+    mapper = Mapper()
 
+    input6Dof = [0, 0, 0, 0, 0, 0]
+    mapped_output = mapper.calculate(input6Dof)
 
+    for value in mapped_output:
+        assert value == 0
 
 
 def test_positive_x_input():
