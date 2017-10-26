@@ -1,18 +1,25 @@
 """
 Tests the thrust mapper to verify that the thrust mapper
 outputs thruster values that appear to be reasonable.
-This class assumes that the ROV has 4 horrizontal thrusters and 4
+This class assumes that the ROV has 4 horizontal thrusters and 4
 vertical thrusters. If this changes, some of the test cases might not
 be applicable.
 """
 
 import pytest
-import rov.movement.mapper.Simple as Mapper
+
+@pytest.fixture()
+def get_mapper():
+    import rov.movement.mapper.Simple as Mapper
+
+    return Mapper()
 
 
 def test_zero_input_expect_zero_output():
     """Tests that the thrust mapper outputs all zeros when inputted with all zeros"""
-    pass
+    mapper = get_mapper()
+
+
 
 
 def test_positive_x_input():
