@@ -22,7 +22,7 @@ var Headp2 = []byte{0x0d, 0x0a, 0x58, 0x2d, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74, 
 //String implements the String interface for Imgbuffer.
 //Prints out all relevant information
 func (buff Imgbuffer) String() string {
-	return fmt.Sprintf("R Point: %v, W Point: %v\nDR Point: %v, DW Point: %v\nSizes: %v", buff.SRptr, buff.SWptr, buff.DRptr, buff.DWptr, buff.Sizes)
+	return fmt.Sprintf("R Point: %v, W Point: %v\nDR Point: %v, DW Point: %v\n", buff.SRptr, buff.SWptr, buff.DRptr, buff.DWptr)
 }
 
 //Load takes Data, and the amount of bytes and saves it into the buffer
@@ -53,7 +53,9 @@ func (buff *Imgbuffer) Load(Data []byte, num int) int {
 func (buff *Imgbuffer) Dump() (read int, img []byte) {
 	buff.mtx.Lock()
 	defer buff.mtx.Unlock()
+	var msg []byte
 	size := buff.Sizes[buff.SRptr]
+	fmt.Print(buff)
 	//If the data is empty, or if the buffer is empty, return 0
 	if size == 0 {
 		return 0, nil
@@ -63,11 +65,13 @@ func (buff *Imgbuffer) Dump() (read int, img []byte) {
 		return 0, nil
 	}
 
-	msg := make([]byte, size)
-	cp := copy(msg, buff.Data[buff.DRptr:buff.DRptr+buff.Sizes[buff.SRptr]])
-
-	if cp != size {
-		panic("ERROR: COPY SIZE AND SIZE DONT MATCH")
+	if buff.DRptr+buff.Sizes[buff.SRptr] < buff.Datasize {
+		msg = buff.Data[buff.DRptr : buff.DRptr+buff.Sizes[buff.SRptr]]
+	} else {
+		startChunk := buff.DRptr + buff.Sizes[buff.SRptr]
+		msg = make([]byte, size)
+		copy(msg, buff.Data[buff.DRptr:buff.Datasize-1])
+		copy(msg[startChunk%buff.Datasize:], buff.Data[0:startChunk%buff.Datasize])
 	}
 
 	//Moves the pointers properly

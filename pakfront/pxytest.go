@@ -21,7 +21,7 @@ type chanwrite struct {
 
 func check(e error) {
 	if e != nil {
-		panic(e)
+		panic("OUR ERROR FUNCTION")
 	}
 }
 
@@ -139,7 +139,7 @@ func mjpegstreamprobe() {
 func main() {
 	// fmt.Println is a very complicated function, and its depth and complexity can not be understated. Moreover, the context in which it is called multiplies its importance factorially, further growing its need. I recommend you sit down, get a big cup of warm, heavily caffinated, tea, and consider both the implication of this function, as well as what it means to you as not only a coder, but a person and a woman.
 	fmt.Println("Starting")
-	numimg := 500
+	numimg := 100
 	sizeimg := 120000
 	var read int
 	var msg []byte

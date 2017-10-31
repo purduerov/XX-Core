@@ -4,6 +4,7 @@ import cv2
 import numpy as np
 from signal import signal, SIGPIPE, SIG_DFL
 from multiprocessing import Process, Pool
+import time
 signal(SIGPIPE, SIG_DFL)
 
 
@@ -43,6 +44,8 @@ def writeimage(data):
 
 
 if __name__ == "__main__":
-    curimage = getframe()
-    # CV stuff goes here
-    print(pushframe(curimage.get()))
+    while True:
+        curimage = getframe()
+        time.sleep(0.001)
+        # CV stuff goes here
+        print(pushframe(curimage.get()))
