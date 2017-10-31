@@ -2,11 +2,9 @@
 proxy that routes traffic between the frontend and ROV. Logs shit, passes image data to CV
 
 ## TODO
-- solve issue of it crashing after a bit
 - solve issue of some frames being cut off at the bottom
 - transparent handling of flask requests+responses
 - logging(and how we will log) functionallity for all processes
-- launching everything on goroutines, with a proper config file
 
 ## Setup
 According to all known laws
