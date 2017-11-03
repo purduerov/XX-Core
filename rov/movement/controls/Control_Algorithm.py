@@ -1,4 +1,3 @@
-#todo: learn to use PID Controller
 from rov.controls.PID_Controller import PID
 
 class ControlAlgorithm():
@@ -7,6 +6,7 @@ class ControlAlgorithm():
     def __init__(self):
         self.activated = True
         self.controls = ['x','y','z','roll','pitch','yaw']
+        self.pids = {'x':PID(0) ,'y':PID(0), 'z':PID(0), 'roll':PID(0), 'pitch':PID(0), 'yaw':PID(0)}
 
     #Allows option to activate
     def activate(self):
@@ -40,6 +40,3 @@ class ControlAlgorithm():
                         pass
 
         return user_input
-
-
-
