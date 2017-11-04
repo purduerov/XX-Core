@@ -66,11 +66,18 @@ class thrusters_struct():
 
 
 if __name__ == "__main__":
-    thrusters = thrusters_struct([1, 2, 3, 4, 5, 6, 7, 8])
+
+    a = [1, 2, 3, 4, 5, 6, 7, 8]
+    thrusters = thrusters_struct(a)
     thrusters2 = thrusters_struct([11, 12, 13, 14, 15, 16, 17, 18])
 
+    print thrusters[0]
+    a[0] = 9
+    print thrusters[0]
+    a = [8, 7, 6, 5, 4, ]
 
-    print thrusters[1]
+
+
     """for thruster in thrusters:
         print thruster
 
@@ -94,11 +101,11 @@ if __name__ == "__main__":
     thrusters.stop()
 
     for thruster in thrusters:
-        print thruster"""
+        print thruster
 
     #thrusters4 = thrusters_struct([-2, -1, -0.5, 0, 0.5, 1, 0.5, 0])
 
     #thrusters4.normalize()
 
     #for thruster in thrusters4:
-    #    print thruster
+    #    print thruster"""
