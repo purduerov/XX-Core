@@ -2,16 +2,32 @@ class thrusters_struct():
     def __init__(self, thruster_values):
         """Takes in an array of thruster values and returns a class that wraps all of the values in easy to read
                 mnemonics and provides some very useful helper classes"""
-        self.horr_front_left = thruster_values[0]
-        self.horr_front_right = thruster_values[1]
-        self.horr_back_left = thruster_values[2]
-        self.horr_back_right = thruster_values[3]
-        self.vert_front_left = thruster_values[4]
-        self.vert_front_right = thruster_values[5]
-        self.vert_back_left = thruster_values[6]
-        self.vert_back_right = thruster_values[7]
-
         self.__all_thrusters = thruster_values
+
+
+    def hor_front_left(self):
+        return self.__all_thrusters[0]
+
+    def hor_front_right(self):
+        return self.__all_thrusters[1]
+
+    def hor_back_left(self):
+        return self.__all_thrusters[2]
+
+    def hor_back_right(self):
+        return self.__all_thrusters[3]
+
+    def vert_front_left(self):
+        return self.__all_thrusters[4]
+
+    def vert_front_right(self):
+        return self.__all_thrusters[5]
+
+    def vert_back_left(self):
+        return self.__all_thrusters[6]
+
+    def vert_back_right(self):
+        return self.__all_thrusters[7]
 
     def __iter__(self):
         """Allows for iterations over all of the thrusters"""
@@ -53,6 +69,8 @@ if __name__ == "__main__":
     thrusters = thrusters_struct([1, 2, 3, 4, 5, 6, 7, 8])
     thrusters2 = thrusters_struct([11, 12, 13, 14, 15, 16, 17, 18])
 
+
+    print thrusters[1]
     """for thruster in thrusters:
         print thruster
 
@@ -78,9 +96,9 @@ if __name__ == "__main__":
     for thruster in thrusters:
         print thruster"""
 
-    thrusters4 = thrusters_struct([-2, -1, -0.5, 0, 0.5, 1, 0.5, 0])
+    #thrusters4 = thrusters_struct([-2, -1, -0.5, 0, 0.5, 1, 0.5, 0])
 
-    thrusters4.normalize()
+    #thrusters4.normalize()
 
-    for thruster in thrusters4:
-        print thruster
+    #for thruster in thrusters4:
+    #    print thruster
