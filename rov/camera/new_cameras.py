@@ -15,7 +15,7 @@ class Cameras(object):
         self.port = port
         self.brightness = brightness
         self.contrast = contrast
-        self.input = ['input_uvc.so -d {device}'.format(device=d) for d in self.devices]
+        self.input = ['input_uvc.so -f {framerate} -r {resolution} -d {device}'.format(framerate=self.framerate, resolution=self.resolution, device=d) for d in self.devices]
         self.output = 'output_http.so -p {port} {web}'.format(
             port=port,
             web='-w /usr/local/www'
