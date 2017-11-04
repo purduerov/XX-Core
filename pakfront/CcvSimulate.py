@@ -22,7 +22,7 @@ def getframe():
     return p
 
 
-def pushframe(image):
+def pushframe(image,i):
     def push(img):
         postdata = cv2.imencode(".jpg", img)
         imdata = bytearray([b[0] for b in postdata[1]])
@@ -31,6 +31,7 @@ def pushframe(image):
         imreq.stdin.write(bytearray(5 - len(lenbytes)))
         imreq.stdin.write(lenbytes)
         imreq.stdin.write(imdata)
+        writeimage("pythonimg" + str(i) + ".jpg", imdata)
         imreq.stdin.close()
         return len(imdata)
     p = Process(target=push, args=(image,))
@@ -38,14 +39,14 @@ def pushframe(image):
     return "Push Initiated"
 
 
-def writeimage(data):
-    with open("im.jpg", "wb+") as fh:
+def writeimage(name,data):
+    with open("/home/zhukov/Projects/rov/test/" + name, "wb+") as fh:
         fh.write(data)
 
 
 if __name__ == "__main__":
-    while True:
+    for i in range(0,1000):
         curimage = getframe()
         time.sleep(0.001)
         # CV stuff goes here
-        print(pushframe(curimage.get()))
+        print(pushframe(curimage.get(),i))

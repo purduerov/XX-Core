@@ -4,7 +4,10 @@ package imbuff
 
 import (
 	"fmt"
+	"net/http"
+	"strconv"
 	"sync"
+	"time"
 )
 
 type Imgbuffer struct {
@@ -23,6 +26,12 @@ var Headp2 = []byte{0x0d, 0x0a, 0x58, 0x2d, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74, 
 //Prints out all relevant information
 func (buff Imgbuffer) String() string {
 	return fmt.Sprintf("R Point: %v, W Point: %v\nDR Point: %v, DW Point: %v\n", buff.SRptr, buff.SWptr, buff.DRptr, buff.DWptr)
+}
+
+func check(e error) {
+	if e != nil {
+		panic("OUR ERROR FUNCTION")
+	}
 }
 
 //Load takes Data, and the amount of bytes and saves it into the buffer
@@ -92,4 +101,57 @@ func Mkbuffer(nImg int, nSize int) (buf Imgbuffer) {
 	buf.SWptr = 0
 	buf.numsize = nImg
 	return
+}
+
+type chanwrite struct {
+	Buffer  Imgbuffer
+	datastm chan byte
+}
+
+func Mkchanwrite(numimg int, sizeimg int) (writer chanwrite) {
+	writer.Buffer = Mkbuffer(numimg, sizeimg)
+	writer.datastm = make(chan byte, 100)
+	return
+}
+
+// This sets up the chanwrite as a server that streams its buffer
+func (ch *chanwrite) Streamwrite(w http.ResponseWriter, r *http.Request) {
+	// Necessary headers (found by viewing no proxy headers)
+	w.Header().Set("Pragma", "no-cache")
+	w.Header().Add("Expires", "Mon, 3 Jan 1917 12:34:56 GMT")
+	w.Header().Add("Content-Type", "multipart/x-mixed-replace;boundary=boundarydonotcross")
+	w.Header().Add("Access-Control-Allow-Origin", "*")
+	w.Header().Add("Connection", "close")
+	w.Header().Add("Server", "MJPG-Streamer/0.2")
+	w.Header().Add("Cache-Control", "no-store, no-cache, must-revalidate, pre-check=0, post-check=0, max-age=0")
+	w.WriteHeader(http.StatusOK)
+
+	var twritten int // Total written of this frame
+	var written int  // Written of this chunk
+	//Stream
+	for {
+		//Get this frame in data
+		read, data := ch.Buffer.Dump()
+		twritten = 0
+		written = 0
+		if read > 0 {
+			//Write out the header delimiter
+			size := []byte(strconv.Itoa(read))
+			w.Write(Headp1)
+			w.Write(size)
+			w.Write(Headp2)
+			//While we have not written the whole frame, write
+			for twritten < read {
+				written, err := w.Write(data[written:])
+				check(err)
+				twritten += written
+			}
+			fmt.Printf("Size: %d\n", read)
+			fmt.Printf("Total Written: %d\n", twritten)
+			fmt.Println()
+		}
+		//slight delay for the mutex write to buffer to occur. Possibly come up with a more elegant solution
+		wait := time.NewTimer(time.Nanosecond * 1000)
+		<-wait.C
+	}
 }
