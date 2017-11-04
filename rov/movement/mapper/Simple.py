@@ -14,7 +14,7 @@ class Mapper(BaseMapper):
         return values
 
     def calculate(self, desired_thrust, disabled_thrusters=[]):
-        # Calculate Thruster Values
+        # Calculate Thruster Values=
 
         velX = desired_thrust[0]
         velY = desired_thrust[1]
