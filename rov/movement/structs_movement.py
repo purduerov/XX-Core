@@ -4,7 +4,6 @@ class thrusters_struct():
                 mnemonics and provides some very useful helper classes"""
         self.__all_thrusters = thruster_values
 
-
     def hor_front_left(self):
         return self.__all_thrusters[0]
 
@@ -46,19 +45,29 @@ class thrusters_struct():
         """Returns all of the vertical thrusters"""
         return self.__all_thrusters[4:8]
 
-    def get_horr_thruster_valeus(self):
+    def get_hor_thruster_valeus(self):
         """Returns all of the horizontal thrusters"""
         return self.__all_thrusters[0:4]
 
     def normalize(self):
         """Normalizes all thruster values so that the largest thruster value becomes 1 with
-                all other thruster values scaled accordingly"""
+                all other thruster values scaled accordingly. It will normalize the vertical
+                Thrusters with themselves and then normalize the horizontal thrusters with
+                themselves"""
 
-        max_value = max([abs(x) for x in self.__all_thrusters])
+        # normalize the horizontal thrusters
+        max_hor_value = max([abs(x) for x in self.get_hor_thruster_valeus()])
 
         # Only normalize the thruster values if one of them is over 1.0
-        if max_value > 1:
-            self.__all_thrusters = [float(x) / max_value for x in self.__all_thrusters]
+        if max_hor_value > 1:
+            self.__all_thrusters[0:4] = [float(x) / max_hor_value for x in self.get_hor_thruster_valeus()]
+
+        # normalize the vertical thrusters
+        max_vert_value = max([abs(x) for x in self.get_vert_thruster_values()])
+
+        # Only normalize the thruster values if one of them is over 1.0
+        if max_vert_value > 1:
+            self.__all_thrusters[4:8] = [float(x) / max_vert_value for x in self.get_vert_thruster_values()]
 
     def stop(self):
         """Turns all thruster values to zero"""

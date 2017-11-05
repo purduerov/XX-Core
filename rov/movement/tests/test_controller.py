@@ -77,31 +77,3 @@ def test_expect_no_thruster_force_when_controller_is_stopped():
     # Check that the thrusters have been stopped
     for value in thruster_values:
         assert value == 0
-
-# test positive x
-
-# test negative x
-
-# test positive y
-
-# test negative y
-
-# test positive z
-
-# test negative z
-
-# test positive pitch
-
-# test negative pitch
-
-# test positive roll
-
-# test negative roll
-
-# test positive yaw
-
-# test negative yaw
-
-# test z and roll
-
-# test

@@ -1,9 +1,14 @@
 from BaseMapper import BaseMapper
-
+from rov.movement.structs_movement import thrusters_struct
 
 class Mapper(BaseMapper):
     def __init__(self):
         self.NUM_THRUSTERS = 8
+
+        # create an array that contains the values of all of the thrusters and preset the
+        # values to 0
+        self.allThrusters = [0 for _ in range(0, 8)]
+        self.return_thrusters_struct = thrusters_struct(self.allThrusters)
 
     def normalize(self, values):
         max_val = max([abs(x) for x in values])
@@ -62,14 +67,18 @@ class Mapper(BaseMapper):
         verticalThrusters[2] += roll
         verticalThrusters[3] -= roll
 
-        horizontalThrusters = self.normalize(horizontalThrusters)
-        verticalThrusters = self.normalize(verticalThrusters)
-
-        allThrusters = horizontalThrusters + verticalThrusters
+        # set the thruster values to the new value. Assinging by index is a copy by reference
+        # which is what we want for the return_thruster_struct variable
+        self.allThrusters[0:8] = horizontalThrusters + verticalThrusters
 
         # disable thrusters not in use
         for t in set(disabled_thrusters):
             if 1 <= t <= self.NUM_THRUSTERS:
-                allThrusters[t-1] = 0.0
+                self.allThrusters[t-1] = 0.0
 
-        return allThrusters
+        # normalize the thruster values which are going to be returned
+        self.return_thrusters_struct.normalize()
+
+        return self.return_thrusters_struct
+
+        pass
