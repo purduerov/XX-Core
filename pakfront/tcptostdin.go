@@ -24,5 +24,5 @@ func main() {
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	check(err)
-	fmt.Printf("%s", body)
+	fmt.Printf("%s",body)
 }

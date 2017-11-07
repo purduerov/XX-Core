@@ -64,7 +64,6 @@ func (buff *Imgbuffer) Dump() (read int, img []byte) {
 	defer buff.mtx.Unlock()
 	var msg []byte
 	size := buff.Sizes[buff.SRptr]
-	fmt.Print(buff)
 	//If the data is empty, or if the buffer is empty, return 0
 	if size == 0 {
 		return 0, nil
@@ -158,9 +157,6 @@ func (ch *chanwrite) Streamwrite(w http.ResponseWriter, r *http.Request) {
 				check(err)
 				twritten += written
 			}
-			fmt.Printf("Size: %d\n", read)
-			fmt.Printf("Total Written: %d\n", twritten)
-			fmt.Println()
 		}
 		//slight delay for the mutex write to buffer to occur. Possibly come up with a more elegant solution
 		wait := time.NewTimer(time.Nanosecond * 1000)
