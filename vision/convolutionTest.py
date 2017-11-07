@@ -8,26 +8,33 @@ from settings import *
 # This is not commited so we can maintain different parameters
 # After -- is example definition
 #================================================
-# videofilename -- "../calib1.mp4"
+# videoFilename -- "../calib1.mp4"
 # vidStartTime  --  31
 # vidStopTime  --   41
 #================================================
 
 
 # Create video feed
+cap = cv2.VideoCapture(videoFilename)
+while(cap.isOpened()):
+    ret, frame = cap.read()
+
+	#Generate Gaussian Pyramid
 
 
 
-
-#Generate Gaussian Pyramid
-
+	#Locate object in frame
 
 
-#Locate object in frame
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+	#Display result
+    cv2.imshow('frame',gray)
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
 
 
 
-#Display result
-
-
-
+# Don't be a piggy, clean up!
+cap.release()
+cv2.destroyAllWindows()
