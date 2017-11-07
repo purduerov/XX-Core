@@ -7,7 +7,7 @@
   "scripts": {
     "start": "electron .",
     "dev": "webpack -d --watch",
-    "build" : "webpack -p"
+    "build": "webpack -p"
   },
   "author": "Purdue ROV Software Team",
   "license": "ISC",
@@ -20,7 +20,8 @@
     "jquery": "^3.2.1",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
-    "read-file": "^0.2.0"
+    "read-file": "^0.2.0",
+    "webpack": "^3.8.1"
   },
   "devDependencies": {
     "babel-preset-minify": "^0.2.0",
