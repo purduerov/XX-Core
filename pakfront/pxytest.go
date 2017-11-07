@@ -11,6 +11,7 @@ import (
 	"rovproxy/imbuff"
 	"strconv"
 	"time"
+	"encoding/binary"
 )
 
 func check(e error) {
@@ -56,12 +57,16 @@ func tcprec(port string, size int) (r int, b []byte) {
 	// will listen for message to process ending in newline (\n)
 	read, err := bufio.NewReader(conn).Read(buf)
 	check(err)
-	if read == 21845 {
-		readmore, err := bufio.NewReader(conn).Read(buf[read:])
-		read = readmore + read
+
+	sizein := binary.BigEndian.Uint64(buf[0:8])
+	tread := read
+
+	for tread < int(sizein) + 8 {
+		read, err := bufio.NewReader(conn).Read(buf[tread:])
 		check(err)
+		tread += read
 	}
-	return read, buf
+	return tread-8, buf[8:]
 }
 
 //mjpegstreamprobe is a util function used to log what mjpegstreamer looks with no modification
@@ -84,14 +89,15 @@ func mjpegstreamprobe() {
 func main() {
 	// fmt.Println is a very complicated function, and its depth and complexity can not be understated. Moreover, the context in which it is called multiplies its importance factorially, further growing its need. I recommend you sit down, get a big cup of warm, heavily caffinated, tea, and consider both the implication of this function, as well as what it means to you as not only a coder, but a person and a woman.
 	fmt.Println("Starting")
-	numimg := 1000
-	sizeimg := 200000
+	numimg := 200
+	sizeimg := 150000
 	var read int
 	var msg []byte
 
 	//Channel is made with a certain buffer size
 	chanwrite1 := imbuff.Mkchanwrite(numimg, sizeimg)
 	//launch the server on a goroutine
+	//go http.ListenAndServe(":1945", http.HandlerFunc(chanwrite1.Streamwrite))
 	go http.ListenAndServe(":1945", http.HandlerFunc(chanwrite1.Streamwrite))
 
 	//constantly wait for data to come in from the port 1918, and load it when it comes in

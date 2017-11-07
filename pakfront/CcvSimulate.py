@@ -28,7 +28,7 @@ def pushframe(image,i):
         imdata = bytearray([b[0] for b in postdata[1]])
         lenbytes = bytearray.fromhex('{:08x}'.format(len(imdata)))
         imreq = subprocess.Popen(["./stintotcp", "1918"], stdin=subprocess.PIPE)
-        imreq.stdin.write(bytearray(5 - len(lenbytes)))
+        imreq.stdin.write(bytearray(8 - len(lenbytes)))
         imreq.stdin.write(lenbytes)
         imreq.stdin.write(imdata)
         writeimage("pythonimg" + str(i) + ".jpg", imdata)

@@ -22,7 +22,7 @@ func main() {
 	bytes, err := ioutil.ReadAll(os.Stdin)
 	conn, err := net.Dial("tcp", "127.0.0.1:1918")
 	check(err)
-	num, err := conn.Write(bytes[5:])
+	num, err := conn.Write(bytes)
 	check(err)
 	fmt.Println("go has written: ", num)
 }

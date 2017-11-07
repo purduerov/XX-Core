@@ -2,7 +2,6 @@
 proxy that routes traffic between the frontend and ROV. Logs shit, passes image data to CV
 
 ## TODO
-- solve issue of some frames being cut off at the bottom
 - transparent handling of flask requests+responses
 - logging(and how we will log) functionallity for all processes
 

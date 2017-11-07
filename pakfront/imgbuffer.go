@@ -25,7 +25,7 @@ var Headp2 = []byte{0x0d, 0x0a, 0x58, 0x2d, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74, 
 //String implements the String interface for Imgbuffer.
 //Prints out all relevant information
 func (buff Imgbuffer) String() string {
-	return fmt.Sprintf("R Point: %v, W Point: %v\nDR Point: %v, DW Point: %v\n", buff.SRptr, buff.SWptr, buff.DRptr, buff.DWptr)
+	return fmt.Sprintf("R Point: %v, W Point: %v\nDR Point: %v, DW Point: %v\nIm Size: %v\n\n", buff.SRptr, buff.SWptr, buff.DRptr, buff.DWptr,buff.Sizes[buff.SRptr])
 }
 
 func check(e error) {
@@ -78,9 +78,7 @@ func (buff *Imgbuffer) Dump() (read int, img []byte) {
 		msg = buff.Data[buff.DRptr : buff.DRptr+buff.Sizes[buff.SRptr]]
 	} else {
 		startChunk := buff.DRptr + buff.Sizes[buff.SRptr]
-		msg = make([]byte, size)
-		copy(msg, buff.Data[buff.DRptr:buff.Datasize-1])
-		copy(msg[startChunk%buff.Datasize:], buff.Data[0:startChunk%buff.Datasize])
+		msg = append(buff.Data[buff.DRptr:buff.Datasize],buff.Data[0:startChunk%buff.Datasize]...)
 	}
 
 	//Moves the pointers properly
@@ -111,6 +109,20 @@ type chanwrite struct {
 func Mkchanwrite(numimg int, sizeimg int) (writer chanwrite) {
 	writer.Buffer = Mkbuffer(numimg, sizeimg)
 	writer.datastm = make(chan byte, 100)
+	return
+}
+
+func (ch *chanwrite) Imwrite(w http.ResponseWriter, r *http.Request) {
+
+	w.Header().Set("Pragma", "no-cache")
+	w.Header().Add("Access-Control-Allow-Origin", "*")
+	w.Header().Add("Connection", "close")
+	w.Header().Add("Server", "MJPG-Streamer/0.2")
+	w.Header().Add("Cache-Control", "no-store, no-cache, must-revalidate, pre-check=0, post-check=0, max-age=0")
+	w.WriteHeader(http.StatusOK)
+	_, data := ch.Buffer.Dump()
+	_, err := w.Write(data)
+	check(err)
 	return
 }
 
