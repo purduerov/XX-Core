@@ -1,0 +1,6 @@
+*.mp4
+settings.py
+*.pyc
+*.tmp
+../.DS_Store
+../rov/.DS_Store

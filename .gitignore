@@ -101,3 +101,8 @@ node_modules/
 
 # mypy
 .mypy_cache/
+
+# Annoying System Files
+*.DS_Store
+
+
