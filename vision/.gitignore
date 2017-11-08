@@ -1,4 +1,5 @@
 *.mp4
+*.png
 settings.py
 *.pyc
 *.tmp
