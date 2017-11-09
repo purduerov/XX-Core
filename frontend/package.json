@@ -7,7 +7,7 @@
   "scripts": {
     "start": "electron ."
   },
-  "author": "Ian Sibley",
+  "author": "Purdue ROV Software Team",
   "license": "ISC",
   "dependencies": {
     "hawk": "^6.0.2",
