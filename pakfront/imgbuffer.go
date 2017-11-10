@@ -104,7 +104,34 @@ type chanwrite struct {
 	Buffer  Imgbuffer
 	datastm chan byte
 }
-
+/*
+                   ,-'     `._ 
+                 ,'           `.        ,-. 
+               ,'               \       ),.\ 
+     ,.       /                  \     /(  \; 
+    /'\\     ,o.        ,ooooo.   \  ,'  `-') 
+    )) )`. d8P"Y8.    ,8P"""""Y8.  `'  .--"' 
+   (`-'   `Y'  `Y8    dP       `'     / 
+    `----.(   __ `    ,' ,---.       ( 
+           ),--.`.   (  ;,---.        ) 
+          / \O_,' )   \  \O_,'        | 
+         ;  `-- ,'       `---'        | 
+         |    -'         `.           | 
+        _;    ,            )          : 
+     _.'|     `.:._   ,.::" `..       | 
+  --'   |   .'     """         `      |`. 
+        |  :;      :   :     _.       |`.`.-'--. 
+        |  ' .     :   :__.,'|/       |  \ 
+        `     \--.__.-'|_|_|-/        /   ) 
+         \     \_   `--^"__,'        ,    | 
+   -hrr- ;  `    `--^---'          ,'     | 
+          \  `                    /      / 
+           \   `    _ _          / 
+            \           `       / 
+             \           '    ,' 
+              `.       ,   _,' 
+                `-.___.---' 
+*/
 func Mkchanwrite(numimg int, sizeimg int) (writer chanwrite) {
 	writer.Buffer = Mkbuffer(numimg, sizeimg)
 	writer.datastm = make(chan byte, 100)
