@@ -1,42 +1,45 @@
 from rov.controls.PID_Controller import PID
+import time
 
 class ControlAlgorithm():
 
+    def __init__(self, desired_position):
+        self.__activated = False
+        #self.__parameter = parameter
+        self.__pid = PID(0)
+        #self.__sensor = sensor
+        self.__desired_position = desired_position
+        self.__previous_time = time.time()
+        #todo: make so it only handles one variable
 
-    def __init__(self):
-        self.activated = True
-        self.controls = ['x','y','z','roll','pitch','yaw']
-        self.pids = {'x':PID(0) ,'y':PID(0), 'z':PID(0), 'roll':PID(0), 'pitch':PID(0), 'yaw':PID(0)}
+    @property
+    def activated(self):
+        return self.__activated
 
-    #Allows option to activate
-    def activate(self):
-        self.activated = True
+    @activated.setter
+    def activated(self, value):
+        self.__activated = value
 
-    #Allows option to deactivate
-    def deactivate(self):
-        self.activated = False
+    @property
+    def desired_position(self):
+        return self.__desired_position
 
-    def calculate(self, user_input, dimension_locks, activated_controls, sensor_values):
-        if self.activated:
+    @desired_position.setter
+    def desired_position(self, value):
+        self.__desired_position = value
 
-            #iterates through the same algorithm for each degree of freedom
-            for dof in self.controls:
+    #todo: make for one degree of freedom
+    def calculate(self, current_position):
+        delta_time = time.time() - self.__previous_time
+        self.__previous_time = time.time()
+        error = self.__desired_position - current_position
+        if error == 0:
+            self.__pid.reset(0)
+        output = self.__pid.calculate(error, delta_time)
 
-                #checks if allowed to alter dof value input otherwise skips
-                if activated_controls[dof]:
+        if output > 1:
+            output = 1
+        elif output < -1:
+            output = -1
 
-                    #checks if user wants to lock position
-                    if dimension_locks[dof]:
-                        #todo: implement position locking algorithm
-                        #todo: should set new value for user_input[dof]
-                        #todo: implement PID controller
-                        pass
-
-                    #allows rov to travel smoothly
-                    else:
-                        #todo: make rov movement better
-                        #todo: should set new value for user_input[dof]
-                        #todo: implement PID controller
-                        pass
-
-        return user_input
+        return output

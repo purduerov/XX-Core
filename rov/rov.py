@@ -2,7 +2,7 @@ import copy
 import os
 import traceback
 
-from controls import PID_Controller	#Tested
+from controls import *	#Tested
 
 
 from threading import Lock
