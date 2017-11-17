@@ -1,0 +1,15 @@
+Adafruit-BNO055==1.0.2
+Adafruit-GPIO==1.0.1
+Adafruit-PCA9685==1.0.1
+Adafruit-PureIO==0.2.1
+appdirs==1.4.0
+cffi==1.9.1
+packaging==16.8
+pycparser==2.17
+pyparsing==2.1.10
+pyserial==3.2.1
+RPi.GPIO==0.6.3
+six==1.10.0
+smbus-cffi==0.5.1
+spidev==3.2
+wiringpi==2.32.1
