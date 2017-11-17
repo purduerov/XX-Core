@@ -17,13 +17,11 @@ class ControlAlgorithm():
 
     def activate(self):
         self._activated = True
+        self.reset()
 
     def deactivate(self):
         self._activated = False
-
-    @property
-    def activated(self):
-        return self._activated
+        self._dof = [0,0,0,0,0,0]
 
     @property
     def desired_position(self):
@@ -35,40 +33,48 @@ class ControlAlgorithm():
 
     #todo: make for one degree of freedom
     def calculate(self):
-        delta_time = time.time() - self._previous_time
-        self._previous_time = time.time()
-        error = self._desired_position - self.get_current_position()
-        #resets integral term if there is no error
-        if error == 0:
-            self._pid.reset(0)
-        output = self._pid.calculate(error, delta_time)
+        if self._activated:
+            delta_time = time.time() - self._previous_time
+            self._previous_time = time.time()
+            error = self._desired_position - self.get_current_position()
+            #resets integral term if there is no error
+            #if error == 0:
+            #    self._pid.reset(0)
+            output = self._pid.calculate(error, delta_time)
 
-        if output > 1:
-            output = 1
-        elif output < -1:
-            output = -1
+            if output > 1:
+                output = 1
+            elif output < -1:
+                output = -1
 
-        self._dof[self._parameter] = output
-        if self.activated:
-            return self._dof
-        else:
-            return [0,0,0,0,0,0]
+            self._dof[self._parameter] = output
+        return self._dof
 
     #tuner
-    def set_p(self, value):
-        self._pid.p = value
-
-    def set_i(self, value):
-        self._pid.i = value
-
-    def set_d(self, value):
-        self._pid.d = value
-
-    def get_p(self):
+    @property
+    def p(self):
         return self._pid.p
 
-    def get_i(self):
+    @p.setter
+    def p(self, value):
+        self._pid.p = value
+
+    @property
+    def i(self):
         return self._pid.i
 
-    def get_d(self):
+    @i.setter
+    def i(self, value):
+        self._pid.i = value
+
+    @property
+    def d(self):
         return self._pid.d
+
+    @d.setter
+    def d(self, value):
+        self._pid.d = value
+
+    def reset(self):
+        self._pid.reset(self._desired_position - self.get_current_position())
+        self._previous_time = time.time()
