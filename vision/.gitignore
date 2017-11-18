@@ -5,3 +5,4 @@ settings.py
 *.tmp
 ../.DS_Store
 ../rov/.DS_Store
+.idea/
