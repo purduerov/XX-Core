@@ -1,4 +1,0 @@
-TODO LIST:
-
-1. Modify scotty to remove virtualenv requirement for pi installations to allow numpy to work from apt-get.
-2. Make git clone for mjpg-streamer stop cloning when folder already exists, but don't kill the whole scotty install.

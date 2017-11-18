@@ -26,7 +26,7 @@ def get_platform():
                     if len(line) < 2:
                         continue
 
-                    if line[0] == 'Hardware' and line[-1] in ['BCM2708', 'BCM2709']:
+                    if line[0] == 'Hardware' and line[-1] in ['BCM2708', 'BCM2709', 'BCM2835']:
                         return 'raspberry-pi'
         except:
             pass
@@ -202,9 +202,11 @@ def install(args):
 
     run_commands(install_command)
 
-    print_color("\nInstalling and activating virtual env")
-    create_venv()
-    start_venv()
+
+    if not is_ras_pi:
+        print_color("\nInstalling and activating virtual env")
+        create_venv()
+        start_venv()
 
     commands_to_run = []
 
@@ -219,23 +221,26 @@ def install(args):
 
     run_commands(commands_to_run)
 
-    if os.environ['SUDO_USER']:
+    if os.environ['SUDO_USER'] and not is_ras_pi:
         print_color("\nRunning with sudo, so chown the virtual env dir to the sudo user.")
         command = "chown -R {user}:{user} {dir}".format(user=os.environ['SUDO_USER'],
                                                         dir=get_file_path(Config.get("venv")))
         run_commands([command])
 
     if is_ras_pi or '--cam' in args:
-        install_cam = [
-            "apt-get install -y " + " ".join(Config.get("aptget-cam")),
-            "ln -sf /usr/include/linux/videodev2.h /usr/include/linux/videodev.h",
-            "git clone https://github.com/jacksonliam/mjpg-streamer.git install/mjpg-streamer",
-            "make -C %s" % get_file_path("install/mjpg-streamer/mjpg-streamer-experimental"),
-            "make install -C %s" % get_file_path("install/mjpg-streamer/mjpg-streamer-experimental"),
-            "chmod 777 /usr/local/lib/mjpg-streamer -R"
-        ]
+        if os.path.isdir(get_file_path('install/mjpg-streamer')):
+            print_color("\nmjpg-streamer folder already exists! Not installing.")
+        else:
+            install_cam = [
+                "apt-get install -y " + " ".join(Config.get("aptget-cam")),
+                "ln -sf /usr/include/linux/videodev2.h /usr/include/linux/videodev.h",
+                "git clone https://github.com/jacksonliam/mjpg-streamer.git install/mjpg-streamer",
+                "make -C %s" % get_file_path("install/mjpg-streamer/mjpg-streamer-experimental"),
+                "make install -C %s" % get_file_path("install/mjpg-streamer/mjpg-streamer-experimental"),
+                "chmod 777 /usr/local/lib/mjpg-streamer -R"
+            ]
 
-        run_commands(install_cam)
+            run_commands(install_cam)
 
     if is_ras_pi:
         i2c_enabled = os.system("i2cdetect -y 1 > /dev/null 2>&1")
@@ -257,7 +262,22 @@ def run(args):
     Uses the install virtual env as well.
     """
 
-    start_venv()
+    # if argument is passed and it's valid, set is_ras_pi if it's --pi
+    if len(args) > 0 and args[0] in ['--pi', '--dev']:
+        is_ras_pi = (args[0] == '--pi')
+
+    # Otherwise autodetect
+    else:
+        plat = get_platform()
+        if plat not in ['linux', 'raspberry-pi']:
+            print_color("\nInstalls on non linux systems are not supported yet! :(", color="red")
+            sys.exit()
+
+        is_ras_pi = (plat == 'raspberry-pi')
+
+
+    if not is_ras_pi:
+        start_venv()
 
     set_env()
 
@@ -300,8 +320,23 @@ def test(args):
     """ Run testing framework
     """
 
+    # if argument is passed and it's valid, set is_ras_pi if it's --pi
+    if len(args) > 0 and args[0] in ['--pi', '--dev']:
+        is_ras_pi = (args[0] == '--pi')
+
+    # Otherwise autodetect
+    else:
+        plat = get_platform()
+        if plat not in ['linux', 'raspberry-pi']:
+            print_color("\nInstalls on non linux systems are not supported yet! :(", color="red")
+            sys.exit()
+
+        is_ras_pi = (plat == 'raspberry-pi')
+
+
     # Use the virtual env
-    start_venv()
+    if not is_ras_pi:
+        start_venv()
 
     # hold list of failed tests
     failed = []
