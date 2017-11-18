@@ -1,5 +1,8 @@
 import cv2
 from settings import *
+import numpy as np
+import copy
+from imageProc import findScale, adjustScale
 
 #Assumes Opencv3.0 and python 3.6 through Anaconda
 
@@ -21,35 +24,44 @@ cap = cv2.VideoCapture(videoFilename)
 # create and resize named window to view stream
 cv2.namedWindow('frame', cv2.WINDOW_NORMAL)
 cv2.resizeWindow('frame', 640, 480)
+
 # load template image
+templates = []
 template = cv2.imread(templateFilename, cv2.IMREAD_COLOR)
-h, w = template.shape[0], template.shape[1]
-# stream is upside down for some reason, so I flip the template
-M = cv2.getRotationMatrix2D((w/2, h/2), 180, 1)
-# template = cv2.warpAffine(template, M, (w, h))
-# need to scale the template, shouldn't need this once we have gaussian pyramid
-template = cv2.resize(template, (int(0.3 * w), int(0.3 * h)), interpolation=cv2.INTER_CUBIC)
-h, w, _ = template.shape
+
+#Generate an array of templates of varying sizes
+for scale in np.arange(.1, 1, .1):
+    tmp = cv2.resize(template, (int(scale * template.shape[0]), int(scale * template.shape[1])),
+                     interpolation=cv2.INTER_CUBIC)
+    templates.append(copy.deepcopy(tmp))
+
+
 # set feed start time
-# cap.set(1, vidStartTime)
 frameNum = vidStartTime
-while(cap.isOpened()):
+isFrameLost = True
+currFrameIndex = 0
+
+while cap.isOpened():
     ret, frame = cap.read()
-    #Generate Gaussian Pyramid
+
+    if isFrameLost:
+      currFrameIndex = findScale(frame, templates)
+
+    topLeft, currFrameIndex = adjustScale(frame, currFrameIndex, templates)
+    bottomRight = (topLeft[0] + templates[currFrameIndex].shape[0], topLeft[1] + templates[currFrameIndex.shape[1]])
+    cv2.rectangle(frame, topLeft, bottomRight, (0,255, 0), 5, 8, 0)
+    frameNum += 1
 
 
 
+    """
     #Locate object in frame
     res = cv2.matchTemplate(frame, template, cv2.TM_CCORR_NORMED)
     cv2.normalize(res, res, 0, 1, cv2.NORM_MINMAX, -1)
     minVal, maxVal, minLoc, maxLoc = cv2.minMaxLoc(res)
     topLeft = maxLoc
     bottomRight = (topLeft[0] + w, topLeft[1] + h)
-   # print("{} {} {} {} {}".format(frameNum,topLeft[0],topLeft[1],bottomRight[0],bottomRight[1]))
-    frameNum += 1
-    cv2.rectangle(frame, topLeft, bottomRight, (0, 255, 0), 5, 8, 0)
-
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    """
 
     #Display result
     cv2.imshow('frame',frame)
