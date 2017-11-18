@@ -31,7 +31,7 @@ M = cv2.getRotationMatrix2D((w/2, h/2), 180, 1)
 template = cv2.resize(template, (int(0.3 * w), int(0.3 * h)), interpolation=cv2.INTER_CUBIC)
 h, w, _ = template.shape
 # set feed start time
-cap.set(1, vidStartTime)
+# cap.set(1, vidStartTime)
 frameNum = vidStartTime
 while(cap.isOpened()):
     ret, frame = cap.read()
