@@ -27,13 +27,18 @@ cv2.resizeWindow('frame', 640, 480)
 
 # load template image
 templates = []
+
 template = cv2.imread(templateFilename, cv2.IMREAD_COLOR)
 
 #Generate an array of templates of varying sizes
+#Generate correlation factors for each template
 for scale in np.arange(.1, 1, .1):
     tmp = cv2.resize(template, (int(scale * template.shape[0]), int(scale * template.shape[1])),
                      interpolation=cv2.INTER_CUBIC)
-    templates.append(copy.deepcopy(tmp))
+    tmp1 = tmp.copy()
+    res = cv2.matchTemplate(tmp, tmp1, cv2.TM_SQDIFF)
+    _, maxVal, _, _ = cv2.minMaxLoc(res)
+    templates.append((tmp.copy(), maxVal))
 
 
 # set feed start time
@@ -46,9 +51,12 @@ while cap.isOpened():
 
     if isFrameLost:
       currFrameIndex = findScale(frame, templates)
+      isFrameLost = False
 
+    print(currFrameIndex)
     topLeft, currFrameIndex = adjustScale(frame, currFrameIndex, templates)
-    bottomRight = (topLeft[0] + templates[currFrameIndex].shape[0], topLeft[1] + templates[currFrameIndex.shape[1]])
+    bottomRight = (topLeft[0] + templates[currFrameIndex][0].shape[0],
+                   topLeft[1] + templates[currFrameIndex][0].shape[1])
     cv2.rectangle(frame, topLeft, bottomRight, (0,255, 0), 5, 8, 0)
     frameNum += 1
 
