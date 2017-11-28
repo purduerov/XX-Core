@@ -7,10 +7,10 @@ def findScale(inputFrame, templates):
     maxMatchVal = -1
     maxIndex = 0  #Index of best match
 
-    for idx, (template, templateMaxVal) in enumerate(templates):
-        res = cv2.matchTemplate(inputFrame, template, cv2.TM_SQDIFF)
+    for idx, (template, _) in enumerate(templates):
+        res = cv2.matchTemplate(inputFrame, template, cv2.TM_CCORR_NORMED)
         minVal, maxVal, minLoc, maxLoc = cv2.minMaxLoc(res)
-        maxVal /= templateMaxVal #Compare against the maximum correlation value
+        # maxVal /= templateMaxVal #Compare against the maximum correlation value
         if maxVal > maxMatchVal:
             maxMatchVal = maxVal
             maxIndex = idx
@@ -25,9 +25,9 @@ def adjustScale(currentFrame, currIndex, templates):
     maxIndex = currIndex
     for idx in range(currIndex-1, currIndex+2):
         if 0 <= idx < len(templates):
-            res = cv2.matchTemplate(currentFrame, templates[idx][0], cv2.TM_SQDIFF)
+            res = cv2.matchTemplate(currentFrame, templates[idx][0], cv2.TM_CCORR_NORMED)
             minVal, maxVal, minLoc, maxLoc = cv2.minMaxLoc(res)
-            maxVal /= templates[idx][1] #Normalize against best match
+            # maxVal /= templates[idx][1] #Normalize against best match
             if maxVal > maxMatchVal:
                 maxMatchVal = maxVal
                 maxMatchLoc = maxLoc

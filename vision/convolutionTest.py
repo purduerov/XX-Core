@@ -1,4 +1,5 @@
 import cv2
+import time
 from settings import *
 import numpy as np
 import copy
@@ -22,7 +23,7 @@ from imageProc import findScale, adjustScale
 # Create video feed
 cap = cv2.VideoCapture(videoFilename)
 # create and resize named window to view stream
-cv2.namedWindow('frame', cv2.WINDOW_NORMAL)
+cv2.namedWindow('frame', cv2.WINDOW_AUTOSIZE)
 cv2.resizeWindow('frame', 640, 480)
 
 # load template image
@@ -32,13 +33,14 @@ template = cv2.imread(templateFilename, cv2.IMREAD_COLOR)
 
 #Generate an array of templates of varying sizes
 #Generate correlation factors for each template
-for scale in np.arange(.1, 1, .1):
-    tmp = cv2.resize(template, (int(scale * template.shape[0]), int(scale * template.shape[1])),
+for scale in np.arange(.3, 1, .1):
+    tmp = cv2.resize(template, (int(scale * template.shape[1]), int(scale * template.shape[0])),
                      interpolation=cv2.INTER_CUBIC)
-    tmp1 = tmp.copy()
-    res = cv2.matchTemplate(tmp, tmp1, cv2.TM_SQDIFF)
-    _, maxVal, _, _ = cv2.minMaxLoc(res)
-    templates.append((tmp.copy(), maxVal))
+
+    #tmp1 = tmp.copy()
+    #res = cv2.matchTemplate(tmp, tmp1, cv2.TM_CCOEFF)
+    #_, maxVal, _, _ = cv2.minMaxLoc(res)
+    templates.append((tmp.copy(), 0))
 
 
 # set feed start time
@@ -54,13 +56,15 @@ while cap.isOpened():
       isFrameLost = False
 
     print(currFrameIndex)
+
+    start = time.time()
     topLeft, currFrameIndex = adjustScale(frame, currFrameIndex, templates)
-    bottomRight = (topLeft[0] + templates[currFrameIndex][0].shape[0],
-                   topLeft[1] + templates[currFrameIndex][0].shape[1])
+    print("Elapsed: {}".format( time.time() - start))
+    bottomRight = (topLeft[0] + templates[currFrameIndex][0].shape[1],
+                   topLeft[1] + templates[currFrameIndex][0].shape[0])
+
     cv2.rectangle(frame, topLeft, bottomRight, (0,255, 0), 5, 8, 0)
     frameNum += 1
-
-
 
     """
     #Locate object in frame
