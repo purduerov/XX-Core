@@ -421,7 +421,7 @@ def main():
     isn't here, then exit
     """
 
-    availabe_commands = {
+    available_commands = {
         "install": install,
         "run": run,
         "shell": shell,
@@ -437,13 +437,13 @@ def main():
 
     command = sys.argv[1]
 
-    if command not in availabe_commands:
+    if command not in available_commands:
         print_color("'%s' is not an available command\n" % command, color="red")
         usage()
         sys.exit(1)
 
     # execute the method for the command
-    availabe_commands[command](sys.argv[2:])
+    available_commands[command](sys.argv[2:])
 
 
 if __name__ == '__main__':
