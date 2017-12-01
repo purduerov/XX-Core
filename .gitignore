@@ -26,7 +26,7 @@ wheels/
 *.egg
 
 # Extras (as we need them)
-final.*
+.build*
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
