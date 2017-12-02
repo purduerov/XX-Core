@@ -1,0 +1,8 @@
+.title {
+    height: 10vh;
+    width: 100vw;
+    background-color: #003366;
+    border: 1px solid black;
+    color: white;
+    font-family: fantasy;
+}
