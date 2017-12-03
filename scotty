@@ -209,22 +209,23 @@ def install(args):
         create_venv()
         start_venv()
 
-    commands_to_run = []
+    platform_specific_installs = []
 
-    commands_to_run.append(
+    platform_specific_installs.append(
         "pip install -r %s" % get_file_path(Config.get("requirements"))
     )
 
+    # install pi and dev specific things
     if is_ras_pi:
-        commands_to_run.append(
+        platform_specific_installs.append(
             "pip install -r %s" % get_file_path(Config.get("requirements-hw"))
         )
     else:
-        commands_to_run.append(
+        platform_specific_installs.append(
             "pip install numpy"
         )
 
-    run_commands(commands_to_run)
+    run_commands(platform_specific_installs)
 
     if os.environ['SUDO_USER'] and not is_ras_pi:
         print_color("\nRunning with sudo, so chown the virtual env dir to the sudo user.")
