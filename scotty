@@ -233,6 +233,8 @@ def install(args):
                                                         dir=get_file_path(Config.get("venv")))
         run_commands([command])
 
+
+    # install cameras
     if is_ras_pi or '--cam' in args:
         if os.path.isdir(get_file_path('install/mjpg-streamer')):
             print_color("\nmjpg-streamer folder already exists! Not installing.")
