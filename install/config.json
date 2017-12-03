@@ -5,14 +5,14 @@
         "gcc",
         "python",
         "python-dev",
-        "python-pip",
-        "python-numpy"
+        "python-pip"
     ],
     "aptget-hw": [
         "python-smbus",
         "libffi-dev",
         "i2c-tools",
-        "wiringpi"
+        "wiringpi",
+        "python-numpy"
     ],
     "aptget-cam": [
         "libjpeg8-dev",
@@ -20,6 +20,7 @@
         "libv4l-dev",
         "cmake"
     ],
+    "virtualenv": "~/.local/bin/virtualenv",
     "venv": "venv",
     "testfiles": [
         "application.py",

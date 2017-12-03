@@ -3,6 +3,7 @@
 import sys
 import os
 import platform
+import subprocess
 
 from install.config import Config
 
@@ -104,7 +105,7 @@ def create_venv():
 
     if not os.path.isdir(venv_real_dir):
         print_color("\nCreating virtual env in %s..." % Config.get("venv"))
-        run_commands(["virtualenv %s" % venv_real_dir])
+        run_commands(["%s %s" % (str(Config.get("virtualenv")), str(venv_real_dir))])
     else:
         print_color("\nVirtual env in %s already exists" % Config.get("venv"))
 
@@ -217,6 +218,10 @@ def install(args):
     if is_ras_pi:
         commands_to_run.append(
             "pip install -r %s" % get_file_path(Config.get("requirements-hw"))
+        )
+    else:
+        commands_to_run.append(
+            "pip install numpy"
         )
 
     run_commands(commands_to_run)
