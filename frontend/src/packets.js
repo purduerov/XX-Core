@@ -9,6 +9,14 @@ module.exports = {
                 0, // pitch: nose up or down
                 0 // yaw:   left or right rotation
             ],
+            frozen: [
+                false, // x:     forwards and backwards
+                false, // y:     strafe left or right
+                false, // z:     ascend / descend
+                false, // roll:  roll to the left or right
+                false, // pitch: nose up or down
+                false // yaw:   left or right rotation
+            ]
             disabled_thrusters: [],
             thruster_scales: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
         },
@@ -29,6 +37,14 @@ module.exports = {
             pitch:  0,
             roll:   0,
             yaw:    0
+        },
+        frozen: {
+            x:      false,
+            y:      false,
+            z:      false,
+            pitch:  false,
+            roll:   false,
+            yaw:    false
         },
         pressure: {
             pressure: 7,
