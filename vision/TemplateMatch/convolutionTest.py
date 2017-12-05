@@ -1,9 +1,10 @@
-import cv2
 import time
-from settings import *
+
+import cv2
 import numpy as np
-import copy
 from imageProc import findScale, adjustScale
+
+from TemplateMatch.settings import *
 
 #Assumes Opencv3.0 and python 3.6 through Anaconda
 
