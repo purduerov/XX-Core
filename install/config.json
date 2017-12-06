@@ -1,0 +1,52 @@
+{
+    "requirements": "install/requirements.txt",
+    "requirements-hw": "install/requirements-hw.txt",
+    "aptget": [
+        "gcc",
+        "python",
+        "python-dev",
+        "python-pip"
+    ],
+    "aptget-hw": [
+        "python-smbus",
+        "libffi-dev",
+        "i2c-tools",
+        "wiringpi",
+        "python-numpy"
+    ],
+    "aptget-cam": [
+        "libjpeg8-dev",
+        "imagemagick",
+        "libv4l-dev",
+        "cmake"
+    ],
+    "virtualenv": "~/.local/bin/virtualenv",
+    "venv": "venv",
+    "testfiles": [
+        "application.py",
+        "rov/*.py",
+        "rov/*/*.py",
+        "scotty",
+        "install/*.py"
+    ],
+    "pep8": {
+        "line-length": 110,
+        "ignore-errors": ["E261"]
+    },
+    "pylint": {
+        "rcfile": ".pylintrc"
+    },
+    "environment": {
+        "base": {
+            "LD_LIBRARY_PATH": "/usr/local/lib",
+            "PATH": "${CORE_DIR}/install/mjpeg_streamer",
+            "FLASK_APP": "${CORE_DIR}/application.py",
+            "FLASK_DEBUG": "0",
+            "ROV_DEBUG": "0"
+        },
+        "debug": {
+            "FLASK_DEBUG": "1",
+            "ROV_DEBUG": "1"
+        }
+    }
+}
