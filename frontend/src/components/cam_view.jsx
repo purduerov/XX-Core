@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Camera from 'react-camera';
 
+
 export default class App extends Component {
 
   constructor(props) {
