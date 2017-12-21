@@ -1,0 +1,133 @@
+html, body, * {
+    user-select: none;
+    cursor: default;
+}
+
+hr {
+    border: 1px solid #eaeaea;
+}
+
+body {
+    font-family: 'Roboto', Helvetica, Arial, sans-serif;
+}
+
+h1 {
+   font-size: 30px;
+}
+input[type=range] {
+    -webkit-appearance: none;
+    width: 100%;
+    margin: 7.25px 0;
+}
+input[type=range]:focus {
+    outline: none;
+}
+input[type=range]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 3.5px;
+    cursor: pointer;
+    box-shadow: 0px 0px 0px rgba(0, 0, 0, 0), 0px 0px 0px rgba(13, 13, 13, 0);
+    background: #c8c8c8;
+    border-radius: 0px;
+    border: 0px solid rgba(0, 0, 0, 0);
+}
+input[type=range]::-webkit-slider-thumb {
+    box-shadow: 0px 0px 0px rgba(0, 0, 0, 0), 0px 0px 0px rgba(13, 13, 13, 0);
+    border: 0px solid rgba(0, 0, 0, 0);
+    height: 18px;
+    width: 18px;
+    border-radius: 18px;
+    background: #009687;
+    cursor: pointer;
+    -webkit-appearance: none;
+    margin-top: -7.25px;
+}
+input[type=range]:focus::-webkit-slider-runnable-track {
+    background: #d5d5d5;
+}
+input[type=range]::-moz-range-track {
+    width: 100%;
+    height: 3.5px;
+    cursor: pointer;
+    box-shadow: 0px 0px 0px rgba(0, 0, 0, 0), 0px 0px 0px rgba(13, 13, 13, 0);
+    background: #c8c8c8;
+    border-radius: 0px;
+    border: 0px solid rgba(0, 0, 0, 0);
+}
+input[type=range]::-moz-range-thumb {
+    box-shadow: 0px 0px 0px rgba(0, 0, 0, 0), 0px 0px 0px rgba(13, 13, 13, 0);
+    border: 0px solid rgba(0, 0, 0, 0);
+    height: 18px;
+    width: 18px;
+    border-radius: 18px;
+    background: #009687;
+    cursor: pointer;
+}
+input[type=range]::-ms-track {
+    width: 100%;
+    height: 3.5px;
+    cursor: pointer;
+    background: transparent;
+    border-color: transparent;
+    color: transparent;
+}
+input[type=range]::-ms-fill-lower {
+    background: #bbbbbb;
+    border: 0px solid rgba(0, 0, 0, 0);
+    border-radius: 0px;
+    box-shadow: 0px 0px 0px rgba(0, 0, 0, 0), 0px 0px 0px rgba(13, 13, 13, 0);
+}
+input[type=range]::-ms-fill-upper {
+    background: #c8c8c8;
+    border: 0px solid rgba(0, 0, 0, 0);
+    border-radius: 0px;
+    box-shadow: 0px 0px 0px rgba(0, 0, 0, 0), 0px 0px 0px rgba(13, 13, 13, 0);
+}
+input[type=range]::-ms-thumb {
+    box-shadow: 0px 0px 0px rgba(0, 0, 0, 0), 0px 0px 0px rgba(13, 13, 13, 0);
+    border: 0px solid rgba(0, 0, 0, 0);
+    height: 18px;
+    width: 18px;
+    border-radius: 18px;
+    background: #009687;
+    cursor: pointer;
+    height: 3.5px;
+}
+input[type=range]:focus::-ms-fill-lower {
+    background: #c8c8c8;
+}
+input[type=range]:focus::-ms-fill-upper {
+    background: #d5d5d5;
+}
+
+button {
+    margin: 2px;
+    box-sizing: border-box;
+    outline: none;
+    border: none;
+    border-radius: 2px;
+    font-size: 14px;
+    color: white;
+    background-color: #009688;
+    min-height: 30px;
+}
+
+button:hover {
+    cursor: pointer;
+    box-shadow: inset 0 0 0 99999px rgba(0,0,0,0.1);
+}
+
+button:active {
+    cursor: pointer;
+    box-shadow: inset 0 0 0 99999px rgba(255,255,255,0.2);
+}
+
+button:disabled {
+    background-color: darkgrey;
+    color: grey;
+    cursor: default;
+}
+
+button:disabled:hover {
+    box-shadow: none;
+}
