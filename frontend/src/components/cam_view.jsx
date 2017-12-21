@@ -26,9 +26,6 @@ export default class App extends Component {
             this.camera = cam;
           }}
         >
-          <div style={style.captureContainer} onClick={this.takePicture}>
-            <div style={style.captureButton} />
-          </div>
         </Camera>
         <img
           style={style.captureImage}
@@ -51,7 +48,8 @@ const style = {
     justifyContent: 'center',
     zIndex: 1,
     bottom: 0,
-    width: '100%'
+    width: '100%',
+    border: '2px solid black'
   },
   captureButton: {
     backgroundColor: '#fff',
