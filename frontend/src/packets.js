@@ -17,7 +17,7 @@ module.exports = {
                 0, // pitch: nose up or down
                 0 // yaw:   left or right rotation
             ],
-            disabled_thrusters: [],
+            disabled_thrusters: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
             thruster_scales: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
         },
         claw: {
@@ -50,7 +50,7 @@ module.exports = {
             pressure: 7,
             temperature: 4
         },
-        thrusters: [0, 0, 0, 0, 0, 0, 0, 0],
+        thrusters: [.10, .20, .30, .40, .50, .60, .70, .80],
         cameras: {
             Cam_0: { 'port': '8080', status: "active" },
             Cam_1: { 'port': '8081', status: "inactive" },

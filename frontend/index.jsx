@@ -1,6 +1,7 @@
 import React from 'react';
 import {render} from 'react-dom';
 import styles from './index.css';
+import packet from './src/packets.js';
 import Card from './src/components/Card.jsx';
 import Cam_view from './src/components/Cam_View.jsx';
 import Titlebar from './src/components/Titlebar.jsx';
@@ -21,7 +22,7 @@ class App extends React.Component {
                   </div>
                   <div className="data-column">
                     <Card title="Thrusters">
-                      <ThrusterInfo/>
+                      <ThrusterInfo thrusters={packet.dearclient.thrusters}/>
                     </Card>
                   </div>
                   <div className="data-column">

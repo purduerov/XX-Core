@@ -3,21 +3,6 @@ import Camera from 'react-camera';
 import ThrusterCircle from './ThrusterCircle.jsx';
 import styles from "./ThrusterInfo.css";
 
-/*
-
-<ThrusterCircle className={styles.topLeft} val='5'/>
-<ThrusterCircle className={styles.topRight} val='10'/>
-<ThrusterCircle className={styles.bottomLeft} val='15'/>
-<ThrusterCircle className={styles.bottomRight} val='20'/>
-
-
-<ThrusterCircle className={styles.topLeft} val='40'/>
-<ThrusterCircle className={styles.topRight} val='60'/>
-<ThrusterCircle className={styles.bottomLeft} val='70'/>
-<ThrusterCircle className={styles.bottomRight} val='80'/>
-
-*/
-
 
 export default class ThrusterInfo extends Component {
 
@@ -30,16 +15,16 @@ export default class ThrusterInfo extends Component {
     return (
       <div className={styles.container}>
         <div className={styles.horizontal}>
-          <ThrusterCircle className={styles.topLeft} val='5'/>
-          <ThrusterCircle className={styles.topRight} val='10'/>
-          <ThrusterCircle className={styles.bottomLeft} val='15'/>
-          <ThrusterCircle className={styles.bottomRight} val='20'/>
+          <ThrusterCircle className={styles.topLeft} val={Math.round(this.props.thrusters[0]*100)}/>
+          <ThrusterCircle className={styles.topRight} val={Math.round(this.props.thrusters[1]*100)}/>
+          <ThrusterCircle className={styles.bottomLeft} val={Math.round(this.props.thrusters[2]*100)}/>
+          <ThrusterCircle className={styles.bottomRight} val={Math.round(this.props.thrusters[3]*100)}/>
         </div>
         <div className={styles.vertical}>
-          <ThrusterCircle className={styles.topLeft} val='40'/>
-          <ThrusterCircle className={styles.topRight} val='60'/>
-          <ThrusterCircle className={styles.bottomLeft} val='70'/>
-          <ThrusterCircle className={styles.bottomRight} val='80'/>
+          <ThrusterCircle className={styles.topLeft} val={Math.round(this.props.thrusters[4]*100)}/>
+          <ThrusterCircle className={styles.topRight} val={Math.round(this.props.thrusters[5]*100)}/>
+          <ThrusterCircle className={styles.bottomLeft} val={Math.round(this.props.thrusters[6]*100)}/>
+          <ThrusterCircle className={styles.bottomRight} val={Math.round(this.props.thrusters[7]*100)}/>
         </div>
       </div>
     );
