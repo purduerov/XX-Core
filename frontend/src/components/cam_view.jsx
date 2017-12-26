@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import Camera from 'react-camera';
+import styles from './Cam_View.css'
 
 
-export default class App extends Component {
+export default class Camera_view extends Component {
 
   constructor(props) {
     super(props);
@@ -19,16 +20,16 @@ export default class App extends Component {
 
   render() {
     return (
-      <div style={style.container}>
+      <div className={styles.container}>
         <Camera
-          style={style.preview}
+          className={styles.preview}
           ref={(cam) => {
             this.camera = cam;
           }}
         >
         </Camera>
         <img
-          style={style.captureImage}
+          className={styles.captureImage}
           ref={(img) => {
             this.img = img;
           }}
@@ -37,29 +38,3 @@ export default class App extends Component {
     );
   }
 }
-
-const style = {
-  preview: {
-    position: 'relative',
-  },
-  captureContainer: {
-    display: 'flex',
-    position: 'absolute',
-    justifyContent: 'center',
-    zIndex: 1,
-    bottom: 0,
-    width: '100%',
-    border: '2px solid black'
-  },
-  captureButton: {
-    backgroundColor: '#fff',
-    borderRadius: '50%',
-    height: 56,
-    width: 56,
-    color: '#000',
-    margin: 20
-  },
-  captureImage: {
-    width: '100%',
-  }
-};
