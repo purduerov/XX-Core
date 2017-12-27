@@ -14,12 +14,16 @@ let socket = io.connect(socketHost, {transports: ['websocket']});
 let {shell, app, ipcRenderer} = window.require('electron');
 
 let flaskcpy;
+let invcpy;
 
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = require("./src/packets.js"); //= $.extend(true, {}, packets);
     flaskcpy = this.state.dearflask;
+
+    this.state.inv = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0];
+    invcpy = this.state.inv;
 
     //this.changeFlask = this.changeFlask.bind(this);   //bind App's `this` to changeFlask()
   }
@@ -36,14 +40,16 @@ class App extends React.Component {
               <div className="data-width full-height">
                   <div className="data-column">
                     <Card>
-                      <ThrusterInfo thrusters={this.state.dearclient.thrusters}/>
+                      <ThrusterInfo thrusters={this.state.dearclient.thrusters}
+                        disabled={this.state.dearflask.thrusters.disabled_thrusters}
+                        rend={this.changeDisabled} />
                     </Card>
                   </div>
                   <div className="data-column">
                     <Card title="Thruster Control">
                       <ThrusterScales rend={this.changeThrustScales} 
                         scales={this.state.dearflask.thrusters.thruster_scales}
-                        onoff={this.state.dearflask.thrusters.disabled_thrusters} />
+                        inv={this.state.inv} />
                     </Card>
                   </div>
                   <div className="data-column">
@@ -54,10 +60,22 @@ class App extends React.Component {
     );
   }
 
-  changeThrustScales(val, dis) {
+  changeDisabled(dis) {
+    flaskcpy.thrusters.disabled_thrusters = dis;
     let all = this.state;
-    flaskcpy.thruster_scales = val;
-    flaskcpy.disabled_thrusters = dis;
+    /*
+    flaskcpy.thrusters.disabled_thrusters.forEach(function(key, i) {
+      if(key == 1) {
+        all.dearclient.thrusters[i] = 0;
+      }
+    });
+    */
+      
+  }
+
+  changeThrustScales(val, inv) {
+    flaskcpy.thrusters.thruster_scales = val;
+    invcpy = inv;
   }
 
   changeFlask(desired) {
@@ -70,7 +88,11 @@ class App extends React.Component {
     setInterval(function() {
       let all = that.state;                     //Edit copy, then update the state (one rerender initiated)
       all.dearclient.thrusters.forEach(function(key, i, arr) {    //for testing
-        arr[i] = Math.random();
+        if(all.dearflask.thrusters.disabled_thrusters[i] === 0) {
+          arr[i] = Math.random();
+        } else {
+          arr[i] = 0;
+        }
       });
 
       that.setState(                            //Initiates rendering process
@@ -96,6 +118,7 @@ class App extends React.Component {
     setInterval(() => {             //Sends a message down to the server with updated surface info
       let all = that.state;         //Edit copy, then update the state (one rerender initiated)
       all.dearflask = flaskcpy;
+      all.inv = invcpy;
 
       that.setState(                //Let this interrupt change the state, fast enough
         all                         //Linearizes changes that should go unseen as well

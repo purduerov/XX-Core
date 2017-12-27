@@ -931,3 +931,16 @@ button:disabled:hover {
 .c100.thruster-red>span {
     color: red;
 }
+
+.c100.thruster-grey .bar,
+.c100.thruster-grey .fill {
+    border-color: grey !important;
+}
+
+.c100.thruster-grey>span {
+    color: grey;
+}
+
+.select {
+    cursor: pointer;
+}
