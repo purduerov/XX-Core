@@ -31,10 +31,20 @@ class ControlAlgorithm():
         #possibly implement imu and pressure sensor
 
     def current_position(self):
-        if self._dof > 2:
-            return self._imu.data['euler'][self._parameter]
-        elif self._dof == 1:
-            return self._pressure.data['pressure']
+        try:
+            if self._dof > 2:
+                return self._imu.data['euler'][self._parameter]
+        except:
+            print("ERROR: IMU SENSOR DATA")
+            return self._desired_position
+
+        try:
+            if self._dof == 1:
+                return self._pressure.data['pressure']
+        except:
+            print("ERROR: PRESSURE SENSOR DATA")
+            return self.desired_position
+
 
     def calculate_error(self, current_position):
         error = self._desired_position - current_position
