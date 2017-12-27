@@ -10,13 +10,25 @@ export default class Card extends Component {
     
   }
 
+  makeTitle(here) {
+      if(here === true) {
+          return (
+              <div>
+                <h1 className={styles.title}>{this.props.title}</h1>
+                <hr className={styles.squashed}/>
+              </div>  
+          )
+      } else {
+          return null;
+      }
+  }
+
   render() {
       return (
         <div className={styles.container}>
             <div className={styles.card}>
-                <div className={styles.mainContainer}>
-                    <h1 className={styles.title}>{this.props.title}</h1>
-                    <hr className={styles.squashed}/>
+                <div className={this.props.title!=undefined?styles.mainContainerBot:styles.mainContainerAll}>
+                    {this.makeTitle(this.props.title != undefined)}
                     <div className={styles.inner}>
                         {this.props.children}
                     </div>
