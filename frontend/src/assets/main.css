@@ -944,3 +944,7 @@ button:disabled:hover {
 .select {
     cursor: pointer;
 }
+
+.hugtop {
+    margin-top: 0 !important;
+}

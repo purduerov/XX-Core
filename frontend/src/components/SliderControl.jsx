@@ -39,7 +39,7 @@ export default class SliderControl extends Component {
                     <label>Invert</label>
                 </span>}
             </div>
-            <input type="range" min={this.props.min} max={this.props.max} value={this.state.val} onChange={this.onChangeVal} />
+            <input className="hugtop" type="range" min={this.props.min} max={this.props.max} value={this.state.val} onChange={this.onChangeVal} />
         </div>
         );
     }
