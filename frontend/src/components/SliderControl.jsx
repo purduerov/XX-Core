@@ -32,14 +32,14 @@ export default class SliderControl extends Component {
     render() {
         return (
         <div className={styles.container}> 
-            <div>
-                <span>{this.props.name}:</span>
-                <span>{this.state.val}%</span>
+            <div className={styles.killPad}>
+                <p className={styles.fill}>{this.props.name}:</p>
+                <p className={styles.left}>{this.state.val}%</p>
                 {this.state.inv != undefined &&
-                <span className={styles.right}>
+                <p className={styles.right}>
                     <input type="checkbox" defaultChecked={this.state.inv===-1} onClick={this.onChangeCheck} />
                     <label>Invert</label>
-                </span>}
+                </p>}
             </div>
             <input className="hugtop" type="range" min={this.props.min} max={this.props.max} value={this.state.val} onChange={this.onChangeVal} />
         </div>
