@@ -19,8 +19,9 @@ export default class ThrusterInfo extends Component {
     discpy[indx] = val;
     this.setState({
       disabled: discpy
+    }, function() {
+      this.props.rend(this.state.disabled);
     });
-    this.props.rend(this.state.disabled);
   }
 
   render() {

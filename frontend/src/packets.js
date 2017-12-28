@@ -50,7 +50,7 @@ module.exports = {
             pressure: 7,
             temperature: 4
         },
-        thrusters: [.10, .20, .30, .40, .50, .60, .70, .80],
+        thrusters: [.0, .0, .0, .0, .0, .0, .0, .0],
         cameras: {
             Cam_0: { 'port': '8080', status: "active" },
             Cam_1: { 'port': '8081', status: "inactive" },

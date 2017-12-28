@@ -14,18 +14,55 @@ let socket = io.connect(socketHost, {transports: ['websocket']});
 let {shell, app, ipcRenderer} = window.require('electron');
 
 let flaskcpy;
-let invcpy;
+let confcpy;
 
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = require("./src/packets.js"); //= $.extend(true, {}, packets);
+
+    this.state.config = {
+            version: 1.1, //INCREMENT IF YOU CHANGE THIS DATA STRUCTURE!
+            thrust_scales: {
+                master: 50, velX: 60, velY: 50,
+                velZ: 60, pitch: 35,
+                roll: 35, yaw: 25,
+            },
+            thrust_invert: {
+                master: false, velX: false, velY: false,
+                velZ: false, pitch: false,
+                roll: false, yaw: false,
+            },
+            thruster_control: [   //invert is -1/1 for easy multiplication
+                {power: 100, invert: 1}, {power: 100, invert: 1},
+                {power: 100, invert: 1}, {power: 100, invert: 1},
+                {power: 100, invert: 1}, {power: 100, invert: 1},
+                {power: 100, invert: 1}, {power: 100, invert: 1}
+            ],
+            tool_scales: {
+                claw: {
+                    master: 50,
+                    open: 50,
+                    close: 50,
+                    invert: 1
+                },
+                valve_turner: {
+                    power: 30,
+                    invert: 1
+                },
+                fountain_tool: {
+                    power: 30,
+                    invert: 1
+                }
+            }
+        }
+
+        
     flaskcpy = this.state.dearflask;
+    confcpy = this.state.config;
 
-    this.state.inv = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0];
-    invcpy = this.state.inv;
-
-    //this.changeFlask = this.changeFlask.bind(this);   //bind App's `this` to changeFlask()
+    this.changeDisabled = this.changeDisabled.bind(this);
+    this.changeThrustScales = this.changeThrustScales.bind(this);
   }
 
   render () {
@@ -48,8 +85,8 @@ class App extends React.Component {
                   <div className="data-column">
                     <Card title="Thruster Control">
                       <ThrusterScales rend={this.changeThrustScales} 
-                        scales={this.state.dearflask.thrusters.thruster_scales}
-                        inv={this.state.inv} />
+                        scales={this.state.config.thruster_control}
+                      />
                     </Card>
                   </div>
                   <div className="data-column">
@@ -62,25 +99,26 @@ class App extends React.Component {
 
   changeDisabled(dis) {
     flaskcpy.thrusters.disabled_thrusters = dis;
-    let all = this.state;
     /*
+    let all = this.state;
     flaskcpy.thrusters.disabled_thrusters.forEach(function(key, i) {
       if(key == 1) {
         all.dearclient.thrusters[i] = 0;
       }
     });
     */
-      
+    this.setState({
+      dearflask: flaskcpy
+    });
   }
 
-  changeThrustScales(val, inv) {
-    flaskcpy.thrusters.thruster_scales = val;
-    invcpy = inv;
-  }
+  changeThrustScales(scales) {
+    confcpy.thruster_control = scales;
 
-  changeFlask(desired) {
-    flaskcpy = desired;     //If component changes this, rerender is unnecessary
-  }                          //could possibly take out rerendering & just send flaskcpy...
+    this.setState({
+      config: confcpy
+    });
+  }
 
   componentDidMount() {
     var that = this;
@@ -102,10 +140,8 @@ class App extends React.Component {
 
     // upon new data, save it locally
     socket.on("dearclient", function(data) {    //Updates the data sent back from the server
-        let all = that.state;                   //Edit copy, then update the state (one rerender initiated)
-        all.dearclient = data;
         that.setState(
-          all
+          dearclient: data
         );
     });
 
@@ -116,6 +152,7 @@ class App extends React.Component {
 
     // send new data
     setInterval(() => {             //Sends a message down to the server with updated surface info
+    /*
       let all = that.state;         //Edit copy, then update the state (one rerender initiated)
       all.dearflask = flaskcpy;
       all.inv = invcpy;
@@ -123,7 +160,7 @@ class App extends React.Component {
       that.setState(                //Let this interrupt change the state, fast enough
         all                         //Linearizes changes that should go unseen as well
       );
-
+    */
       socket.emit("dearflask", that.state.dearflask);
     }, 50);
   }

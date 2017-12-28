@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Camera from 'react-camera';
 import SliderControl from './SliderControl.jsx';
-//import styles from "./ThrusterScales.css";
+import styles from "./ThrusterScales.css";
 
 let that;
 
@@ -13,35 +13,52 @@ export default class ThrusterScales extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {'scales': null, 'inv': null};
-        this.state.scales = props.scales;
-        this.state.inv = props.inv;
-        console.log(this.props);
-        this.rendScales = this.rendScales.bind(this);
+        this.state = {'scales': props.scales};
+        
+        this.rendLeftScales = this.rendLeftScales.bind(this);
+        this.rendRightScales = this.rendRightScales.bind(this);
 
         that = this;
     }
 
     rendData(val, inv, i) {
-        this.state.scales[i] = val;
-        this.state.inv[i] = inv;
-
-        this.props.rend(this.state.scales, this.state.inv);
+        //console.log(this.state.scales[i]);
+        //console.log(this.state.scales[i].power);
+        let scalescpy = this.state.scales;
+        scalescpy[i].power = val;
+        scalescpy[i].invert = inv;
+        this.setState({
+            scales: scalescpy
+        }, function() {
+            this.props.rend(this.state.scales);
+        });
     }
 
-    rendScales() {
-        return that.state.scales.map(function(scale, index) {
-                    console.log(index);
+    rendLeftScales() {
+        return [0, 1, 2, 3].map(function(val, index) {
                     return (
-                        <SliderControl min='0' max='100' key={'thrust'+index} indx={index} val={scale} inv={that.state.inv[index]} rend={that.rendData.bind(that)} name={"Thruster "+(index+1)} />
+                        <SliderControl min='0' max='100' key={'thrust'+val} indx={val} val={that.state.scales[val]} rend={that.rendData.bind(that)} name={"Thruster "+(val+1)} />
+                    );
+                });
+    }
+
+    rendRightScales() {
+        return [4, 5, 6, 7].map(function(val, index) {
+                    return (
+                        <SliderControl min='0' max='100' key={'thrust'+val} indx={val} val={that.state.scales[val]} rend={that.rendData.bind(that)} name={"Thruster "+(val+1)} />
                     );
                 });
     }
 
     render() {
         return (
-            <div>
-                {this.rendScales()}
+            <div className={styles.container}>
+                <div className={styles.halfLeft}>
+                    {this.rendLeftScales()}
+                </div>
+                <div className={styles.halfRight}>
+                    {this.rendRightScales()}
+                </div>
             </div>
         );
     }
