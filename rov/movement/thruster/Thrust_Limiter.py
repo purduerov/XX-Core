@@ -1,57 +1,25 @@
 class ThrustLimiter(object):
 
     def __init__(self):
-        self.speed = [0 for _ in range(8)]
-        self.MAX_RAMP = 0.5
-        self.DEFAULT_RAMP_VAL = 0.01
+        self.speed = [0 for _ in range(6)]
 
-        # self.ramp_by = [0 for _ in range(8)]
-        # self.desired_speed = [0 for _ in range(8)]
+    def ramp(self, curr_thrust_values, desired_thrust_values, power_cap):
 
-    # assuming 0 < inc_ramp_by <= 1
-    def ramp(self, thrusters, ramp_scale):
+        sum_difference = 0
 
-        ramp_by = self.MAX_RAMP * ramp_scale
+        # for loop-- input difference between desired and curr thrust values
+        for i in range(6):
+            self.speed[i] = abs(desired_thrust_values[i] - curr_thrust_values[i])
+            sum_difference += self.speed[i]
 
-        # for loop-- input curr speed into self.speed
+        # if the power required exceeds available power
+        if sum_difference > power_cap:
 
-        if ramp_by == 0:
-            ramp_by = self.DEFAULT_RAMP_VAL      # default ramping value
+            # scale the values by certain percentage so it's under the power cap
+            power_scale = power_cap / sum_difference
 
-        # enumerate range and value together
-        for i, value in enumerate(thrusters):
+            for i in range(6):
+                self.speed[i] = self.speed[i] * power_scale
 
-            # if the desired speed and current speed's difference is more than 0.01
-            if abs(self.speed[i] - value) > ramp_by:
-
-                # when desired speed > 0
-                if self.speed[i] - value < 0:
-                    self.speed[i] += ramp_by
-
-                # when desired speed < 0
-                elif self.speed[i] - value > 0:
-                    self.speed[i] -= ramp_by
-
-            # if the difference is <0.01, input the incoming speed directly to the thruster
-            else:
-                self.speed[i] = value
-
-            # update the current speed
-            # ThrustLimiter.speed_before[i] = ThrustLimiter.speed_updated[i]
-
-        # return the new speed
-        return self.speed       # passes by reference
-
-
-        """
-        percentage = 0.1    # percentage incremented by
-
-        if thruster != self.desired_speed:
-            self.desired_speed = thruster
-            for i, value in enumerate(self.desired_speed):
-                self.ramp_by[i] = (value - self.speed[i]) * percentage
-
-        if self.speed != self.desired_speed:
-            for i, r_by in enumerate(self.ramp_by):
-                self.speed[i] = round((self.speed[i] + r_by), 2)
-        """
+        # return the new speed by reference
+        return self.speed
