@@ -41,36 +41,36 @@ class Master_Control_Handler():
                     self.yawfreeze.activate(desired_thrust_in[i])
             else if (prev_activate[i] == True and frozen_in[i] == False): #check if it was previously not frozen and currently is
                 if (i==0):
-                    self.xfreeze.deactivate
+                    self.xfreeze.deactivate()
                 if (i==1):
-                    self.yfreeze.deactivate
+                    self.yfreeze.deactivate()
                 if (i==2):
-                    self.zfreeze.deactivate
+                    self.zfreeze.deactivate()
                 if (i==3):
-                    self.rollfreeze.deactivate
+                    self.rollfreeze.deactivate()
                 if (i==4):
-                    self.pitchfreeze.deactivate
+                    self.pitchfreeze.deactivate()
                 if (i==5):
-                    self.yawfreeze.deactivate
+                    self.yawfreeze.deactivate()
             i+=1
  
         i = 0
         while (i < 6):
             if (frozen_in[i] == True): #if the dof is frozen - calculate the adjustment
                 if (i==0):
-                    self.dof_control[0] = self.xfreeze.calculate('x')
+                    self.dof_control[0] = self.xfreeze.calculate(self.dof_names[i])[i]
                 if (i==1):
-                    self.dof_control[1] = self.yfreeze.calculate('y')
+                    self.dof_control[1] = self.yfreeze.calculate(self.dof_names[i])[i]
                 if (i==2):
-                    self.dof_control[2] = self.zfreeze.calculate('z')
+                    self.dof_control[2] = self.zfreeze.calculate(self.dof_names[i])[i]
                 if (i==3):
-                    self.dof_control[3] = self.rollfreeze.calculate('roll')
+                    self.dof_control[3] = self.rollfreeze.calculate(self.dof_names[i])[i]
                 if (i==4):
-                    self.dof_control[4] = self.pitchfreeze.calculate('pitch')
+                    self.dof_control[4] = self.pitchfreeze.calculate(self.dof_names[i])[i]
                 if (i==5):
-                    self.dof_control[5] = self.yawfreeze.calculate('yaw')
+                    self.dof_control[5] = self.yawfreeze.calculate(self.dof_names[i])[i]
             i += 1
             
             
-        prev_activate = frozen_in
-        return dof_control #returns the updated values
+        self.prev_activate = frozen_in
+        return self.dof_control #returns the updated values
