@@ -26,7 +26,7 @@ class Master_Control_Handler():
         #if prev_activate[i] = 1 and current is 0 then we gotta deactivate it
         i = 0
         while(i < 6):
-            if(prev_activate[i] == False && frozen_in[i] == True):
+            if(prev_activate[i] == False and frozen_in[i] == True):
                 if (i==0):
                     self.xfreeze.activate(desired_thrust_in[i])
                 if (i==1):
@@ -39,7 +39,7 @@ class Master_Control_Handler():
                     self.pitchfreeze.activate(desired_thrust_in[i])
                 if (i==5):
                     self.yawfreeze.activate(desired_thrust_in[i])
-            else if (prev_activate[i] == True && frozen_in[i] == False):
+            else if (prev_activate[i] == True and frozen_in[i] == False):
                 if (i==0):
                     self.xfreeze.deactivate
                 if (i==1):
