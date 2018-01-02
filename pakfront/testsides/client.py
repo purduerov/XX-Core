@@ -1,8 +1,19 @@
-from socketIO_client import SocketIO, LoggingNamespace
+from socketIO_client import SocketIO, BaseNamespace
+from time import sleep
+import logging
+
+logging.getLogger('socketIO-client').setLevel(logging.DEBUG)
+logging.basicConfig()
+
+class Namespace(BaseNamespace):
+    def on_connect(self):
+        print("connected to server")
+
+    def on_disconnect(self):
+        print("disconnected from server")
 
 class ROVControl(object):
-	def __init__(self,IP = 'localhost',port = 5000):
-		self.socket = SocketIO(IP, port, LoggingNamespace)
+	def __init__(self,IP = '127.0.0.1',port = 5001):
 		self.datadown = {
 	    "thrusters": {
 	        "desired_thrust": [2, 2, 2, 2, 2, 2],
@@ -28,23 +39,24 @@ class ROVControl(object):
 	    ]
 		}
 		self.dataup = {}
+		self.socket = SocketIO(IP, port)
 		self.socket.on("dearclient",self.dearclient)
 
 	def dearclient(self,*args):
-		self.dataup = args[0]
+		self.dataup = args
 
 	def comm(self):
-		self.socket.emit('dearflask',self.datadown)
 		self.socket.emit('dearclient')
-		self.socket.wait(seconds=1)
+		self.socket.emit('dearflask')
 
 
 if __name__ == "__main__":
 	con = ROVControl()
 	i = 0
-	print(con.datadown.keys())
 	while True:
-		con.comm()
-		print(con.dataup)
-		con.datadown = i
+		con.socket.emit('dearclient')
+		if i % 5 == 0:
+			con.socket.emit('dearflask')
 		i+=1
+		sleep(0.01)
+	print(con.dataup)

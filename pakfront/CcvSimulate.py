@@ -8,14 +8,14 @@ import time
 signal(SIGPIPE, SIG_DFL)
 
 
-def get_image():
-    imreq = subprocess.check_output(["./tcptostdin"])
+def get_image(port,camnum):
+    imreq = subprocess.check_output(["./tcptostdin",str(port),str(camnum)])
     raw = io.BytesIO(imreq)
     data = np.fromstring(raw.getvalue(), dtype=np.uint8)
     return cv2.imdecode(data, 1)
 
 
-def getframe():
+def getframe(port,camnum):
     pool = Pool(processes=1)
     p = pool.apply_async(get_image)
     pool.close()
@@ -45,7 +45,8 @@ def writeimage(name,data):
 
 if __name__ == "__main__":
     while True:
-        curimage = getframe()
+        curimage = get_image(1917, 0)
         time.sleep(0.001)
+        grayimg = cv2.cvtColor(curimage, cv2.COLOR_BGR2GRAY)
         # CV stuff goes here
-        pushframe(curimage.get())
+        pushframe(grayimg)

@@ -62,11 +62,13 @@ def on_disconnect():
 
 @socketio.on('dearflask')
 def dearflask(indata):
+    print("GOT DEARFLASK")
     with lock:
         data['dearflask'] = indata
 
 @socketio.on('dearclient')
-def dearclient():
+def dearclient(downdata):
+    print("GOT DEARClient")
     with lock:
         socketio.emit("dearclient", data['dearclient'], json=True)
 

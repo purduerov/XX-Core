@@ -4,16 +4,19 @@ package main
 
 import (
 	"bufio"
-	"fmt"
+	"encoding/binary"
+	"github.com/graarh/golang-socketio"
+	"github.com/graarh/golang-socketio/transport"
 	"io/ioutil"
 	"net"
 	"net/http"
-	"rovproxy/imbuff"
-	"strconv"
-	"time"
-	"encoding/binary"
+	"fmt"
+	"log"
 )
 
+type Channel struct {
+	Channel string `json:"channel"`
+}
 func check(e error) {
 	if e != nil {
 		panic("OUR ERROR FUNCTION")
@@ -61,12 +64,12 @@ func tcprec(port string, size int) (r int, b []byte) {
 	sizein := binary.BigEndian.Uint64(buf[0:8])
 	tread := read
 
-	for tread < int(sizein) + 8 {
+	for tread < int(sizein)+8 {
 		read, err := bufio.NewReader(conn).Read(buf[tread:])
 		check(err)
 		tread += read
 	}
-	return tread-8, buf[8:]
+	return tread - 8, buf[8:]
 }
 
 //mjpegstreamprobe is a util function used to log what mjpegstreamer looks with no modification
@@ -81,41 +84,23 @@ func mjpegstreamprobe() {
 		data[i] = d
 		check(err)
 	}
-	err = ioutil.WriteFile("bytes", data, 0644)
+	tooldir := "~/foo/bar" //os.Getenv("TOOLS")
+	fmt.Println(tooldir)
+	err = ioutil.WriteFile(tooldir + "/bytes", data, 0644)
 	check(err)
 }
 
 //main: where the magic:the gathering happens
 func main() {
-	// fmt.Println is a very complicated function, and its depth and complexity can not be understated. Moreover, the context in which it is called multiplies its importance factorially, further growing its need. I recommend you sit down, get a big cup of warm, heavily caffinated, tea, and consider both the implication of this function, as well as what it means to you as not only a coder, but a person and a woman.
-	fmt.Println("Starting")
-	numimg := 200
-	sizeimg := 150000
-	var read int
-	var msg []byte
-
-	//Channel is made with a certain buffer size
-	chanwrite1 := imbuff.Mkchanwrite(numimg, sizeimg)
-	//launch the server on a goroutine
-	//go http.ListenAndServe(":1945", http.HandlerFunc(chanwrite1.Streamwrite))
-	go http.ListenAndServe(":1945", http.HandlerFunc(chanwrite1.Streamwrite))
-
-	//constantly wait for data to come in from the port 1918, and load it when it comes in
-	go func() {
-		for {
-			read, msg = tcprec(":1918", sizeimg)
-			chanwrite1.Buffer.Load(msg[:read], read)
-			wait := time.NewTimer(time.Nanosecond * 100)
-			<-wait.C
-		}
-	}()
-	//arbitrary wait times amiright
-	wait := time.NewTimer(time.Minute)
-	<-wait.C
-	for i := 0; i < numimg; i++ {
-		_, data := chanwrite1.Buffer.Dump()
-		filename := "/home/zhukov/Projects/rov/test/goimage" + strconv.Itoa(i) + ".jpg"
-		err := ioutil.WriteFile(filename, data, 0644)
-		check(err)
-	}
+	server := gosocketio.NewServer(transport.GetDefaultWebsocketTransport())
+	server.On(gosocketio.OnConnection, func(c *gosocketio.Channel){
+		log.Println("Conected")
+	})
+	server.On(gosocketio.OnDisconnection, func(c *gosocketio.Channel){
+		log.Println("Disconnected")
+	})
+	serveMux := http.NewServeMux()
+	serveMux.Handle("/socket.io/",server)
+	log.Println("Starting...")
+	log.Panic(http.ListenAndServe(":5000",serveMux))
 }
