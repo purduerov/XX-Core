@@ -109,3 +109,9 @@ def run(lock, data):
         except Exception as e:
             print "Exception: %s" % e
             print traceback.format_exc()
+
+"""This main loop will only run if ./scotty run --rov is called.
+    This main loop will be used to run the ROV without having to
+    run the flask server."""
+if __name__ == "__main__":
+    print "hi"
