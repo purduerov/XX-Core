@@ -1,5 +1,5 @@
 import pytest
-from rov.movement.thruster.Thrust_Limiter import *
+from rov.movement.thruster.Force_Limiter import *
 
 """
 def test_thrust_limiter():  // for testing assert

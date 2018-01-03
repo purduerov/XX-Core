@@ -1,4 +1,4 @@
-class ThrustLimiter(object):
+class ForceLimiter(object):
 
     def __init__(self):
         self.speed = [0 for _ in range(6)]
