@@ -24,11 +24,11 @@ class ForceLimiter(object):
     def acceptable_total_power(self):
         # tests the total power consumed
 
-        power_thresh = 1000
+        POWER_THRESH = 1000
 
         totalPower = sum(thruster_power(self.an8vector))
 
-        if totalPower < power_thresh:
+        if totalPower < POWER_THRESH:
             return 1
         else:
             return 0.5
@@ -39,28 +39,28 @@ class ForceLimiter(object):
         # "Limiting"
         # should return 1 if everything is acceptable, otherwise a value \in (0,1) which will be multiplied to the 6vector
 
-        ind_thresh = 300
+        IND_THRESH = 300
 
         maxComp = max(self.an8vector)
 
-        if maxComp < ind_thresh:
+        if maxComp < IND_THRESH:
             return 1
         else:
-            return floor(ind_thresh / maxComp * 10) / 10
+            return floor(IND_THRESH / maxComp * 10) / 10
 
     # TODO: edit total_change_thresh
     def acceptable_total_change(self, change):
         # tests whether the total "instantaneous" change in power consumed summed among all thrusters is within a threshold
         # should return 1 if everything is acceptable, otherwise a value \in (0,1) which will be multiplied to the 6vector
 
-        total_change_thresh = 1000
+        TOTAL_CHANGE_THRESH = 1000
 
         sumChange = sum(change)
 
-        if sumChange < total_change_thresh:
+        if sumChange < TOTAL_CHANGE_THRESH:
             return 1
         else:
-            return floor(total_change_thresh / sumChange * 10) / 10
+            return floor(TOTAL_CHANGE_THRESH / sumChange * 10) / 10
 
     # TODO: edit ind_change_thresh
     def acceptable_individual_change(self, change):
@@ -68,15 +68,15 @@ class ForceLimiter(object):
         # "Ramping"
         # should return 1 if everything is acceptable, otherwise a value \in (0,1) which will be multiplied to the 6vector
 
-        ind_change_thresh = 1000
+        IND_CHANGE_THRESH = 1000
 
         # get greatest absolute value
         max_change = abs(max(min(change), max(change), key=abs))
 
-        if max_change < ind_change_thresh:
+        if max_change < IND_CHANGE_THRESH:
             return 1
         else:
-            return floor(ind_change_thresh / max_change * 10) / 10
+            return floor(IND_CHANGE_THRESH / max_change * 10) / 10
 
     def enforce(self):
         self.calc8vector()
