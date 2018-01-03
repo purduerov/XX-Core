@@ -84,21 +84,21 @@ class ForceLimiter(object):
         # change = an8vector - last8vector
         change = map(operator.sub, self.an8vector, self.last8vector)
 
+        total_power = self.acceptable_total_power()
+        if total_power != 1:
+            self.a6vector = total_power * self.a6vector
+
         ind_total_scale = self.acceptable_individual_total()
         if ind_total_scale != 1:
             self.a6vector = ind_total_scale * self.a6vector
-
-        ind_change_scale = self.acceptable_individual_change(change)
-        if ind_change_scale != 1:
-            self.a6vector = ind_change_scale * self.a6vector
 
         total_change = self.acceptable_total_change(change)
         if total_change != 1:
             self.a6vector = total_change * self.a6vector
 
-        total_power = self.acceptable_total_power()
-        if total_power != 1:
-            self.a6vector = total_power * self.a6vector
+        ind_change_scale = self.acceptable_individual_change(change)
+        if ind_change_scale != 1:
+            self.a6vector = ind_change_scale * self.a6vector
 
         # update last8vector and an8vector
         self.last8vector = self.an8vector
