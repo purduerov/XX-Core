@@ -1,0 +1,3 @@
+[
+  {"claw": {"power": 0.0}, "cameras": [{"status": 1, "port": 8080}, {"status": 0, "port": 8081}, {"status": 1, "port": 8082}, {"status": 0, "port": 8083}, {"status": 1, "port": 8084}, {"status": 1, "port": 8085}], "fountain_tool": {"power": 0.0}, "valve_turner": {"power": 0.0}, "thrusters": {"thruster_scales": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0], "desired_thrust": [0, 0, 0, 0, 0, 0], "disabled_thrusters": []}}
+]

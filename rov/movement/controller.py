@@ -16,16 +16,18 @@ class controller(object):
 
         self.__thruster_values = {}
 
-    def update(self, user_input):
+    def update(self, user_thruster_input):
 
         # TODO: Add master Control Handler
 
         # Thrust Mapper
-        thruster_values = self.thrust_mapper.calculate(user_input)
+        thruster_values = self.thrust_mapper.calculate(user_thruster_input["desired_thrust"])
 
         # TODO: Add thrust limiter
 
         self.thrusters.set(thruster_values)
+
+        return self.thrusters.get()
 
     def stop_thrusters(self):
         self.thrusters.stop()

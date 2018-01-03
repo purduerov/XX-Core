@@ -1,0 +1,322 @@
+[
+   {
+      "claw": {
+         "power": 0.0
+      }, 
+      "cameras": [
+         {
+            "status": 1, 
+            "port": 8080
+         }
+      ], 
+      "thrusters": {
+         "thruster_scales": [
+            1.0, 
+            1.0, 
+            1.0, 
+            1.0, 
+            1.0, 
+            1.0, 
+            1.0, 
+            1.0
+         ], 
+         "desired_thrust": [
+            0.0, 
+            0.0, 
+            0.0, 
+            0.0, 
+            0.0, 
+            0.0
+         ], 
+         "disabled_thrusters": []
+      }
+   }, 
+   {
+      "claw": {
+         "power": 0.0
+      }, 
+      "cameras": [
+         {
+            "status": 1, 
+            "port": 8080
+         }
+      ], 
+      "thrusters": {
+         "thruster_scales": [
+            1.0, 
+            1.0, 
+            1.0, 
+            1.0, 
+            1.0, 
+            1.0, 
+            1.0, 
+            1.0
+         ], 
+         "desired_thrust": [
+            0.1, 
+            0.1, 
+            0.1, 
+            0.1, 
+            0.1, 
+            0.1
+         ], 
+         "disabled_thrusters": []
+      }
+   }, 
+   {
+      "claw": {
+         "power": 0.0
+      }, 
+      "cameras": [
+         {
+            "status": 1, 
+            "port": 8080
+         }
+      ], 
+      "thrusters": {
+         "thruster_scales": [
+            1.0, 
+            1.0, 
+            1.0, 
+            1.0, 
+            1.0, 
+            1.0, 
+            1.0, 
+            1.0
+         ], 
+         "desired_thrust": [
+            0.2, 
+            0.2, 
+            0.2, 
+            0.2, 
+            0.2, 
+            0.2
+         ], 
+         "disabled_thrusters": []
+      }
+   }, 
+   {
+      "claw": {
+         "power": 0.0
+      }, 
+      "cameras": [
+         {
+            "status": 1, 
+            "port": 8080
+         }
+      ], 
+      "thrusters": {
+         "thruster_scales": [
+            1.0, 
+            1.0, 
+            1.0, 
+            1.0, 
+            1.0, 
+            1.0, 
+            1.0, 
+            1.0
+         ], 
+         "desired_thrust": [
+            0.3, 
+            0.3, 
+            0.3, 
+            0.3, 
+            0.3, 
+            0.3
+         ], 
+         "disabled_thrusters": []
+      }
+   }, 
+   {
+      "claw": {
+         "power": 0.0
+      }, 
+      "cameras": [
+         {
+            "status": 1, 
+            "port": 8080
+         }
+      ], 
+      "thrusters": {
+         "thruster_scales": [
+            1.0, 
+            1.0, 
+            1.0, 
+            1.0, 
+            1.0, 
+            1.0, 
+            1.0, 
+            1.0
+         ], 
+         "desired_thrust": [
+            0.4, 
+            0.4, 
+            0.4, 
+            0.4, 
+            0.4, 
+            0.4
+         ], 
+         "disabled_thrusters": []
+      }
+   }, 
+   {
+      "claw": {
+         "power": 0.0
+      }, 
+      "cameras": [
+         {
+            "status": 1, 
+            "port": 8080
+         }
+      ], 
+      "thrusters": {
+         "thruster_scales": [
+            1.0, 
+            1.0, 
+            1.0, 
+            1.0, 
+            1.0, 
+            1.0, 
+            1.0, 
+            1.0
+         ], 
+         "desired_thrust": [
+            0.5, 
+            0.5, 
+            0.5, 
+            0.5, 
+            0.5, 
+            0.5
+         ], 
+         "disabled_thrusters": []
+      }
+   }, 
+   {
+      "claw": {
+         "power": 0.0
+      }, 
+      "cameras": [
+         {
+            "status": 1, 
+            "port": 8080
+         }
+      ], 
+      "thrusters": {
+         "thruster_scales": [
+            1.0, 
+            1.0, 
+            1.0, 
+            1.0, 
+            1.0, 
+            1.0, 
+            1.0, 
+            1.0
+         ], 
+         "desired_thrust": [
+            0.6, 
+            0.6, 
+            0.6, 
+            0.6, 
+            0.6, 
+            0.6
+         ], 
+         "disabled_thrusters": []
+      }
+   }, 
+   {
+      "claw": {
+         "power": 0.0
+      }, 
+      "cameras": [
+         {
+            "status": 1, 
+            "port": 8080
+         }
+      ], 
+      "thrusters": {
+         "thruster_scales": [
+            1.0, 
+            1.0, 
+            1.0, 
+            1.0, 
+            1.0, 
+            1.0, 
+            1.0, 
+            1.0
+         ], 
+         "desired_thrust": [
+            0.7, 
+            0.7, 
+            0.7, 
+            0.7, 
+            0.7, 
+            0.7
+         ], 
+         "disabled_thrusters": []
+      }
+   }, 
+   {
+      "claw": {
+         "power": 0.0
+      }, 
+      "cameras": [
+         {
+            "status": 1, 
+            "port": 8080
+         }
+      ], 
+      "thrusters": {
+         "thruster_scales": [
+            1.0, 
+            1.0, 
+            1.0, 
+            1.0, 
+            1.0, 
+            1.0, 
+            1.0, 
+            1.0
+         ], 
+         "desired_thrust": [
+            0.8, 
+            0.8, 
+            0.8, 
+            0.8, 
+            0.8, 
+            0.8
+         ], 
+         "disabled_thrusters": []
+      }
+   }, 
+   {
+      "claw": {
+         "power": 0.0
+      }, 
+      "cameras": [
+         {
+            "status": 1, 
+            "port": 8080
+         }
+      ], 
+      "thrusters": {
+         "thruster_scales": [
+            1.0, 
+            1.0, 
+            1.0, 
+            1.0, 
+            1.0, 
+            1.0, 
+            1.0, 
+            1.0
+         ], 
+         "desired_thrust": [
+            0.9, 
+            0.9, 
+            0.9, 
+            0.9, 
+            0.9, 
+            0.9
+         ], 
+         "disabled_thrusters": []
+      }
+   }
+]

@@ -74,8 +74,12 @@ class ROV(object):
 
         try:
             df = self.dearflask
-            print df
+            #print df
 
+            # Calculate the new thurster values, set the thrusters to that value, and
+            # then record that value in dearclient
+            thruster_output = self.controls.update(self.dearflask["thrusters"])
+            self.dearclient["thrusters"] = thruster_output
 
             """ Disabled until hardware is done and sw is tested
             self.pressure.update()
@@ -114,4 +118,38 @@ def run(lock, data):
     This main loop will be used to run the ROV without having to
     run the flask server."""
 if __name__ == "__main__":
-    print "hi"
+    # imports that are needed for testing but not anywhere else
+    import json
+    from pprint import pprint
+    from copy import deepcopy
+    import multiprocessing
+
+    # constants to pass as input for future improvement
+    inputFileName = 'rov/json_test_files/testOutput.json'
+    outputFileName = 'rov/json_test_files/json_output.json'
+
+    # open the file that is going to be read
+    with open(inputFileName, 'r') as input_file:
+        test_data = json.load(input_file)
+
+    # create a multithread manager for the rov class
+    # only needed in the testing case to make the class run.
+    manager = multiprocessing.Manager()
+    lock = manager.Lock()
+    data = manager.dict()
+
+    # create the rov class
+    test_rov = ROV(lock, data)
+
+    # a list which will store all of the outputed dearclients
+    all_dearclients = []
+
+    # loop over all of the json files, run update, and then store the dearclient output
+    for curr_data in test_data:
+        data['dearflask'] = curr_data
+        test_rov.update()
+        all_dearclients.append(deepcopy(data['dearclient']))
+
+    # write the contents of dear client out to a file
+    with open(outputFileName, 'w') as outFile:
+        outFile.write(json.dumps(all_dearclients, indent=3, sort_keys=True))
