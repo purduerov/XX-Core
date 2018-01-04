@@ -29,15 +29,21 @@ class ROVControl(object):
 		self.dataup = args
 		print("GOT DEARCLIENT",self.dataup)
 
+	def getClient(self):
+		self.socket.emit('dearclient')
+		self.socket.wait(seconds=1)
+
+		return self.dataup
+
+	def getFlask(self,data):
+		self.socket.emit('dearflask',dumps(data))#,con.dataup,onresp)
 
 
 if __name__ == "__main__":
 	con = ROVControl()
 	i = 0
 	while True:
-		con.socket.emit('dearclient')
-		con.socket.wait(seconds=1)
+		con.getClient()
 		if i % 5 == 4:
-			con.socket.emit('dearflask',dumps(con.datadown))#,con.dataup,onresp)
+			con.getFlask(con.datadown)
 		i+=1
-		sleep(0.01)
