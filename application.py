@@ -1,5 +1,6 @@
 import multiprocessing
 import os
+from json import dumps, loads
 
 from flask import Flask
 from flask_socketio import SocketIO
@@ -63,12 +64,13 @@ def on_disconnect():
 @socketio.on('dearflask')
 def dearflask(indata):
     with lock:
-        data['dearflask'] = indata
+        data['dearflask'] = loads(indata)
 
 @socketio.on('dearclient')
-def dearclient():
+def dearclient(*args):
     with lock:
-        socketio.emit("dearclient", data['dearclient'], json=True)
+        socketio.emit("dearclient", dumps(data['dearclient']), json=True)
+
 
 
 if __name__ == 'application':
