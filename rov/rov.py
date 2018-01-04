@@ -40,14 +40,13 @@ class ROV(object):
         self.init_hw()
 
     def init_hw(self):
-        pass
-        #self.cameras = Cameras(
-        #    resolution='640x480',
-        #    framerate=30,
-        #    port_start=8080,
-        #    brightness=16,
-        #    contrast=32
-        #)
+        self.cameras = Cameras(
+            resolution='640x480',
+            framerate=30,
+            port_start=8080,
+            brightness=16,
+            contrast=32
+        )
 
         self.motor_control = MotorControl(
             zero_power=ZERO_POWER,
