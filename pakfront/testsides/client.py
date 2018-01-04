@@ -36,7 +36,7 @@ if __name__ == "__main__":
 	i = 0
 	while True:
 		con.socket.emit('dearclient')
-		con.socket.wait_for_callbacks(seconds=1)
+		con.socket.wait(seconds=1)
 		if i % 5 == 4:
 			con.socket.emit('dearflask',dumps(con.datadown))#,con.dataup,onresp)
 		i+=1
