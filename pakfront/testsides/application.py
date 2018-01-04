@@ -1,5 +1,6 @@
 import multiprocessing
 import os
+from json import dumps, loads
 
 from flask import Flask
 from flask_socketio import SocketIO
@@ -65,13 +66,13 @@ def dearflask(indata):
     print("GOT DEARFLASK")
     print("INDATA:",indata)
     with lock:
-        data['dearflask'] = indata
+        data['dearflask'] = loads(indata)
 
 @socketio.on('dearclient')
 def dearclient(*args):
     print("GOT DEARClient")
     with lock:
-        socketio.emit("dearclient", data['dearclient'], json=True)
+        socketio.emit("dearclient", dumps(data['dearclient']), json=True)
         print("Emitted",data['dearclient'])
 
 

@@ -43,12 +43,12 @@ func main() {
 
 	pxyToClient.On("connection", func(so socketio.Socket) {
 		log.Println("Proxy to Client Connect")
-		pxyToROV.On("dearflask", func(c *gosocketio.Channel, msg Channel) string {
+		pxyToROV.On("dearflask", func(c *gosocketio.Channel, msg string) string {
 			log.Println("Got DearFlask from Rov")
 			so.Emit("dearflask")
 			return "Done"
 		})
-		pxyToROV.On("dearclient", func(c *gosocketio.Channel, msg Channel) string {
+		pxyToROV.On("dearclient", func(c *gosocketio.Channel, msg string) string {
 			log.Println("Got Dearclient from Rov")
 			log.Println("Data")
 			log.Println(msg)
