@@ -10,17 +10,22 @@ import (
 	"github.com/googollee/go-socket.io"
 )
 
+type Channel struct {
+	Channel float64 `json:"last_update"`
+}
+
+type Message struct {
+	Id      int    `json:"id"`
+	Channel string `json:"channel"`
+	Text    string `json:"text"`
+}
 
 func main() {
-	type Message struct {
-		Name    string `json:"name"`
-		Message string `json:"message"`
-	}
 	type Packet struct {
 		Data string
 	}
 
-	datadown := Packet{"{\"down\":1}"}
+	//datadown := Packet{"{\"down\":1}"}
 	//dataup := Packet{"{\"up\":2}"}
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
@@ -38,25 +43,27 @@ func main() {
 
 	pxyToClient.On("connection", func(so socketio.Socket) {
 		log.Println("Proxy to Client Connect")
-		pxyToROV.On("dearflask", func(c *gosocketio.Channel, msg Message) string {
+		pxyToROV.On("dearflask", func(c *gosocketio.Channel, msg Channel) string {
 			log.Println("Got DearFlask from Rov")
 			so.Emit("dearflask")
 			return "Done"
 		})
-		pxyToROV.On("dearclient", func(c *gosocketio.Channel, msg Message) string {
+		pxyToROV.On("dearclient", func(c *gosocketio.Channel, msg Channel) string {
 			log.Println("Got Dearclient from Rov")
-			so.Emit("dearclient")
+			log.Println("Data")
+			log.Println(msg)
+			so.Emit("dearclient",msg)
 			return "Done"
 		})
 
 		so.On("dearclient", func(msg string) {
 			log.Println("Got DearClient from Client")
-			pxyToROV.Emit("dearclient", datadown)
+			pxyToROV.Emit("dearclient","")
 		})
 
 		so.On("dearflask", func(msg string) {
 			log.Println("Got DearFlask from Client")
-			pxyToROV.Emit("dearflask", datadown)
+			pxyToROV.Emit("dearflask", msg)
 		})
 
 

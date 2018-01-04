@@ -19,7 +19,7 @@ manager = multiprocessing.Manager()
 lock = manager.Lock()
 data = manager.dict()
 
-data["dearclient"] = {}
+data["dearclient"] = {"Wat":"is"}
 
 data["dearflask"] = {
     "thrusters": {
@@ -63,14 +63,16 @@ def on_disconnect():
 @socketio.on('dearflask')
 def dearflask(indata):
     print("GOT DEARFLASK")
+    print("INDATA:",indata)
     with lock:
         data['dearflask'] = indata
 
 @socketio.on('dearclient')
-def dearclient(downdata):
+def dearclient(*args):
     print("GOT DEARClient")
     with lock:
         socketio.emit("dearclient", data['dearclient'], json=True)
+        print("Emitted",data['dearclient'])
 
 
 
