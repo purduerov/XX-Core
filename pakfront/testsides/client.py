@@ -7,12 +7,21 @@ logging.getLogger('socketIO-client').setLevel(logging.DEBUG)
 logging.basicConfig()
 
 class NameSpace(BaseNamespace):
+	def on_connect(self):
+		print("[Connected to Server]")
+
+	def on_reconnect(self):
+		print("[Reconnected to Server]")
+
+	def on_disconnect(self):
+		print("[Disconnected from Server]")
+
 	def dearclient_resp(self, *args):
 	    print("Response", args)
 
 class ROVControl(object):
 	def __init__(self,IP = '127.0.0.1',port = 5001):
-		self.datadown = {"ugh":"why"}
+		self.datadown = {}
 		self.dataup = {}
 		self.socket = SocketIO(IP, port, NameSpace)
 

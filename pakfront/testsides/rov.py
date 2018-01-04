@@ -27,7 +27,6 @@ class ROV(object):
             # # print 'Data connection lost'
             # self.motor_control.kill()
             # self.thruster_control.stop()
-        self._data["dearclient"] = {"People who suck": "Everyone"}
         try:
             df = self.dearflask
 
