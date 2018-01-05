@@ -1,5 +1,5 @@
-//pxytest is where we test the proxy. Should be transitioned to a dedicated pakfront.go when mature.
-//It has some random functions that check things, and when enough functions related to each other are created, should be be bulbed out to a package
+//Pakfront routes data to who needs it, like cv, cv data, logging, and controls. Is named after the German Second World War Tactic of 
+//Concentrating anti-tank guns. Deutschland, Deutschland über alles
 package main
 
 import (
@@ -11,7 +11,7 @@ import (
 	"encoding/binary"
 
 )
-
+//Checks for a problem. Guess it could be better maybe
 func check(e error) {
 	if e != nil {
 		panic("OUR ERROR FUNCTION")
@@ -52,7 +52,7 @@ func main() {
 	numimg := 200
 	sizeimg := 150000
 	sizedata := 500
-	datalen := 100
+	datalen := 1000
 	var read int
 	var msg []byte
 
@@ -74,6 +74,7 @@ func main() {
 			<-wait.C
 		}
 	}()
+	//constantly wait for data to come in from the port 1933, and load it when it comes in. This is for pushing resources
 	go func() {
 		for {
 			read, msg = tcprec(":1933", sizedata)
