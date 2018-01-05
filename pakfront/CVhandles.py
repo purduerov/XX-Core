@@ -4,6 +4,7 @@ import cv2
 import numpy as np
 from signal import signal, SIGPIPE, SIG_DFL
 from multiprocessing import Process, Pool
+from json import dumps
 import time
 signal(SIGPIPE, SIG_DFL)
 
@@ -22,12 +23,12 @@ def getframe(port,camnum):
     return p
 
 
-def pushframe(image):
+def pushframe(image,port):
     def push(img):
         postdata = cv2.imencode(".jpg", img)
         imdata = bytearray([b[0] for b in postdata[1]])
         lenbytes = bytearray.fromhex('{:08x}'.format(len(imdata)))
-        imreq = subprocess.Popen(["./stintotcp", "1918"], stdin=subprocess.PIPE)
+        imreq = subprocess.Popen(["./stintotcp", str(port)], stdin=subprocess.PIPE)
         imreq.stdin.write(bytearray(8 - len(lenbytes)))
         imreq.stdin.write(lenbytes)
         imreq.stdin.write(imdata)
@@ -37,6 +38,21 @@ def pushframe(image):
     p.start()
     return "Push Initiated"
 
+def pushdata(data, port):
+    def push(da, port):
+        data = bytearray()
+        d = dumps(da)
+        data.extend(d)
+        lenbytes = bytearray.fromhex('{:08x}'.format(len(data)))
+        imreq = subprocess.Popen(["./stintotcp", str(port)], stdin=subprocess.PIPE)
+        imreq.stdin.write(bytearray(8 - len(lenbytes)))
+        imreq.stdin.write(lenbytes)
+        imreq.stdin.write(data)
+        imreq.stdin.close()
+        return len(data)
+    p = Process(target=push, args=(data,port))
+    p.start()
+    return "Push Initiated"
 
 def writeimage(name,data):
     with open("/home/zhukov/Projects/rov/test/" + name, "wb+") as fh:

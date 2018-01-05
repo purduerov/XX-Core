@@ -4,7 +4,7 @@ import io
 import cv2
 import numpy as np
 from signal import signal, SIGPIPE, SIG_DFL
-from CVhandles import get_image, pushframe
+from CVhandles import get_image, pushframe, pushdata
 from multiprocessing import Process, Pool
 import time
 signal(SIGPIPE, SIG_DFL)
@@ -12,7 +12,9 @@ signal(SIGPIPE, SIG_DFL)
 if __name__ == "__main__":
     while True:
         curimage = get_image(1917, 0)
-        time.sleep(0.001)
+        data = {"Foo":"bar"}
+        time.sleep(0.1)
         grayimg = cv2.cvtColor(curimage, cv2.COLOR_BGR2GRAY)
         # CV stuff goes here
-        pushframe(grayimg)
+        pushframe(grayimg,1918)
+        pushdata(data,1933)

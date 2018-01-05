@@ -19,8 +19,10 @@ func check(e error) {
 
 //Its pretty self explanatory. Like seriously. Just understand it.
 func main() {
+	args := os.Args[1:]
+	port := args[0]
 	bytes, err := ioutil.ReadAll(os.Stdin)
-	conn, err := net.Dial("tcp", "127.0.0.1:1918")
+	conn, err := net.Dial("tcp", "127.0.0.1:"+port)
 	check(err)
 	num, err := conn.Write(bytes)
 	check(err)
