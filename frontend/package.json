@@ -5,6 +5,7 @@
   "main": "electron-setup.js",
   "repository": "https://github.com/purduerov/XX-Core",
   "scripts": {
+    "install": "./proxyinstall.sh",
     "start": "electron ."
   },
   "author": "Purdue ROV Software Team",

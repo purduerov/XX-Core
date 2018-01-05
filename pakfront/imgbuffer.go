@@ -1,6 +1,6 @@
 //imbuff implements a circular buffer that stores images, to serve as a static stream
 //It's not complicated, seriously just read it.
-package imbuff
+package main
 
 import (
 	"fmt"

@@ -7,25 +7,15 @@ import (
 	"fmt"
 	"net"
 	"net/http"
-	"rovproxy/imbuff"
 	"time"
 	"log"
 	"encoding/binary"
 	"runtime"
-//	"strconv"
 
 	"github.com/graarh/golang-socketio"
 	"github.com/graarh/golang-socketio/transport"
 	"github.com/googollee/go-socket.io"
 )
-
-func check(e error) {
-	if e != nil {
-		panic("OUR ERROR FUNCTION")
-	}
-}
-
-
 
 //This recives data over a tcp port and saves it in a byte array
 //currently used to pick up data from the stdintotcp.go
@@ -107,7 +97,7 @@ func main() {
 	var msg []byte
 
 	//Channel is made with a certain buffer size
-	chanwrite1 := imbuff.Mkchanwrite(numimg, sizeimg)
+	chanwrite1 := Mkchanwrite(numimg, sizeimg)
 	//launch the server on a goroutine
 	//go http.ListenAndServe(":1945", http.HandlerFunc(chanwrite1.Streamwrite))
 	go http.ListenAndServe(":1945", http.HandlerFunc(chanwrite1.Streamwrite))

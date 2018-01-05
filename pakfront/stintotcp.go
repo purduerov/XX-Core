@@ -10,9 +10,8 @@ import (
 
 func check(e error) {
 	if e != nil {
-		fmt.Printf("connection start\n")
-		conn, err := net.Dial("tcp", "192.168.1.112:53")
-		fmt.Printf("Connected\n")
+		fmt.Printf("Eror")
+		os.Exit(1)
 	}
 
 }

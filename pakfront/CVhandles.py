@@ -42,11 +42,3 @@ def writeimage(name,data):
     with open("/home/zhukov/Projects/rov/test/" + name, "wb+") as fh:
         fh.write(data)
 
-
-if __name__ == "__main__":
-    while True:
-        curimage = get_image(1917, 0)
-        time.sleep(0.001)
-        grayimg = cv2.cvtColor(curimage, cv2.COLOR_BGR2GRAY)
-        # CV stuff goes here
-        pushframe(grayimg)
