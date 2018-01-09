@@ -5,7 +5,7 @@ from json import dumps, loads
 from flask import Flask
 from flask_socketio import SocketIO
 
-import rov as rov
+import rov.rov as rov
 
 import eventlet
 eventlet.sleep()
