@@ -1,0 +1,22 @@
+{
+  "Socketio":{
+    "Port_to_rov":5000,
+    "Port_to_client":1944
+  },
+  "Cvhandler":{
+    "Number_of_images":50,
+    "Size_of_image":150000,
+    "Size_of_data":500,
+    "Num_processes":2,
+    "Processes":[
+      {
+        "Name":"CVsimulate",
+	"ID":1
+      },
+      {
+        "Name":"detectwing",
+	"ID":2
+      }
+    ]
+  }
+}

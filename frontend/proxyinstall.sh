@@ -10,4 +10,5 @@ mv stintotcp bin/
 mv tcptostdin bin/
 mv pakfront bin/
 cp $pxydir/CV/* bin/
+cp $pxydir/proxyconfig.json .
 cp $pxydir/CVhandles.py bin/
