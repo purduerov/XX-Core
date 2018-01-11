@@ -7,10 +7,12 @@ from multiprocessing import Process, Pool
 from json import dumps
 import time
 signal(SIGPIPE, SIG_DFL)
+MJPGPORT=1917
 
 
-def get_image(port,camnum):
-    imreq = subprocess.check_output(["./tcptostdin",str(port),str(camnum)])
+def get_image(camnum):
+    port = MJPGPORT
+    imreq = subprocess.check_output(["./tcptostdin",str(MJPGPORT),str(camnum)])
     raw = io.BytesIO(imreq)
     data = np.fromstring(raw.getvalue(), dtype=np.uint8)
     return cv2.imdecode(data, 1)
@@ -23,7 +25,8 @@ def getframe(port,camnum):
     return p
 
 
-def pushframe(image,port):
+def pushframe(image,ID):
+    port = 4*ID + 3 + 1917
     def push(img):
         postdata = cv2.imencode(".jpg", img)
         imdata = bytearray([b[0] for b in postdata[1]])
@@ -38,7 +41,8 @@ def pushframe(image,port):
     p.start()
     return "Push Initiated"
 
-def pushdata(data, port):
+def pushdata(data, ID):
+    port = 4*ID + 4 + 1917
     def push(da, port):
         data = bytearray()
         d = dumps(da)

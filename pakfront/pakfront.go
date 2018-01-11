@@ -89,7 +89,7 @@ func cvproc(conf config, procnum int) {
 	var msg []byte
 	numimg := conf.Cvhandler.Number_of_images
 	sizeimg := conf.Cvhandler.Size_of_image
-	sizedata := conf.Cvhandler.Num_processes
+	sizedata := conf.Cvhandler.Size_of_data
 
 
 	to_client_video :=4*conf.Cvhandler.Processes[procnum].ID + 1 + 1917
