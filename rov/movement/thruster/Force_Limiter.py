@@ -3,10 +3,15 @@ import operator
 
 class ForceLimiter(object):
 
+    # TODO: 'change' variable to diff8 or difference8. We want to know more about what it is.
+    # TODO: convertToPowerUnit()
+
     def __init__(self):
         self.a6vector = [0 for _ in range(6)]
         self.an8vector = [0 for _ in range(8)]
         self.last8vector = [0 for _ in range(8)]
+
+        self.mapper = Mapper()
 
     """
     1. acceptable_total_power
@@ -15,22 +20,18 @@ class ForceLimiter(object):
     4. acceptable_individual_change
     """
 
-    # TODO: an8vector hardcoded to 0 for now
-    def calc8vector(self):
-        # calculates and saves values for an8vector
-        self.an8vector = [0 for _ in range(8)]
-
     # TODO: edit powerThresh constant, import thruster_power function function, edit else return value
     def acceptable_total_power(self):
         # tests the total power consumed
 
         POWER_THRESH = 1000
 
-        totalPower = sum(thruster_power(self.an8vector))
+        totalPower = sum(convertToPowerUnit(self.an8vector))
 
         if totalPower < POWER_THRESH:
             return 1
         else:
+            # TODO: JASON: Need function to calculate direction scalar from power scalar.
             return 0.5
 
     # TODO: edit ind_thresh
@@ -46,6 +47,7 @@ class ForceLimiter(object):
         if maxComp < IND_THRESH:
             return 1
         else:
+            # TODO: JASON: Need function to calculate direction scalar from power scalar.
             return floor(IND_THRESH / maxComp * 10) / 10
 
     # TODO: edit total_change_thresh
@@ -60,6 +62,7 @@ class ForceLimiter(object):
         if sumChange < TOTAL_CHANGE_THRESH:
             return 1
         else:
+            # TODO: JASON: Need function to calculate direction scalar from power scalar.
             return floor(TOTAL_CHANGE_THRESH / sumChange * 10) / 10
 
     # TODO: edit ind_change_thresh
@@ -76,12 +79,15 @@ class ForceLimiter(object):
         if max_change < IND_CHANGE_THRESH:
             return 1
         else:
+            # TODO: JASON: Need function to calculate direction scalar from power scalar.
             return floor(IND_CHANGE_THRESH / max_change * 10) / 10
 
-    def enforce(self):
-        self.calc8vector()
-        # last8vector = old8vector
-        # change = an8vector - last8vector
+    def enforce(self, a6vector, last8vector):
+
+        self.a6vector = a6vector
+        self.an8vector = mapper.calculate(a6vector)
+        self.last8vector = last8vector
+
         change = map(operator.sub, self.an8vector, self.last8vector)
 
         total_power = self.acceptable_total_power()
@@ -100,14 +106,5 @@ class ForceLimiter(object):
         if ind_change_scale != 1:
             self.a6vector = ind_change_scale * self.a6vector
 
-        # update last8vector and an8vector
-        self.last8vector = self.an8vector
-        self.calc8vector()
-
         return self.a6vector
 
-    # TODO: import runThrusters method
-    def power(self):
-        self.a6vector = self.enforce()
-
-        runThrusters(self.an8vector)
