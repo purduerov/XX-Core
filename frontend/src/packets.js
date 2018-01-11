@@ -15,7 +15,7 @@ module.exports = {
                 0, // z:     ascend / descend
                 0, // roll:  roll to the left or right
                 0, // pitch: nose up or down
-                0 // yaw:   left or right rotation
+                0 // yaw:    left or right rotation
             ],
             disabled_thrusters: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
             thruster_scales: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
