@@ -1,3 +1,6 @@
+# ROV Specific Ignores
+mjpg-streamer/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
