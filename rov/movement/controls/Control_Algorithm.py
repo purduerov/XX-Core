@@ -3,6 +3,15 @@ import time
 from rov.sensors.imu.IMU_Mock import IMU
 from rov.sensors.pressure.Pressure_Mock import Pressure
 
+# Control Algorithm
+# README: Initalized using one of the parameters either 'x', 'y', 'z', 'roll', 'pitch' or 'yaw' and the data from the sensors containing pressure and IMU
+# The calculate function uses change in time, current position, desired position as inputs for the PID controller.
+# This then returns a 6 degree output as the recommended user input to best achieve the desired position
+# This algorithm has the option to activate and deactivate itself with the default being deactivated
+# If deactaved it always returns an empty output of the six degrees of freedom [0,0,0,0,0,0]
+# This also allows tuning of the PID values by using @property to change and refer to the PID values of the controller. 
+# s 
+
 
 class ControlAlgorithm():
 
@@ -45,7 +54,7 @@ class ControlAlgorithm():
             print("ERROR: PRESSURE SENSOR DATA")
             return self.desired_position
 
-
+	# ensures quickest route to desired position
     def calculate_error(self, current_position):
         error = self._desired_position - current_position
         if self._parameter > 2:
@@ -54,7 +63,7 @@ class ControlAlgorithm():
             elif error < -180:
                 error += 360
         return error
-
+	
     def activate(self, desired_position):
         self._activated = True
         self._desired_position = desired_position
