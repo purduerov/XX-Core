@@ -4,18 +4,23 @@ from rov.sensors.imu.IMU_Mock import IMU
 from rov.sensors.pressure.Pressure_Mock import Pressure
 
 # Control Algorithm
-# README: Initalized using one of the parameters either 'x', 'y', 'z', 'roll', 'pitch' or 'yaw' and the data from the sensors containing pressure and IMU
-# The calculate function uses change in time, current position, desired position as inputs for the PID controller.
-# This then returns a 6 degree output as the recommended user input to best achieve the desired position
-# This algorithm has the option to activate and deactivate itself with the default being deactivated
-# If deactaved it always returns an empty output of the six degrees of freedom [0,0,0,0,0,0]
-# This also allows tuning of the PID values by using @property to change and refer to the PID values of the controller. 
-# s 
+# README:
+#   Initalized using one of the parameters either 'x', 'y', 'z', 'roll', 'pitch' or 'yaw' and the data from the sensors containing pressure or IMU
+#   The calculate function uses change in time, current position, desired position as inputs for the PID controller.
+#   This then returns a 6 degree output as the recommended user input to best achieve the desired position
+#   This algorithm has the option to activate and deactivate itself with the default being deactivated
+#   If deactived it always returns an empty output of the six degrees of freedom [0,0,0,0,0,0]
+#   This also allows tuning of the PID values by using @property to change and refer to the PID values of the controller.
+#
+#   TODO: Give quick step by step of how someone should use the class externally.
+#   TODO: Update function names with _ to designate private functions, helps users of the class understand what they should touch and what they shouldn't.
+#   TODO: Update given new way of performing sensor data updating.
+#
 
 
 class ControlAlgorithm():
 
-    def __init__(self, parameter):
+    def __init__(self, parameter, sensor_data):
         self._activated = False
         self._parameter = parameter
         self._desired_position = 0
@@ -35,9 +40,13 @@ class ControlAlgorithm():
         elif parameter == 'yaw':
             self._dof = 5
         self._output = [0,0,0,0,0,0]
+        # TODO: DO NOT CREATE SENSORS! You should reference their data given in constructor (I'm starting this for you).
         self._pressure = Pressure()
         self._imu = IMU()
-        #possibly implement imu and pressure sensor
+        # sets sensor data and the proper function to retrieve the right data from _sensor
+        self._sensor = sensor_data
+        self._current_position = [_x, _y, _z, _roll, _pitch, _yaw][_dof]
+
 
     def current_position(self):
         try:
@@ -54,6 +63,7 @@ class ControlAlgorithm():
             print("ERROR: PRESSURE SENSOR DATA")
             return self.desired_position
 
+    # TODO: what is current_position? vs _current_position?
 	# ensures quickest route to desired position
     def calculate_error(self, current_position):
         error = self._desired_position - current_position
@@ -63,7 +73,7 @@ class ControlAlgorithm():
             elif error < -180:
                 error += 360
         return error
-	
+
     def activate(self, desired_position):
         self._activated = True
         self._desired_position = desired_position
@@ -84,6 +94,7 @@ class ControlAlgorithm():
     def desired_position(self, value):
         self._desired_position = value
 
+    # See todo above about current_position
     def calculate(self, current_position):
         if self._activated:
             delta_time = time.time() - self._previous_time
@@ -100,6 +111,8 @@ class ControlAlgorithm():
                 output = -1
 
             self._output[self._parameter] = output
+
+        # TODO: Should this be reset to or unmodified if self._activated is not True?
         return self._output
 
     #tuner
@@ -130,3 +143,17 @@ class ControlAlgorithm():
     def reset(self):
         self._pid.reset(self._desired_position - self.current_position())
         self._previous_time = time.time()
+
+    def _x(self):
+        return _sensor['linear-acceleration']['x']
+    def _y(self):
+        return _sensor['linear-acceleration']['y']
+    def _z(self):
+        return _sensor['pressure']
+    def _roll(self):
+        return _sensor['euler']['roll']
+    def _pitch(self):
+        return _sensor['euler']['pitch']
+    def _yaw(self):
+        return _sensor['euler']['yaw']
+
