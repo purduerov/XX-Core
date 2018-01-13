@@ -1,9 +1,6 @@
 from rov.movement.controls.Control_Algorithm.py import ControlAlgorithm
 
 class Master_Control_Handler():
-    #global variables
-    prev_activate = [0, 0, 0, 0, 0, 0]
-    
     #figure out the activation logic
     #compare the activation logic
 
@@ -17,16 +14,19 @@ class Master_Control_Handler():
         self.rollfreeze = ControlAlgorithm('roll')
         self.pitchfreeze = ControlAlgorithm('pitch')
         self.yawfreeze = ControlAlgorithm('yaw')
+        self.prev_activate = [0, 0, 0, 0, 0, 0]
+
 
 
 
     def master(self, desired_thrust_in, frozen_in): # "main" control handler
-        
-        #TODO: the activation
-        #if prev_activate[i] = 1 and current is 0 then we gotta deactivate it
+
+        # axis freeze activation:
+        # TODO: Tobi: simplify code to check prev_activate != frozen_in, then 'toggle' activation.
+        # TODO: change to a for-loop!
         i = 0
         while(i < 6):
-            if(prev_activate[i] == False and frozen_in[i] == True): #check if it was previously frozen and currently not
+            if(self.prev_activate[i] == False and frozen_in[i] == True): #check if it was previously frozen and currently not
                 if (i==0):
                     self.xfreeze.activate(desired_thrust_in[i])
                 if (i==1):
@@ -39,7 +39,7 @@ class Master_Control_Handler():
                     self.pitchfreeze.activate(desired_thrust_in[i])
                 if (i==5):
                     self.yawfreeze.activate(desired_thrust_in[i])
-            else if (prev_activate[i] == True and frozen_in[i] == False): #check if it was previously not frozen and currently is
+            else if (self.prev_activate[i] == True and frozen_in[i] == False): #check if it was previously not frozen and currently is
                 if (i==0):
                     self.xfreeze.deactivate()
                 if (i==1):
@@ -53,7 +53,9 @@ class Master_Control_Handler():
                 if (i==5):
                     self.yawfreeze.deactivate()
             i+=1
- 
+
+        # Run the currently activated frozen axes:
+        # TODO: Tobi, change to a for loop..
         i = 0
         while (i < 6):
             if (frozen_in[i] == True): #if the dof is frozen - calculate the adjustment
@@ -70,7 +72,7 @@ class Master_Control_Handler():
                 if (i==5):
                     self.dof_control[5] = self.yawfreeze.calculate(self.dof_names[i])[i]
             i += 1
-            
-            
+
+
         self.prev_activate = frozen_in
         return self.dof_control #returns the updated values
