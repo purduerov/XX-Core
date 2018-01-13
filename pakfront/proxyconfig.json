@@ -1,7 +1,7 @@
 {
   "Socketio":{
     "Port_to_rov":5000,
-    "Port_to_client":1944
+    "Port_to_client":5001
   },
   "Cvhandler":{
     "Number_of_images":50,

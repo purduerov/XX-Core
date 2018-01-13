@@ -20,13 +20,14 @@ func check(e error) {
 // Like I dont think you fully understand how trivial this. Like seriously.
 func main() {
 	args := os.Args[1:]
-	if len(args) < 2{
+	if len(args) < 3{
 		fmt.Println(" ")
 		os.Exit(1)
 	}
 	port := args[0]
 	camnum := args[1]
-	resp, err := http.Get("http://localhost:" + port + "/?action=snapshot_"+camnum)
+	ip := args[2]
+	resp, err := http.Get("http://" + ip + ":" + port + "/?action=snapshot_"+camnum)
 	check(err)
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)

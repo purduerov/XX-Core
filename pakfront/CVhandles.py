@@ -8,11 +8,12 @@ from json import dumps
 import time
 signal(SIGPIPE, SIG_DFL)
 MJPGPORT=1917
+ROVIP="10.42.0.234"
 
 
 def get_image(camnum):
     port = MJPGPORT
-    imreq = subprocess.check_output(["./tcptostdin",str(MJPGPORT),str(camnum)])
+    imreq = subprocess.check_output(["./tcptostdin",str(MJPGPORT),str(camnum),ROVIP])
     raw = io.BytesIO(imreq)
     data = np.fromstring(raw.getvalue(), dtype=np.uint8)
     return cv2.imdecode(data, 1)

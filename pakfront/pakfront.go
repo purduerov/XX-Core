@@ -136,7 +136,8 @@ func main() {
 	conf := getconfig("proxyconfig.json")
 
 	numProc := conf.Cvhandler.Num_processes
-	go sockiopxy("localhost", conf.Socketio.Port_to_rov, numtoportstr(conf.Socketio.Port_to_client))
+	fmt.Println(conf.Socketio.Port_to_rov)
+	go sockiopxy("10.42.0.234", conf.Socketio.Port_to_rov, numtoportstr(conf.Socketio.Port_to_client))
 
 	procnum := 0
 	for procnum < numProc {

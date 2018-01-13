@@ -23,6 +23,7 @@ func sockiopxy(rovIP string, rovPort int, clientPort string){
 
 	//Waits for a connection from the client
 	pxyToClient, err := socketio.NewServer(nil)
+
 	check(err)
 
 	//When the client connects, the transactions begin
