@@ -1,70 +1,35 @@
-import os
-import time
-
-from camera import Camera
+import subprocess
 
 
 class Cameras(object):
-    # default layout for camera
-    def __init__(self, resolution='640x480', framerate=30, port_start=8080, brightness=16, contrast=32):
-        self.cameras = []
-        self.port_start = port_start
 
+    def __init__(self, resolution='1280x720', framerate=30,
+                 devices=None, port=8080, brightness=16, contrast=32):
+        self.process = None
         self.resolution = resolution
         self.framerate = framerate
+        if not devices:
+            self.devices = list(subprocess.check_output('ls /dev/video*', shell=True).splitlines())
+        else:
+            self.devices = devices
+        self.port = port
         self.brightness = brightness
         self.contrast = contrast
-
-        self.video_devices = sorted([dev for dev in os.listdir('/dev') if dev.startswith('video')])
-
-        for i in range(len(self.video_devices)):
-            cam = Camera(
-                resolution=self.resolution,
-                framerate=self.framerate,
-                device='/dev/' + self.video_devices[i],
-                port=self.port_start + i,
-                brightness=self.brightness,
-                contrast=self.contrast
-            )
-            self.cameras.append(cam)
-
-        # clear previous open ones
-        self.system_kill()
+        self.input = ['input_uvc.so -f {framerate} -r {resolution} -d {device}'.format(framerate=self.framerate, resolution=self.resolution, device=d) for d in self.devices]
+        self.output = 'output_http.so -p {port} {web}'.format(
+            port=port,
+            web='-w /usr/local/www'
+        )
 
     def start(self):
-        for cam in self.cameras:
-            time.sleep(0.2)
-            cam.start()
+        command = ['mjpg_streamer']
+        for i in self.input:
+            command.append('-i')
+            command.append(i)
+        command.append('-o')
+        command.append(self.output)
+        print command
+        self.process = subprocess.Popen(command)
 
-    def kill(self):
-        for cam in self.cameras:
-            cam.kill()
-
-        self.system_kill()
-
-    def system_kill(self):
-        os.system("pgrep 'mjpg' | xargs kill -9")
-
-    def status(self):
-        return {
-            'Cam_' + str(cam.port-self.port_start): {'port': cam.port, 'status': cam.get_status()}
-            for cam in self.cameras
-        }
-
-    def set_status(self, status):
-        for cam in self.cameras:
-            port = str(cam.port)
-            if port in status:
-                cam_status = cam.get_status()
-                if status[port] == 'active':
-                    if cam_status == 'suspended':
-                        cam.unsuspend()
-                elif status[port] == 'suspended':
-                    if cam_status == 'active':
-                        cam.suspend()
-                elif status[port] == 'killed':
-                    if cam.is_alive():
-                        cam.kill()
-                elif status[port] == 'start':
-                    if not cam.is_alive():
-                        cam.start()
+if __name__ == '__main__':
+    print Cameras().start()
