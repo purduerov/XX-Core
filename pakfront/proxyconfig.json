@@ -14,7 +14,7 @@
 	"ID":1
       },
       {
-        "Name":"detectwing",
+        "Name":"cvTailClassify",
 	"ID":2
       }
     ]
