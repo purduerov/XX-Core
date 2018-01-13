@@ -84,22 +84,26 @@ var run = function(abt) {
 
 $(document).ready(function() {
   var abt = $("#titles");
-  gp.selectController(abt);  //used to be gp.set
+  //gp.selectController(abt);  //used to be gp.set
+  gp.select(50);
 
   go1 = window.setInterval(function() { run(abt); }, 50);
 
   $("#reset").click(function() {
     if(go2 != -1) {
       gp.ready = false;
+      gp.select(50);
       window.clearInterval(go2);
+      go2 = -1;
     } else {console.log("go2: "+go2+" go1: "+go1);}
     $("#info").empty();
-    gp.set(abt);
     go1 = window.setInterval(function() { run(abt); }, 50);
   });
 
+/*
   $("#bind").click(function() {
     gp.bind("a", "press", function(arg) { arg.message.html("Re-link, </br>\'"+arg.btn+"\' says hi "+arg.count+" times!"); arg.count += 1; },
             {message: $("#reset"), btn: "a", count: 0});
   });
+*/
 });

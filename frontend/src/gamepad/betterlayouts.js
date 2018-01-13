@@ -3,7 +3,7 @@
 //make loop that wants to check id and bind keys if it matches
 var layouts = {
   rock: {
-    "idMatch": ["Xbox 360 Controller (XInput STANDARD GAMEPAD)"],
+    "idMatch": ["Some other gamepad with the same mapping", "Xbox 360 Controller (XInput STANDARD GAMEPAD)"],
     "buttons" : [        //array
     {"indx": 0, "name": "a", "pressed": 1, "notpressed": 0, "where": "buttons"},        //object in array
     {"indx": 1, "name": "b", "pressed": 1, "notpressed": 0, "where": "buttons"},

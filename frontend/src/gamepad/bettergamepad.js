@@ -29,9 +29,12 @@ var gp = {
     });
   },
 
-  map: function(key, id) {
+  map: function(key, id) { //id is the id in chrome driver
+    var b = 10;  //random number of possible ids, not important
     Object.keys(layouts).forEach(function(key_gp, i_gp) {
-        if(layouts[key_gp].idMatch[0] == id) {    //For loop through idMatch rather than using just the first one
+      for(var a = 0; a < b; a++) {   //loops through ids of betterlayouts
+        if(layouts[key_gp].idMatch[a] == id) {    //For loop through idMatch rather than using just the first one
+          b = a;
           gp.ready = true;
           clearInterval(gp.selID);
           gp.selID = -1;
@@ -44,6 +47,7 @@ var gp = {
             gp.layoutKey = key_gp;
             gp.zero();
         }
+      }
     });
   },
 // update doesn't have a function call yet
@@ -112,4 +116,4 @@ var gp = {
 // },
 
 }//end gp
-gp.select(50);
+//gp.select(50);
