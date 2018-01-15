@@ -1,4 +1,4 @@
-:rom rov.movement.controls.Control_Algorithm.py import ControlAlgorithm
+from rov.movement.controls.Control_Algorithm.py import ControlAlgorithm
 
 class Master_Control_Handler():
     #figure out the activation logic
@@ -18,16 +18,18 @@ class Master_Control_Handler():
         # TODO: Tobi: simplify code to check prev_activate != frozen_in, then 'toggle' activation.
 
         for i in range(6):
-            if(self.prev_activate[i] == False and frozen_in[i] == True): # check if it was previously frozen adn currently not
-                self.freeze[i].activate(desired_thrust_in[i])
-            else if (self.prev_activate[i] == True and frozen_in[i] == False): # check if it was previously not frozen and currently is
+	    # check if it was previously frozen adn currently not
+            if(self.prev_activate[i] == False and frozen_in[i] == True):
+                self.freeze[i].activate()
+	    # check if it was previously not frozen and currently is
+            else if (self.prev_activate[i] == True and frozen_in[i] == False):
                 self.freeze[i].deactivate()
 
         # Run the currently activated frozen axes:
 
         for i in range(6):
             if (frozen_in[i] == True): #if the dof is frozen - calculate the adjustment
-                self.dof_control[i] = self.freeze[i].calculate(self.dof_names[i])[i]
+                self.dof_control[i] = self.freeze[i].calculate()[i]
 
         self.prev_activate = frozen_in
         return self.dof_control #returns the updated values

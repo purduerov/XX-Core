@@ -40,28 +40,25 @@ class ControlAlgorithm():
         elif parameter == 'yaw':
             self._dof = 5
         self._output = [0,0,0,0,0,0]
-        # TODO: DO NOT CREATE SENSORS! You should reference their data given in constructor (I'm starting this for you).
-        self._pressure = Pressure()
-        self._imu = IMU()
+
         # sets sensor data and the proper function to retrieve the right data from _sensor
         self._sensor = sensor_data
         self._current_position = [_x, _y, _z, _roll, _pitch, _yaw][_dof]
 
 
     def current_position(self):
-        try:
-            if self._dof > 2:
-                return self._imu.data['euler'][self._parameter]
-        except:
-            print("ERROR: IMU SENSOR DATA")
-            return self._desired_position
-
-        try:
-            if self._dof == 1:
-                return self._pressure.data['pressure']
-        except:
-            print("ERROR: PRESSURE SENSOR DATA")
-            return self.desired_position
+	if self._dof == 0:
+	    return _x()
+	elif self._dof == 1:
+	    return _y()
+	elif self._dof == 2:
+	    return _z()
+	elif self._dof == 3:
+	    return _roll()
+	elif self._dof == 4:
+	    return _pitch()
+	elif self._dof == 5:
+	    return _yaw()
 
     # TODO: what is current_position? vs _current_position?
 	# ensures quickest route to desired position
@@ -74,10 +71,10 @@ class ControlAlgorithm():
                 error += 360
         return error
 
-    def activate(self, desired_position):
+    def activate(self):
         self._activated = True
-        self._desired_position = desired_position
-        self.reset(self.current_position())
+        self._desired_position = self.current_position()
+        self.reset()
 
     def deactivate(self):
         self._activated = False
@@ -95,11 +92,11 @@ class ControlAlgorithm():
         self._desired_position = value
 
     # See todo above about current_position
-    def calculate(self, current_position):
+    def calculate(self):
         if self._activated:
             delta_time = time.time() - self._previous_time
             self._previous_time = time.time()
-            error = self.calculate(current_position)
+            error = self.calculate_error(self.current_position())
             #resets integral term if there is no error
             #if error == 0:
             #    self._pid.reset(0)
