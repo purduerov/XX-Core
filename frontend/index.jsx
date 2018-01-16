@@ -3,7 +3,7 @@ import {render} from 'react-dom';
 import styles from './index.css';
 import packet from './src/packets.js';
 import Card from './src/components/Card.jsx';
-import Cam_view from './src/components/Cam_View.jsx';
+import Cam_view from './src/components/CamView.jsx';
 import Titlebar from './src/components/Titlebar.jsx';
 import ThrusterInfo from './src/components/ThrusterInfo.jsx';
 import ThrusterScales from './src/components/ThrusterScales.jsx';
