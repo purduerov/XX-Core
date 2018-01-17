@@ -5,17 +5,27 @@ from rov.sensors.pressure.Pressure_Mock import Pressure
 
 # Control Algorithm
 # README:
-#   Initalized using one of the parameters either 'x', 'y', 'z', 'roll', 'pitch' or 'yaw' and the data from the sensors containing pressure or IMU
+#   Initalize with the parameter and sensor data
+#   Parameter being either 'x', 'y', 'z', 'roll', 'pitch' or 'yaw'
+#   Data from the sensors containing pressure or IMU
 #   The calculate function uses change in time, current position, desired position as inputs for the PID controller.
 #   This then returns a 6 degree output as the recommended user input to best achieve the desired position
 #   This algorithm has the option to activate and deactivate itself with the default being deactivated
 #   If deactived it always returns an empty output of the six degrees of freedom [0,0,0,0,0,0]
 #   This also allows tuning of the PID values by using @property to change and refer to the PID values of the controller.
-#
-#   TODO: Give quick step by step of how someone should use the class externally.
-#   TODO: Update function names with _ to designate private functions, helps users of the class understand what they should touch and what they shouldn't.
-#   TODO: Update given new way of performing sensor data updating.
-#
+# How to used Control Algorithm class:
+# 1. control = ControlAlorithm('roll')
+#   -Initially deactivated
+# 2. control.activate()
+# 3. output = control.calculate()
+# 4. output will now contain an array of the suggested output
+# ex: [0, 0, 0, 0.5, 0, 0]
+# - If you wish to turn off the algorithm use: control.deactivate()
+# - This will cause calculate() to return an empty array: [0, 0, 0, 0, 0, 0]
+# - If you wish to turn back on use: control.activate()
+# - You can also use .toggle() to toggle between activated and deactivated
+# - For PID tuning you can directly get and set the values using .p, .i, .d
+# - ex: control.p = 5 or control.d = 2
 
 
 class ControlAlgorithm():
@@ -61,10 +71,9 @@ class ControlAlgorithm():
 	elif self._dof == 5:
 	    return self._yaw()
 
-    # TODO: what is current_position? vs _current_position? Use _current_position()
-	# ensures quickest route to desired position
-    def calculate_error(self, current_position):
-        error = self._desired_position - current_position
+    # ensures quickest route to desired position
+    def _error(self):
+        error = self._desired_position - self._current_position()
         if self._parameter > 2:
             if error > 180:
                 error -= 360
@@ -75,15 +84,17 @@ class ControlAlgorithm():
     def activate(self):
         self._activated = True
         self._desired_position = self.current_position()
-        self.reset()
+        self.reset(self._error())
 
     def deactivate(self):
         self._activated = False
         self._output = [0,0,0,0,0,0]
 
-    # TODO: This looks like an unused or old function. Remove if so.
-    def lock_position(self):
-        self.activate(self.current_position())
+    def toggle(self):
+        if self._activated:
+            self.deactivate()
+        else:
+            self.activate()
 
     @property
     def desired_position(self):
@@ -94,17 +105,12 @@ class ControlAlgorithm():
     def desired_position(self, value):
         self._desired_position = value
 
-    # See todo above about current_position
     def calculate(self):
         if self._activated:
             delta_time = time.time() - self._previous_time
             self._previous_time = time.time()
-            error = self.calculate_error(self._current_position())
-            #resets integral term if there is no error
-            #if error == 0:
-            #    self._pid.reset(0)
-            # TODO: I'm getting a divide by 0 inside this on sample data...
-            output = self._pid.calculate(error, delta_time)
+           # TODO: I'm getting a divide by 0 inside this on sample data...
+            output = self._pid.calculate(self._error(), delta_time)
 
             if output > 1:
                 output = 1
@@ -113,8 +119,9 @@ class ControlAlgorithm():
 
             # TODO: What is the difference between _output and output????
             self._output[self._parameter] = output
+        else:
+           self. _pid.reset()
 
-        # TODO: Should this be reset to or unmodified if self._activated is not True?
         return self._output
 
     #tuner
