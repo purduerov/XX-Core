@@ -43,24 +43,25 @@ class ControlAlgorithm():
 
         # sets sensor data and the proper function to retrieve the right data from _sensor
         self._sensor = sensor_data
-        self._current_position = [_x, _y, _z, _roll, _pitch, _yaw][_dof]
+        self._current_position = [self._x, self._y, self._z, self._roll, self._pitch, self._yaw][self._dof]
+
 
 
     def current_position(self):
 	if self._dof == 0:
-	    return _x()
+	    return self._x()
 	elif self._dof == 1:
-	    return _y()
+	    return self._y()
 	elif self._dof == 2:
-	    return _z()
+	    return self._z()
 	elif self._dof == 3:
-	    return _roll()
+	    return self._roll()
 	elif self._dof == 4:
-	    return _pitch()
+	    return self._pitch()
 	elif self._dof == 5:
-	    return _yaw()
+	    return self._yaw()
 
-    # TODO: what is current_position? vs _current_position?
+    # TODO: what is current_position? vs _current_position? Use _current_position()
 	# ensures quickest route to desired position
     def calculate_error(self, current_position):
         error = self._desired_position - current_position
@@ -80,6 +81,7 @@ class ControlAlgorithm():
         self._activated = False
         self._output = [0,0,0,0,0,0]
 
+    # TODO: This looks like an unused or old function. Remove if so.
     def lock_position(self):
         self.activate(self.current_position())
 
@@ -87,6 +89,7 @@ class ControlAlgorithm():
     def desired_position(self):
         return self._desired_position
 
+    # TODO: Does this have any practical use? When should this be called? And can it be included as a parameter to a function instead?
     @desired_position.setter
     def desired_position(self, value):
         self._desired_position = value
@@ -96,10 +99,11 @@ class ControlAlgorithm():
         if self._activated:
             delta_time = time.time() - self._previous_time
             self._previous_time = time.time()
-            error = self.calculate_error(self.current_position())
+            error = self.calculate_error(self._current_position())
             #resets integral term if there is no error
             #if error == 0:
             #    self._pid.reset(0)
+            # TODO: I'm getting a divide by 0 inside this on sample data...
             output = self._pid.calculate(error, delta_time)
 
             if output > 1:
@@ -107,6 +111,7 @@ class ControlAlgorithm():
             elif output < -1:
                 output = -1
 
+            # TODO: What is the difference between _output and output????
             self._output[self._parameter] = output
 
         # TODO: Should this be reset to or unmodified if self._activated is not True?
@@ -142,15 +147,17 @@ class ControlAlgorithm():
         self._previous_time = time.time()
 
     def _x(self):
-        return _sensor['linear-acceleration']['x']
+        print('_x')
+        self._sensor['linear-acceleration']['x'] = 2
+        return self._sensor['linear-acceleration']['x']
     def _y(self):
-        return _sensor['linear-acceleration']['y']
+        return self._sensor['linear-acceleration']['y']
     def _z(self):
-        return _sensor['pressure']
+        return self._sensor['pressure']
     def _roll(self):
-        return _sensor['euler']['roll']
+        return self._sensor['euler']['roll']
     def _pitch(self):
-        return _sensor['euler']['pitch']
+        return self._sensor['euler']['pitch']
     def _yaw(self):
-        return _sensor['euler']['yaw']
+        return self._sensor['euler']['yaw']
 
