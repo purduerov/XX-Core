@@ -31,7 +31,7 @@ export default class SliderControl extends Component {
 
     render() {
         return (
-        <div className={styles.container}> 
+        <div className={styles.container}>
             <div className={styles.killPad}>
                 <p className={styles.fill}>{this.props.name}:</p>
                 <p className={styles.left}>{this.state.val}%</p>
