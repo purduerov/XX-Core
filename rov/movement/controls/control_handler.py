@@ -13,16 +13,20 @@ class Master_Control_Handler():
         self.dof_names = ['x', 'y', 'z', 'roll', 'pitch', 'yaw']
         self.freeze = [ControlAlgorithm('x', sensors['imu']), ControlAlgorithm('y', sensors['imu']), ControlAlgorithm('z', sensors['pressure']), ControlAlgorithm('roll', sensors['imu']), ControlAlgorithm('pitch', sensors['imu']), ControlAlgorithm('yaw', sensors['imu'])]
         self.prev_activate = [0, 0, 0, 0, 0, 0]
+        for i in range(6):
+            if frozen_in[i]:
+                freeze[i].activate()
 
     def master(self, desired_thrust_in, frozen_in): # "main" control handler
 
         # axis freeze activation:
-       for i in range(6):
+        for i in range(6):
             # check if frozen control was toggled
             if self.prev_activate[i] != frozen_in[i]:
                 self.freeze[i].toggle()
 
         # Run the currently activated frozen axes:
+
         for i in range(6):
             # if the dof is frozen - calculate the adjustment
             if frozen_in[i] == True:
@@ -30,7 +34,7 @@ class Master_Control_Handler():
 
         self.prev_activate = frozen_in
         return self.dof_control #returns the updated values
-
+    
 if __name__ == "__main__":
     data = {'sensors':
             {

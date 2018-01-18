@@ -1,7 +1,5 @@
-from rov.controls.PID_Controller import PID
+from controls.PID_Controller import PID
 import time
-from rov.sensors.imu.IMU_Mock import IMU
-from rov.sensors.pressure.Pressure_Mock import Pressure
 
 # Control Algorithm
 # README:
@@ -56,7 +54,6 @@ class ControlAlgorithm():
         self._current_position = [self._x, self._y, self._z, self._roll, self._pitch, self._yaw][self._dof]
 
 
-
     def current_position(self):
 	if self._dof == 0:
 	    return self._x()
@@ -90,6 +87,9 @@ class ControlAlgorithm():
         self._activated = False
         self._output = [0,0,0,0,0,0]
 
+    def getActivated():
+        return self._activated
+
     def toggle(self):
         if self._activated:
             self.deactivate()
@@ -110,12 +110,13 @@ class ControlAlgorithm():
             delta_time = time.time() - self._previous_time
             self._previous_time = time.time()
            # TODO: I'm getting a divide by 0 inside this on sample data...
-            output = self._pid.calculate(self._error(), delta_time)
+            # value is a single value while output is an array for the dof            
+            value = self._pid.calculate(self._error(), delta_time)
 
-            if output > 1:
-                output = 1
-            elif output < -1:
-                output = -1
+            if value > 1:
+                value = 1
+            elif value < -1:
+                value = -1
 
             # TODO: What is the difference between _output and output????
             self._output[self._parameter] = output
@@ -152,6 +153,7 @@ class ControlAlgorithm():
     def reset(self):
         self._pid.reset(self._desired_position - self.current_position())
         self._previous_time = time.time()
+        self._output = [0, 0, 0, 0, 0, 0]
 
     def _x(self):
         print('_x')
