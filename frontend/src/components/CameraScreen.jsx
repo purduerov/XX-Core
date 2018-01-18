@@ -8,6 +8,18 @@ export default class Camera_view extends Component {
   constructor(props) {
     super(props);
     this.takePicture = this.takePicture.bind(this);
+    this.state = {
+      pxybypass: false,
+      camscreen1: 0,
+      camscreen2: 1,
+      camnames: [
+                "Cam1",
+                "Cam2",
+                "Cam3",
+                "Cam4",
+                "Cam5"
+                ]
+    }
   }
 
   takePicture() {

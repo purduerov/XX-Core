@@ -3,7 +3,7 @@ import {render} from 'react-dom';
 import styles from './index.css';
 import packet from './src/packets.js';
 import Card from './src/components/Card.jsx';
-import Cam_view from './src/components/CamView.jsx';
+import Camview from './src/components/CameraScreen.jsx';
 import Titlebar from './src/components/Titlebar.jsx';
 import ThrusterInfo from './src/components/ThrusterInfo.jsx';
 import ThrusterScales from './src/components/ThrusterScales.jsx';
@@ -73,6 +73,7 @@ class App extends React.Component {
           </div>
           <div className="main-container">
               <div className="camera-width full-height center">
+              <Camview></Camview>
               </div>
               <div className="data-width full-height">
                   <div className="data-column">
