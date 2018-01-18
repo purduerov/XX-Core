@@ -9,15 +9,19 @@ class PID(object):
         self._p = 1
         self._i = 0
         self._d = 0
-        self._esum = 0 #Error sum for integral term
-        self._le =startingError    #Last error value
+        self._esum = 0              #Error sum for integral term
+        self._le = startingError    #Last error value
+        #self._lo = 0                #Last output value
 
     def calculate(self, error, dt):
         """Calculates the output of the PID controller"""
+        #if dt == 0:
+        #    return lo
         self._esum += error*dt
         dError = (error - self._le)/dt
         u = self._p*error + self._i*self._esum + self._d *dError
         self._le = error
+        #self.lo = u
         return u
 
 
