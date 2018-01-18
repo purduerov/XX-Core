@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Camera from 'react-camera';
-import ThrusterCircle from './ThrusterCircle.jsx';
+import ThrusterCircle from '../ThrusterCircle/ThrusterCircle.jsx';
 import styles from "./ThrusterInfo.css";
 
 
@@ -11,7 +11,7 @@ export default class ThrusterInfo extends Component {
     this.state = {'disabled': null};
     this.state.disabled = props.disabled;
     this.rendDisabled = this.rendDisabled.bind(this);
-    
+
   }
 
   rendDisabled(val, indx) {

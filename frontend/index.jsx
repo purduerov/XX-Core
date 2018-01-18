@@ -2,11 +2,11 @@ import React from 'react';
 import {render} from 'react-dom';
 import styles from './index.css';
 import packet from './src/packets.js';
-import Card from './src/components/Card.jsx';
-import Cam_view from './src/components/CamView.jsx';
-import Titlebar from './src/components/Titlebar.jsx';
-import ThrusterInfo from './src/components/ThrusterInfo.jsx';
-import ThrusterScales from './src/components/ThrusterScales.jsx';
+import Card from './src/components/Card/Card.jsx';
+import Cam_view from './src/components/CamView/CamView.jsx';
+import Titlebar from './src/components/Titlebar/Titlebar.jsx';
+import ThrusterInfo from './src/components/ThrusterInfo/ThrusterInfo.jsx';
+import ThrusterScales from './src/components/ThrusterScales/ThrusterScales.jsx';
 
 //var packets = require("./src/packets.js");
 let socketHost = `ws://raspberrypi.local:5000`;
@@ -57,7 +57,7 @@ class App extends React.Component {
             }
         }
 
-        
+
     flaskcpy = this.state.dearflask;
     confcpy = this.state.config;
 
@@ -84,7 +84,7 @@ class App extends React.Component {
                   </div>
                   <div className="data-column">
                     <Card title="Thruster Control">
-                      <ThrusterScales rend={this.changeThrustScales} 
+                      <ThrusterScales rend={this.changeThrustScales}
                         scales={this.state.config.thruster_control}
                       />
                     </Card>
