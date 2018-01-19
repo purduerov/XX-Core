@@ -2,6 +2,14 @@ import React, { Component } from 'react';
 import Camera from 'react-camera';
 import styles from './Cam_View.css'
 
+class CamSel extends React.Component {
+    render() {
+          return (
+                  <button className="camsel" onClick={()=>{}}>
+                  </button>
+                  );
+        }
+}
 
 export default class Camera_view extends Component {
 
@@ -33,7 +41,19 @@ export default class Camera_view extends Component {
   render() {
     return (
       <div className={styles.container}>
-      <img src="http://localhost:1917/?action=stream_0"></img>
+        <header>CAMERA1 CAMERA2</header>
+        <div className ={styles.contentBox} >
+
+          <div className={styles.column1} >
+           CONTENT
+          </div>
+
+          <div className={styles.column2} >
+              <img src="http://localhost:1917/?action=stream" height="350"></img>
+          </div>
+
+        </div>
+
       </div>
     );
   }

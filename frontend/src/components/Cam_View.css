@@ -24,3 +24,15 @@
 .captureImage {
     width: 100%;
 }
+
+.contentBox {
+    display: flex;
+    position: relative;
+
+}
+.column1 {
+    left: 0 ;
+}
+.column2 {
+    right: 0;
+}
