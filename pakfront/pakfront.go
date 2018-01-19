@@ -153,7 +153,7 @@ func main() {
 	}
 
 	numProc := conf.Cvhandler.Num_processes
-	//go sockiopxy(conf.Rovip, conf.Socketio.Port_to_rov, numtoportstr(conf.Socketio.Port_to_client))
+	go sockiopxy(conf.Rovip, conf.Socketio.Port_to_rov, numtoportstr(conf.Socketio.Port_to_client))
 
 	procnum := 0
 	for procnum < numProc {
