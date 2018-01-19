@@ -1,32 +1,4 @@
 {
-<<<<<<< HEAD
-  "name": "frontend",
-  "version": "1.0.0",
-  "description": "ROV 2017-18 package.json for our nodejs based framework",
-  "main": "electron-setup.js",
-  "repository": "https://github.com/purduerov/XX-Core",
-  "scripts": {
-    "install": "./proxyinstall.sh",
-    "start": "electron ."
-  },
-  "author": "Purdue ROV Software Team",
-  "license": "ISC",
-  "dependencies": {
-    "hawk": "^6.0.2",
-    "jquery": "^3.2.1"
-  },
-  "devDependencies": {
-    "babel-preset-minify": "^0.2.0",
-    "easy-pack": "0.0.1",
-    "electron": "^1.7.9",
-    "graceful-fs": "^4.1.11",
-    "minimatch": "^3.0.4",
-    "node-cmd": "^3.0.0",
-    "node-minify": "^2.3.1",
-    "path": "^0.12.7",
-    "url": "^0.11.0"
-  }
-=======
     "name": "frontend",
     "version": "1.0.0",
     "description": "ROV 2017-18 package.json for our nodejs based framework",
@@ -34,6 +6,7 @@
     "repository": "https://github.com/purduerov/XX-Core",
     "scripts": {
         "start": "electron .",
+	"install": "./proxyinstall.sh",
         "dev": "webpack -d",
         "watch": "webpack -d --watch",
         "build": "webpack -p"
@@ -68,5 +41,4 @@
         "path": "^0.12.7",
         "url": "^0.11.0"
     }
->>>>>>> react-catch-up
 }

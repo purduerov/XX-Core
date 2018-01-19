@@ -75,8 +75,4 @@ def dearclient(*args):
 
 if __name__ == 'application':
     rov_proc = multiprocessing.Process(target=rov.run, args=(lock, data))
-<<<<<<< HEAD
     rov_proc.start()
-=======
-    rov_proc.start()
->>>>>>> react-catch-up
