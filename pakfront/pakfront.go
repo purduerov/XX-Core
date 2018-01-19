@@ -48,33 +48,6 @@ func check(e error) {
 	}
 }
 
-//This recives data over a tcp port and saves it in a byte array
-//currently used to pick up data from the stdintotcp.go
-func tcprec(port string, size int) (r int, b []byte) {
-	buf := make([]byte, size)
-	// listen on all interfaces
-	ln, err := net.Listen("tcp", port)
-	check(err)
-	defer ln.Close()
-
-	// accept connection on port
-	conn, _ := ln.Accept()
-
-	// will listen for message to process ending in newline (\n)
-	read, err := bufio.NewReader(conn).Read(buf)
-	check(err)
-
-	sizein := binary.BigEndian.Uint64(buf[0:8])
-	tread := read
-
-	for tread < int(sizein) + 8 {
-		read, err := bufio.NewReader(conn).Read(buf[tread:])
-		check(err)
-		tread += read
-	}
-	return tread-8, buf[8:]
-}
-
 func getconfig(filename string) config{
 	content, err := ioutil.ReadFile(filename)
 	check(err)

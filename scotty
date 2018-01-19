@@ -1,0 +1,458 @@
+#!/usr/bin/env python
+
+import sys
+import os
+import platform
+import subprocess
+
+from install.config import Config
+
+
+# where the script is located, which is the project repo root dir
+CORE_DIR = os.path.dirname(os.path.realpath(__file__))
+Config = Config(CORE_DIR)
+
+
+def get_platform():
+    """ Detects the running platform, and if linux checks if a raspberry pi
+    """
+
+    plat = platform.system().lower()
+
+    if plat == 'linux' and platform.linux_distribution()[0].lower() == 'debian':
+        try:
+            with open('/proc/cpuinfo') as f:
+                for line in f:
+                    line = line.strip().split()
+                    if len(line) < 2:
+                        continue
+
+                    if line[0] == 'Hardware' and line[-1] in ['BCM2708', 'BCM2709', 'BCM2835']:
+                        return 'raspberry-pi'
+        except:
+            pass
+
+    return plat
+
+
+def get_file_path(f):
+    """ Returns the full file path of a file, inside the main project repo
+    """
+
+    return "%s/%s" % (CORE_DIR, f)
+
+
+def print_color(s, color="yellow"):
+    """Print with a color! Uses tput to output escape codes for colors
+    """
+
+    colors = ["black", "red", "green", "yellow", "blue", "magenta", "cyan", "white"]
+    color = color.lower()
+
+    if color in colors:
+        color_num = colors.index(color)
+        os.system("tput setaf %d 2>/dev/null" % color_num)
+        print s
+        os.system("tput sgr0 2>/dev/null")
+    else:
+        print s
+
+
+def set_env(env="base"):
+    """ Set environment variables, based on the config
+    """
+
+    if env not in Config.get("environment"):
+        print_color("\n%s environment set is not defined!" % env, color="red")
+        sys.exit(1)
+
+    env_set = Config.get("environment").get(env)
+
+    # These are paths, and should be appended to, not overwritten
+    path_set = ['PATH', 'LD_LIBRARY_PATH']
+
+    for key in env_set:
+        val = env_set[key].replace('${CORE_DIR}', CORE_DIR)
+
+        if key in path_set:
+            # If not there, just set our value
+            if key not in os.environ:
+                os.environ[key] = val
+
+            # Append it if not already in the path
+            elif val not in os.environ[key]:
+                os.environ[key] = val + ":" + os.environ[key]
+        else:
+            os.environ[key] = val
+
+
+def run_commands(commands):
+    """ Run a list of commands and print out what commands are being run when doing so
+    """
+
+    for com in commands:
+        print_color("\nRunning: %s \n" % com, color="cyan")
+        if os.system(com) != 0:
+            print_color("\nNon-zero error code running: %s\nStopping install." % com, color="red")
+            sys.exit()
+
+
+def create_venv():
+    """ Create a virtual env if it doesn't exist already
+    """
+
+    venv_real_dir = get_file_path(Config.get("venv"))
+
+    if not os.path.isdir(venv_real_dir):
+        print_color("\nCreating virtual env in %s..." % Config.get("venv"))
+        run_commands(["%s %s" % (str(Config.get("virtualenv")), str(venv_real_dir))])
+    else:
+        print_color("\nVirtual env in %s already exists" % Config.get("venv"))
+
+
+def start_venv():
+    """ Activate the virtual env, so we can install things with pip too it,
+    or run files and tests with it enabled
+    """
+
+    venv_real_dir = get_file_path(Config.get("venv"))
+
+    # exit the virtual env isn't created
+    if not os.path.isdir(venv_real_dir):
+        print_color("\nVirual env does not exist in %s. Have you ran install?" % Config.get("venv"))
+        sys.exit(1)
+
+    # Activate the virtual env
+    print_color("\nActivating virtual env...")
+
+    # exec the virtual envs activate python file
+    activate_file = venv_real_dir + "/bin/activate_this.py"
+    try:
+        execfile(activate_file, dict(__file__=activate_file))
+    except Exception as e:
+        print_color(e.message, color="red")
+        print_color("\nError activating virtualenv", color="red")
+        sys.exit(1)
+
+
+def basic_test(command, files):
+    """ Run a basic with a command of list of files If command returns
+    non-zero value, then the test will fail
+    """
+    # Keep track of if any of these commands failed
+    test_passed = True
+
+    for f in files:
+        if os.system("%s %s" % (command, get_file_path(f))):
+            test_passed = False
+
+    return test_passed
+
+
+def install(args):
+    """ Install things
+    """
+
+    is_ras_pi = False
+
+    # if argument is passed and it's valid, set is_ras_pi if it's --pi
+    if len(args) > 0 and args[0] in ['--pi', '--dev']:
+        is_ras_pi = (args[0] == '--pi')
+
+    # Otherwise autodetect
+    else:
+        plat = get_platform()
+        if plat not in ['linux', 'raspberry-pi']:
+            print_color("\nInstalls on non linux systems are not supported yet! :(", color="red")
+            sys.exit()
+
+        is_ras_pi = (plat == 'raspberry-pi')
+
+    if is_ras_pi:
+        print_color("\nInstalling components for Raspberry Pi")
+    else:
+        print_color("\nInstalling components for dev system")
+
+    # Check if we have root access
+    if os.geteuid() != 0:
+        print_color("\nYou don't have permissions to install items. Exiting", color="red")
+        sys.exit()
+
+    install_items = []
+
+    # update and --fix-missing package manager
+    update_command = [
+        "apt-get update",
+        "apt-get update --fix-missing"
+    ]
+    run_commands(update_command)
+
+
+    # install basic things
+    install_items.extend(Config.get("aptget"))
+
+    # install ras pi things
+    if is_ras_pi:
+        install_items.extend(Config.get("aptget-hw"))
+
+    install_command = [
+        "apt-get install -y " + " ".join(install_items),
+        "pip install --upgrade pip",
+        "pip install --upgrade virtualenv"
+    ]
+
+    run_commands(install_command)
+
+
+    if not is_ras_pi:
+        print_color("\nInstalling and activating virtual env")
+        create_venv()
+        start_venv()
+
+    platform_specific_installs = []
+
+    platform_specific_installs.append(
+        "pip install -r %s" % get_file_path(Config.get("requirements"))
+    )
+
+    # install pi and dev specific things
+    if is_ras_pi:
+        platform_specific_installs.append(
+            "pip install -r %s" % get_file_path(Config.get("requirements-hw"))
+        )
+    else:
+        platform_specific_installs.append(
+            "pip install numpy"
+        )
+
+    run_commands(platform_specific_installs)
+
+    if os.environ['SUDO_USER'] and not is_ras_pi:
+        print_color("\nRunning with sudo, so chown the virtual env dir to the sudo user.")
+        command = "chown -R {user}:{user} {dir}".format(user=os.environ['SUDO_USER'],
+                                                        dir=get_file_path(Config.get("venv")))
+        run_commands([command])
+
+
+    # install cameras
+    if is_ras_pi or '--cam' in args:
+        if os.path.isdir(get_file_path('install/mjpg-streamer')):
+            print_color("\nmjpg-streamer folder already exists! Not installing.")
+        else:
+            install_cam = [
+                "apt-get install -y " + " ".join(Config.get("aptget-cam")),
+                "ln -sf /usr/include/linux/videodev2.h /usr/include/linux/videodev.h",
+                "git clone https://github.com/jacksonliam/mjpg-streamer.git install/mjpg-streamer",
+                "make -C %s" % get_file_path("install/mjpg-streamer/mjpg-streamer-experimental"),
+                "make install -C %s" % get_file_path("install/mjpg-streamer/mjpg-streamer-experimental"),
+                "chmod 777 /usr/local/lib/mjpg-streamer -R"
+            ]
+
+            run_commands(install_cam)
+
+    if is_ras_pi:
+        i2c_enabled = os.system("i2cdetect -y 1 > /dev/null 2>&1")
+        if i2c_enabled != 0:
+            print_color("\ni2c is not enabled. Will run raspi-config to enable the device.")
+            print_color("Enable in Advanced Options > i2c")
+            print_color("\nEnter Y/y to continue and launch raspi-config or any other key to skip [y/N]:")
+
+            if raw_input().lower() == 'y':
+                run_commands(["raspi-config"])
+                print_color("\nYou may have to reboot to fully enable i2c")
+
+    print_color("\nFinished Install!\n", color="green")
+
+
+def run(args):
+    """ Run the rov code. Currently supports running the flask app
+    or the rov main loop by itself. Will also set debug vars with --debug.
+    Uses the install virtual env as well.
+    """
+
+    # if argument is passed and it's valid, set is_ras_pi if it's --pi
+    if len(args) > 0 and args[0] in ['--pi', '--dev']:
+        is_ras_pi = (args[0] == '--pi')
+
+    # Otherwise autodetect
+    else:
+        plat = get_platform()
+        if plat not in ['linux', 'raspberry-pi']:
+            print_color("\nInstalls on non linux systems are not supported yet! :(", color="red")
+            sys.exit()
+
+        is_ras_pi = (plat == 'raspberry-pi')
+
+
+    if not is_ras_pi:
+        start_venv()
+
+    set_env()
+
+    if '--debug' in args:
+        set_env("debug")
+
+    if '--rov' in args:
+        print_color("Running ROV main loop:\n")
+        os.system("python %s" % get_file_path("rov/rov.py"))
+    else:
+        print_color("Running full ROV stack:\n")
+        os.system("flask run --host=0.0.0.0") # bind flask app to 0.0.0.0
+
+
+def shell(args):
+    """ Create a shell with the virtual env variables set
+    """
+
+    print_color("Entering virtual env shell")
+
+    set_env()
+
+    if '--debug' in args:
+        set_env("debug")
+
+    commands = [
+        'export VIRTUAL_ENV="%s"' % get_file_path(Config.get("venv")), # venv root dir
+        'export PATH="$VIRTUAL_ENV/bin:$PATH"', # add venv/bin to path
+        'unset PYTHON_HOME', # unset so doesn't conflict with new path
+        'exec "${@:-$SHELL}"' # exec the users shell, with these variables set
+    ]
+
+    # Concat all the commands with ; and run as one command
+    os.system("; ".join(commands))
+
+    print_color("Exiting virtual env shell")
+
+
+def test(args):
+    """ Run testing framework
+    """
+
+    # if argument is passed and it's valid, set is_ras_pi if it's --pi
+    if len(args) > 0 and args[0] in ['--pi', '--dev']:
+        is_ras_pi = (args[0] == '--pi')
+
+    # Otherwise autodetect
+    else:
+        plat = get_platform()
+        if plat not in ['linux', 'raspberry-pi']:
+            print_color("\nInstalls on non linux systems are not supported yet! :(", color="red")
+            sys.exit()
+
+        is_ras_pi = (plat == 'raspberry-pi')
+
+
+    # Use the virtual env
+    if not is_ras_pi:
+        start_venv()
+
+    # hold list of failed tests
+    failed = []
+
+    # grab all arguments that start with --
+    tests = [t for t in args if t.startswith('--')]
+
+    # test all if not -- arguments are passed in
+    test_all = (len(tests) == 0)
+
+    # grab all arguments that don't start with -- (these are files to test)
+    test_files = [t for t in args if not t.startswith('--')]
+
+    # when no arguments are passed in for files, get the config testfiles
+    if len(test_files) == 0:
+        test_files = Config.get("testfiles")
+
+    if test_all or '--pep8' in tests:
+        print_color("\nRunning pep8 test...")
+
+        command = "pep8 --max-line-length={lineLength} --ignore={ignore}".format(
+            lineLength=Config.get("pep8").get("line-length"),
+            ignore=",".join(Config.get("pep8").get("ignore-errors"))
+        )
+
+        if not basic_test(command, test_files):
+            failed.append("pep8 conformity")
+        else:
+            print_color("Passed pep8 test!", color="green")
+
+    if test_all or '--pylint' in tests:
+        print_color("\nRunning pylint test...")
+
+        if not basic_test("pylint", test_files):
+            failed.append("pylint test")
+        else:
+            print_color("Passed pylint test!", color="green")
+
+    # Print out list of failed tests, and exit with non-zero value if failed
+    if len(failed) > 0:
+        print_color("\nDetected %d failed test(s):" % len(failed), color="red")
+        for failure in failed:
+            print_color("- %s" % failure, color="red")
+
+        sys.exit(1)
+    else:
+        print_color("\nPassed all tests!", color="green")
+
+
+def usage(args=None):
+    """ Prints the help and usage information
+    """
+
+    print "scotty install [--pi] [--dev [--cam]]"
+    print "   Installs required files. Autodetects install type"
+    print "   --pi:     Install as if this is a Pi"
+    print "   --dev:    Install as if this is a dev machine"
+    print "   --cam:    Also install mjpeg streamer for dev"
+    print ""
+    print "scotty run [--rov] [--debug]"
+    print "   Runs the full ROV stack"
+    print "   --rov:    Just test the ROV main loop"
+    print "   --debug:  Set FLASK_DEBUG and ROV_DEBUG"
+    print ""
+    print "scotty shell [--debug]"
+    print "   Runs a new shell, with the activated venv. Exit to leave venv"
+    print "   --debug:  Set FLASK_DEBUG and ROV_DEBUG"
+    print ""
+    print "scotty test [files...] [--pep8] [--pylint]"
+    print "   Runs the full testing framework"
+    print "   files:    optional list of files to test"
+    print "   --pep8:   Run pep8 test"
+    print "   --pylint: Run pylint test"
+    print ""
+    print "scotty [-h] [--help]"
+    print "   Display this help information"
+
+
+def main():
+    """ List of available commands. The first arugment is checked against
+    these and is mapped to a function to execute. If a command is passed that
+    isn't here, then exit
+    """
+
+    available_commands = {
+        "install": install,
+        "run": run,
+        "shell": shell,
+        "test": test,
+        "-h": usage,
+        "--help": usage,
+    }
+
+    # No command present
+    if len(sys.argv) < 2:
+        usage()
+        sys.exit(1)
+
+    command = sys.argv[1]
+
+    if command not in available_commands:
+        print_color("'%s' is not an available command\n" % command, color="red")
+        usage()
+        sys.exit(1)
+
+    # execute the method for the command
+    available_commands[command](sys.argv[2:])
+
+
+if __name__ == '__main__':
+    main()

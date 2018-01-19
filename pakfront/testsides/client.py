@@ -38,7 +38,6 @@ class ROVControl(object):
 	def getFlask(self,data):
 		self.socket.emit('dearflask',dumps(data))#,con.dataup,onresp)
 
-
 if __name__ == "__main__":
 	con = ROVControl()
 	i = 0
