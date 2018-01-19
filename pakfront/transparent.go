@@ -1,24 +1,26 @@
 package main
-import(
+
+import (
+	"bufio"
 	"fmt"
 	"net/http"
-	"bufio"
 )
 
-type Trans struct{
-	ip string
-	reqport int
-	camnum int
+type Trans struct {
+	ip         string
+	reqport    int
+	camnum     int
 	serverport int
-	status int
+	status     int
 }
+
 //This literally transparently hands off mjpegstreamer
-func (serv * Trans) Transreq(w http.ResponseWriter, r *http.Request) {
+func (serv *Trans) Transreq(w http.ResponseWriter, r *http.Request) {
 	if serv.status == 404 {
 		w.WriteHeader(404)
 		return
 	}
-	resp, err := http.Get(fmt.Sprintf("http://%v:%v/?action=stream_%v",serv.ip,serv.reqport,serv.camnum))
+	resp, err := http.Get(fmt.Sprintf("http://%v:%v/?action=stream_%v", serv.ip, serv.reqport, serv.camnum))
 	w.Header().Set("Pragma", "no-cache")
 	w.Header().Add("Expires", "Mon, 3 Jan 1917 12:34:56 GMT")
 	w.Header().Add("Content-Type", "multipart/x-mixed-replace;boundary=boundarydonotcross")
@@ -38,8 +40,8 @@ func (serv * Trans) Transreq(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func Mktrans(ip string, reqport int, camnum int, serverport int)(ret Trans){
-	resp, err := http.Get(fmt.Sprintf("http://%v:%v/?action=snapshot_%v", ip, reqport,camnum))
+func Mktrans(ip string, reqport int, camnum int, serverport int) (ret Trans) {
+	resp, err := http.Get(fmt.Sprintf("http://%v:%v/?action=snapshot_%v", ip, reqport, camnum))
 	check(err)
 	ret.status = resp.StatusCode
 	ret.ip = ip

@@ -6,12 +6,12 @@ import (
 	"net/http"
 	"runtime"
 
+	"github.com/googollee/go-socket.io"
 	"github.com/graarh/golang-socketio"
 	"github.com/graarh/golang-socketio/transport"
-	"github.com/googollee/go-socket.io"
 )
 
-func sockiopxy(rovIP string, rovPort int, clientPort string){
+func sockiopxy(rovIP string, rovPort int, clientPort string) {
 	//Makes it so we do not consume to many resources
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
@@ -34,18 +34,17 @@ func sockiopxy(rovIP string, rovPort int, clientPort string){
 			return "Done"
 		})
 		pxyToROV.On("dearclient", func(c *gosocketio.Channel, msg string) string {
-			so.Emit("dearclient",msg)
+			so.Emit("dearclient", msg)
 			return "Done"
 		})
 
 		so.On("dearclient", func(msg string) {
-			pxyToROV.Emit("dearclient","")
+			pxyToROV.Emit("dearclient", "")
 		})
 
 		so.On("dearflask", func(msg string) {
 			pxyToROV.Emit("dearflask", msg)
 		})
-
 
 		so.On("disconnection", func() {
 		})
