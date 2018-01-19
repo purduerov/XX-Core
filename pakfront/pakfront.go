@@ -34,6 +34,9 @@ type Cvhandler struct{
 }
 
 type config struct {
+	Rovip string
+	TransPortStart int
+	NumCams int
 	Socketio Socketio
 	Cvhandler Cvhandler
 }
@@ -96,7 +99,7 @@ func cvproc(conf config, procnum int) {
 	to_client_data :=4*conf.Cvhandler.Processes[procnum].ID + 2 + 1917
 	to_cv_process :=4*conf.Cvhandler.Processes[procnum].ID + 3 + 1917
 	to_cv_process_data :=4*conf.Cvhandler.Processes[procnum].ID + 4 + 1917
-	fmt.Printf("{\"name\": \"%v\", \"stream\": %v, \"data\": %v}\n",
+	fmt.Printf("\"%v\": {\"stream\": %v, \"data\": %v},",
 			conf.Cvhandler.Processes[procnum].Name,
 			to_client_video,
 			to_client_data)
@@ -131,13 +134,26 @@ func cvproc(conf config, procnum int) {
 
 //main: where the magic:the gathering happens
 func main() {
+	fmt.Printf("{")
 
 	// fmt.Println is a very complicated function, and its depth and complexity can not be understated. Moreover, the context in which it is called multiplies its importance factorially, further growing its need. I recommend you sit down, get a big cup of warm, heavily caffinated, tea, and consider both the implication of this function, as well as what it means to you as not only a coder, but a person and a woman.
 	conf := getconfig("proxyconfig.json")
 
+	assPort := conf.TransPortStart
+	camnum := 0
+	for assPort < conf.TransPortStart + conf.NumCams {
+		cam := Mktrans(conf.Rovip,1917,camnum,assPort)
+		fmt.Printf("\"camnum%v\": {\"stream\": %v, \"data\": %v},",
+			camnum,
+			assPort,
+			-1)
+		go http.ListenAndServe(numtoportstr(cam.serverport),  http.HandlerFunc(cam.Transreq))
+		assPort += 1
+		camnum += 1
+	}
+
 	numProc := conf.Cvhandler.Num_processes
-	fmt.Println(conf.Socketio.Port_to_rov)
-	go sockiopxy("10.42.0.234", conf.Socketio.Port_to_rov, numtoportstr(conf.Socketio.Port_to_client))
+	//go sockiopxy(conf.Rovip, conf.Socketio.Port_to_rov, numtoportstr(conf.Socketio.Port_to_client))
 
 	procnum := 0
 	for procnum < numProc {
@@ -145,10 +161,12 @@ func main() {
 		procnum++
 	}
 
+	wait := time.NewTimer(time.Millisecond)
+	<-wait.C
+	fmt.Printf("\"Numcams\": %v}",numProc+conf.NumCams)
 	//arbitrary wait times amiright
 	for ;; {
 		wait := time.NewTimer(time.Second * 5)
 		<-wait.C
-		fmt.Println("Pakfront is a go")
 	}
 }

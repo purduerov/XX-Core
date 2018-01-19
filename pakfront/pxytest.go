@@ -23,27 +23,7 @@ func check(e error) {
 	}
 }
 
-//This literally transparently hands off mjpegstreamer
-func transreq(w http.ResponseWriter, r *http.Request) {
-	resp, err := http.Get("http://localhost:1917/?action=stream")
-	w.Header().Set("Pragma", "no-cache")
-	w.Header().Add("Expires", "Mon, 3 Jan 1917 12:34:56 GMT")
-	w.Header().Add("Content-Type", "multipart/x-mixed-replace;boundary=boundarydonotcross")
-	w.Header().Add("Access-Control-Allow-Origin", "*")
-	w.Header().Add("Connection", "close")
-	w.Header().Add("Server", "MJPG-Streamer/0.2")
-	w.Header().Add("Cache-Control", "no-store, no-cache, must-revalidate, pre-check=0, post-check=0, max-age=0")
 
-	data := make([]byte, 1)
-	check(err)
-	reader := bufio.NewReader(resp.Body)
-	for {
-		d, err := reader.ReadByte()
-		data[0] = d
-		check(err)
-		w.Write(data)
-	}
-}
 
 //This recives data over a tcp port and saves it in a byte array
 //currently used to pick up data from the stdintotcp.go
