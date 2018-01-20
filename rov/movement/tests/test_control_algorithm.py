@@ -5,6 +5,8 @@ Set of tests for checking the functionality of the controller class. These tests
 import pytest
 from rov.movement.controls.Control_Algorithm import *
 
+buffer = 0.001
+
 @pytest.fixture()
 def sensor_data():
     data = {'sensors':
@@ -34,6 +36,8 @@ def sensor_data():
 def test_returns_empty_user_input_if_deactivated():
     # initializes a control algorithm with the desired position of 4 for the z parameter
     z = ControlAlgorithm('z', sensor_data())
+    time.sleep(buffer)
+
     # activates then deactivates
     z.activate()
     z.desired_position = 4
@@ -44,7 +48,8 @@ def test_returns_empty_user_input_if_deactivated():
 def test_control_algorithm_correctly_gets_and_sets_pid_values():
     # initializes a control algorithm with the desired position of 2 for the y parameter
     y = ControlAlgorithm('y', sensor_data())
-    # activates
+    # activates    
+    time.sleep(buffer)
     y.activate()
     y.p = 0.5
     y.i = 0.3
@@ -54,7 +59,8 @@ def test_control_algorithm_correctly_gets_and_sets_pid_values():
     assert y.d == 4
 
 def test_correctly_gets_and_sets_desired_position():
-    x = ControlAlgorithm('x', sensor_data())
+    x = ControlAlgorithm('x', sensor_data()) 
+    time.sleep(buffer)
     x.activate()
     x.desired_position = 4
     output = x.calculate()
@@ -63,6 +69,7 @@ def test_correctly_gets_and_sets_desired_position():
 
 def test_activate_deactivate_and_toggle_functions_work_properly():
     roll = ControlAlgorithm('roll', sensor_data())
+    time.sleep(buffer)
     roll.deactivate()
     assert roll.getActivated() == False
     roll.toggle()
@@ -71,5 +78,5 @@ def test_activate_deactivate_and_toggle_functions_work_properly():
     assert roll.getActivated() == False
 
 
-def test_control_algorithm_output_results_make_sense():
+#def test_control_algorithm_output_results_make_sense():
     

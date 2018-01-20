@@ -1,14 +1,14 @@
 from Control_Algorithm import ControlAlgorithm
 
 class Master_Control_Handler():
-    #figure out the activation logic
-    #compare the activation logic
-
-    # TODO: What is the point of requiring frozen_in if you don't ever set it to anything here?
-    # TODO: If you dont' think frozen_in is required, is desired_thrust_in? Or does it have to be set when object is created?
-    def __init__(self, desired_thrust_in, frozen_in, sensors): #refer to the XX-Core/frontend/src/packets.js
-        self.sensors = sensors
-        self.dof_control = desired_thrust_in
+    # figure out the activation logic
+    # compare the activation logic
+    
+    # TODO: create a read me explaining this and showing how to use.
+    def __init__(self, frozen_in, sensors): #refer to the XX-Core/frontend/src/packets.js
+        #dont think this is needed because it directly go inst o the control algorithms
+        #self.sensors = sensors
+        self.dof_control = [0,0,0,0,0,0]
         self.dimension_lock = [False, False, False, False, False, False]
         self.dof_names = ['x', 'y', 'z', 'roll', 'pitch', 'yaw']
         self.freeze = [ControlAlgorithm('x', sensors['imu']), ControlAlgorithm('y', sensors['imu']), ControlAlgorithm('z', sensors['pressure']), ControlAlgorithm('roll', sensors['imu']), ControlAlgorithm('pitch', sensors['imu']), ControlAlgorithm('yaw', sensors['imu'])]
@@ -31,6 +31,9 @@ class Master_Control_Handler():
             # if the dof is frozen - calculate the adjustment
             if frozen_in[i] == True:
                 self.dof_control[i] = self.freeze[i].calculate()[i]
+            else:
+                # sets to user input value if not frozen
+                self.dof_control[i] = desired_thrust_in[i]
 
         self.prev_activate = frozen_in
         return self.dof_control #returns the updated values
@@ -59,7 +62,7 @@ if __name__ == "__main__":
             }
         }
 
-    master = Master_Control_Handler([0,0,0,0,0,0], [0,0,0,0,0,0], data['sensors'])
+    master = Master_Control_Handler([0,0,0,0,0,0], data['sensors'])
     master.master([0,0,0,0,0,0], [True,True,True,True,True,True])
     print(data)
 

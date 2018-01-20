@@ -1,4 +1,4 @@
-from controls.PID_Controller import PID
+from rov.controls.PID_Controller import PID
 import time
 
 # Control Algorithm
@@ -81,7 +81,7 @@ class ControlAlgorithm():
     def activate(self):
         self._activated = True
         self._desired_position = self.current_position()
-        self.reset(self._error())
+        self.reset()
 
     def deactivate(self):
         self._activated = False
@@ -119,7 +119,7 @@ class ControlAlgorithm():
                 value = -1
 
             # TODO: What is the difference between _output and output????
-            self._output[self._parameter] = output
+            self._output[self._dof] = value
         else:
            self. _pid.reset()
 
@@ -151,13 +151,12 @@ class ControlAlgorithm():
         self._pid.d = value
 
     def reset(self):
-        self._pid.reset(self._desired_position - self.current_position())
+        self._desired_position = self.current_position()
+        self._pid.reset(0)
         self._previous_time = time.time()
         self._output = [0, 0, 0, 0, 0, 0]
 
     def _x(self):
-        print('_x')
-        self._sensor['linear-acceleration']['x'] = 2
         return self._sensor['linear-acceleration']['x']
     def _y(self):
         return self._sensor['linear-acceleration']['y']
