@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Camera from 'react-camera';
 import SliderControl from '../SliderControl/SliderControl.jsx';
 import styles from "./ThrusterScales.css";
 
