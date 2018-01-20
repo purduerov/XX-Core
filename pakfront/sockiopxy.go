@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"runtime"
+	"os"
 
 	"github.com/graarh/golang-socketio"
 	"github.com/graarh/golang-socketio/transport"
@@ -13,6 +14,11 @@ import (
 
 func sockiopxy(rovIP string, rovPort int, clientPort string){
 	//Makes it so we do not consume to many resources
+	path := os.Getenv("FOO") // added code ******
+
+	fileopener := openfile(path) //added code ******
+
+
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
 	//Connects to the ROV
@@ -31,10 +37,12 @@ func sockiopxy(rovIP string, rovPort int, clientPort string){
 		//All it does is bounce the data through, while logging
 		pxyToROV.On("dearflask", func(c *gosocketio.Channel, msg string) string {
 			so.Emit("dearflask")
+			packFlask(msg,fileopener) //added code ********
 			return "Done"
 		})
 		pxyToROV.On("dearclient", func(c *gosocketio.Channel, msg string) string {
 			so.Emit("dearclient",msg)
+			packClient(msg,fileopener) // added code ********
 			return "Done"
 		})
 
