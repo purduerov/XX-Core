@@ -5,43 +5,22 @@ package main
 import (
 	"bufio"
 	"encoding/binary"
+	"fmt"
 	"github.com/graarh/golang-socketio"
 	"github.com/graarh/golang-socketio/transport"
 	"io/ioutil"
+	"log"
 	"net"
 	"net/http"
-	"fmt"
-	"log"
 )
 
 type Channel struct {
 	Channel string `json:"channel"`
 }
+
 func check(e error) {
 	if e != nil {
 		panic("OUR ERROR FUNCTION")
-	}
-}
-
-//This literally transparently hands off mjpegstreamer
-func transreq(w http.ResponseWriter, r *http.Request) {
-	resp, err := http.Get("http://localhost:1917/?action=stream")
-	w.Header().Set("Pragma", "no-cache")
-	w.Header().Add("Expires", "Mon, 3 Jan 1917 12:34:56 GMT")
-	w.Header().Add("Content-Type", "multipart/x-mixed-replace;boundary=boundarydonotcross")
-	w.Header().Add("Access-Control-Allow-Origin", "*")
-	w.Header().Add("Connection", "close")
-	w.Header().Add("Server", "MJPG-Streamer/0.2")
-	w.Header().Add("Cache-Control", "no-store, no-cache, must-revalidate, pre-check=0, post-check=0, max-age=0")
-
-	data := make([]byte, 1)
-	check(err)
-	reader := bufio.NewReader(resp.Body)
-	for {
-		d, err := reader.ReadByte()
-		data[0] = d
-		check(err)
-		w.Write(data)
 	}
 }
 
@@ -86,21 +65,21 @@ func mjpegstreamprobe() {
 	}
 	tooldir := "~/foo/bar" //os.Getenv("TOOLS")
 	fmt.Println(tooldir)
-	err = ioutil.WriteFile(tooldir + "/bytes", data, 0644)
+	err = ioutil.WriteFile(tooldir+"/bytes", data, 0644)
 	check(err)
 }
 
 //main: where the magic:the gathering happens
 func main() {
 	server := gosocketio.NewServer(transport.GetDefaultWebsocketTransport())
-	server.On(gosocketio.OnConnection, func(c *gosocketio.Channel){
+	server.On(gosocketio.OnConnection, func(c *gosocketio.Channel) {
 		log.Println("Conected")
 	})
-	server.On(gosocketio.OnDisconnection, func(c *gosocketio.Channel){
+	server.On(gosocketio.OnDisconnection, func(c *gosocketio.Channel) {
 		log.Println("Disconnected")
 	})
 	serveMux := http.NewServeMux()
-	serveMux.Handle("/socket.io/",server)
+	serveMux.Handle("/socket.io/", server)
 	log.Println("Starting...")
-	log.Panic(http.ListenAndServe(":5000",serveMux))
+	log.Panic(http.ListenAndServe(":5000", serveMux))
 }

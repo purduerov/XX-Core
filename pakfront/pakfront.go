@@ -1,41 +1,43 @@
-//Pakfront routes data to who needs it, like cv, cv data, logging, and controls. Is named after the German Second World War Tactic of 
+//Pakfront routes data to who needs it, like cv, cv data, logging, and controls. Is named after the German Second World War Tactic of
 //Concentrating anti-tank guns. Deutschland, Deutschland über alles
 package main
 
 import (
 	"bufio"
+	"encoding/binary"
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net"
 	"net/http"
-	"time"
-	"encoding/binary"
-	"io/ioutil"
-	"encoding/json"
 	"strconv"
-
+	"time"
 )
 
-type Socketio struct{
-	Port_to_rov int
+type Socketio struct {
+	Port_to_rov    int
 	Port_to_client int
 }
 
-type Process struct{
+type Process struct {
 	Name string
-	ID int
+	ID   int
 }
 
-type Cvhandler struct{
+type Cvhandler struct {
 	Number_of_images int
-	Size_of_image int
-	Size_of_data int
-	Num_processes int
-	Processes []Process
+	Size_of_image    int
+	Size_of_data     int
+	Num_processes    int
+	Processes        []Process
 }
 
 type config struct {
-	Socketio Socketio
-	Cvhandler Cvhandler
+	Rovip          string
+	TransPortStart int
+	NumCams        int
+	Socketio       Socketio
+	Cvhandler      Cvhandler
 }
 
 //Checks for a problem. Guess it could be better maybe
@@ -64,15 +66,15 @@ func tcprec(port string, size int) (r int, b []byte) {
 	sizein := binary.BigEndian.Uint64(buf[0:8])
 	tread := read
 
-	for tread < int(sizein) + 8 {
+	for tread < int(sizein)+8 {
 		read, err := bufio.NewReader(conn).Read(buf[tread:])
 		check(err)
 		tread += read
 	}
-	return tread-8, buf[8:]
+	return tread - 8, buf[8:]
 }
 
-func getconfig(filename string) config{
+func getconfig(filename string) config {
 	content, err := ioutil.ReadFile(filename)
 	check(err)
 	var ret config
@@ -91,15 +93,14 @@ func cvproc(conf config, procnum int) {
 	sizeimg := conf.Cvhandler.Size_of_image
 	sizedata := conf.Cvhandler.Size_of_data
 
-
-	to_client_video :=4*conf.Cvhandler.Processes[procnum].ID + 1 + 1917
-	to_client_data :=4*conf.Cvhandler.Processes[procnum].ID + 2 + 1917
-	to_cv_process :=4*conf.Cvhandler.Processes[procnum].ID + 3 + 1917
-	to_cv_process_data :=4*conf.Cvhandler.Processes[procnum].ID + 4 + 1917
-	fmt.Printf("{\"name\": \"%v\", \"stream\": %v, \"data\": %v}\n",
-			conf.Cvhandler.Processes[procnum].Name,
-			to_client_video,
-			to_client_data)
+	to_client_video := 4*conf.Cvhandler.Processes[procnum].ID + 1 + 1917
+	to_client_data := 4*conf.Cvhandler.Processes[procnum].ID + 2 + 1917
+	to_cv_process := 4*conf.Cvhandler.Processes[procnum].ID + 3 + 1917
+	to_cv_process_data := 4*conf.Cvhandler.Processes[procnum].ID + 4 + 1917
+	fmt.Printf("\"%v\": {\"stream\": %v, \"data\": %v},",
+		conf.Cvhandler.Processes[procnum].Name,
+		to_client_video,
+		to_client_data)
 
 	//Channel is made with a certain buffer size
 	chanwrite1 := Mkchanwrite(numimg, sizeimg)
@@ -121,7 +122,7 @@ func cvproc(conf config, procnum int) {
 	go func() {
 		for {
 			read, msg = tcprec(numtoportstr(to_cv_process_data), sizedata)
-			datawrite1.Buffer.Load(msg[:read],read)
+			datawrite1.Buffer.Load(msg[:read], read)
 			wait := time.NewTimer(time.Nanosecond * 100)
 			<-wait.C
 		}
@@ -131,13 +132,26 @@ func cvproc(conf config, procnum int) {
 
 //main: where the magic:the gathering happens
 func main() {
+	fmt.Printf("{")
 
 	// fmt.Println is a very complicated function, and its depth and complexity can not be understated. Moreover, the context in which it is called multiplies its importance factorially, further growing its need. I recommend you sit down, get a big cup of warm, heavily caffinated, tea, and consider both the implication of this function, as well as what it means to you as not only a coder, but a person and a woman.
 	conf := getconfig("proxyconfig.json")
 
+	assPort := conf.TransPortStart
+	camnum := 0
+	for assPort < conf.TransPortStart+conf.NumCams {
+		cam := Mktrans(conf.Rovip, 1917, camnum, assPort)
+		fmt.Printf("\"camnum%v\": {\"stream\": %v, \"data\": %v},",
+			camnum,
+			assPort,
+			-1)
+		go http.ListenAndServe(numtoportstr(cam.serverport), http.HandlerFunc(cam.Transreq))
+		assPort += 1
+		camnum += 1
+	}
+
 	numProc := conf.Cvhandler.Num_processes
-	fmt.Println(conf.Socketio.Port_to_rov)
-	go sockiopxy("10.42.0.234", conf.Socketio.Port_to_rov, numtoportstr(conf.Socketio.Port_to_client))
+	//go sockiopxy(conf.Rovip, conf.Socketio.Port_to_rov, numtoportstr(conf.Socketio.Port_to_client))
 
 	procnum := 0
 	for procnum < numProc {
@@ -145,10 +159,12 @@ func main() {
 		procnum++
 	}
 
+	wait := time.NewTimer(time.Millisecond)
+	<-wait.C
+	fmt.Printf("\"Numcams\": %v}", numProc+conf.NumCams)
 	//arbitrary wait times amiright
-	for ;; {
+	for {
 		wait := time.NewTimer(time.Second * 5)
 		<-wait.C
-		fmt.Println("Pakfront is a go")
 	}
 }

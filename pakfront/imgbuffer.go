@@ -30,10 +30,8 @@ var Headp2 = []byte{0x0d, 0x0a, 0x58, 0x2d, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74, 
 //String implements the String interface for Imgbuffer.
 //Prints out all relevant information
 func (buff Imgbuffer) String() string {
-	return fmt.Sprintf("R Point: %v, W Point: %v\nDR Point: %v, DW Point: %v\nIm Size: %v\n\n", buff.SRptr, buff.SWptr, buff.DRptr, buff.DWptr,buff.Sizes[buff.SRptr])
+	return fmt.Sprintf("R Point: %v, W Point: %v\nDR Point: %v, DW Point: %v\nIm Size: %v\n\n", buff.SRptr, buff.SWptr, buff.DRptr, buff.DWptr, buff.Sizes[buff.SRptr])
 }
-
-
 
 //Load takes Data, and the amount of bytes and saves it into the buffer
 //Currently Load and Dump are mutually exclusive with a mutex
@@ -78,7 +76,7 @@ func (buff *Imgbuffer) Dump() (read int, img []byte) {
 		msg = buff.Data[buff.DRptr : buff.DRptr+buff.Sizes[buff.SRptr]]
 	} else {
 		startChunk := buff.DRptr + buff.Sizes[buff.SRptr]
-		msg = append(buff.Data[buff.DRptr:buff.Datasize],buff.Data[0:startChunk%buff.Datasize]...)
+		msg = append(buff.Data[buff.DRptr:buff.Datasize], buff.Data[0:startChunk%buff.Datasize]...)
 	}
 
 	//Moves the pointers properly
@@ -101,34 +99,33 @@ func Mkbuffer(nImg int, nSize int) (buf Imgbuffer) {
 	return
 }
 
-
 /*
-                   ,-'     `._ 
-                 ,'           `.        ,-. 
-               ,'               \       ),.\ 
-     ,.       /                  \     /(  \; 
-    /'\\     ,o.        ,ooooo.   \  ,'  `-') 
-    )) )`. d8P"Y8.    ,8P"""""Y8.  `'  .--"' 
-   (`-'   `Y'  `Y8    dP       `'     / 
-    `----.(   __ `    ,' ,---.       ( 
-           ),--.`.   (  ;,---.        ) 
-          / \O_,' )   \  \O_,'        | 
-         ;  `-- ,'       `---'        | 
-         |    -'         `.           | 
-        _;    ,            )          : 
-     _.'|     `.:._   ,.::" `..       | 
-  --'   |   .'     """         `      |`. 
-        |  :;      :   :     _.       |`.`.-'--. 
-        |  ' .     :   :__.,'|/       |  \ 
-        `     \--.__.-'|_|_|-/        /   ) 
-         \     \_   `--^"__,'        ,    | 
-   -hrr- ;  `    `--^---'          ,'     | 
-          \  `                    /      / 
-           \   `    _ _          / 
-            \           `       / 
-             \           '    ,' 
-              `.       ,   _,' 
-                `-.___.---' 
+                   ,-'     `._
+                 ,'           `.        ,-.
+               ,'               \       ),.\
+     ,.       /                  \     /(  \;
+    /'\\     ,o.        ,ooooo.   \  ,'  `-')
+    )) )`. d8P"Y8.    ,8P"""""Y8.  `'  .--"'
+   (`-'   `Y'  `Y8    dP       `'     /
+    `----.(   __ `    ,' ,---.       (
+           ),--.`.   (  ;,---.        )
+          / \O_,' )   \  \O_,'        |
+         ;  `-- ,'       `---'        |
+         |    -'         `.           |
+        _;    ,            )          :
+     _.'|     `.:._   ,.::" `..       |
+  --'   |   .'     """         `      |`.
+        |  :;      :   :     _.       |`.`.-'--.
+        |  ' .     :   :__.,'|/       |  \
+        `     \--.__.-'|_|_|-/        /   )
+         \     \_   `--^"__,'        ,    |
+   -hrr- ;  `    `--^---'          ,'     |
+          \  `                    /      /
+           \   `    _ _          /
+            \           `       /
+             \           '    ,'
+              `.       ,   _,'
+                `-.___.---'
 */
 func Mkchanwrite(numimg int, sizeimg int) (writer chanwrite) {
 	writer.Buffer = Mkbuffer(numimg, sizeimg)
