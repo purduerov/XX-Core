@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Camera from 'react-camera';
 import styles from "./SliderControl.css";
 
 
