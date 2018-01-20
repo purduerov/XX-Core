@@ -5,25 +5,24 @@ package main
 import (
 	"bufio"
 	"encoding/binary"
+	"fmt"
 	"github.com/graarh/golang-socketio"
 	"github.com/graarh/golang-socketio/transport"
 	"io/ioutil"
+	"log"
 	"net"
 	"net/http"
-	"fmt"
-	"log"
 )
 
 type Channel struct {
 	Channel string `json:"channel"`
 }
+
 func check(e error) {
 	if e != nil {
 		panic("OUR ERROR FUNCTION")
 	}
 }
-
-
 
 //This recives data over a tcp port and saves it in a byte array
 //currently used to pick up data from the stdintotcp.go
@@ -66,21 +65,21 @@ func mjpegstreamprobe() {
 	}
 	tooldir := "~/foo/bar" //os.Getenv("TOOLS")
 	fmt.Println(tooldir)
-	err = ioutil.WriteFile(tooldir + "/bytes", data, 0644)
+	err = ioutil.WriteFile(tooldir+"/bytes", data, 0644)
 	check(err)
 }
 
 //main: where the magic:the gathering happens
 func main() {
 	server := gosocketio.NewServer(transport.GetDefaultWebsocketTransport())
-	server.On(gosocketio.OnConnection, func(c *gosocketio.Channel){
+	server.On(gosocketio.OnConnection, func(c *gosocketio.Channel) {
 		log.Println("Conected")
 	})
-	server.On(gosocketio.OnDisconnection, func(c *gosocketio.Channel){
+	server.On(gosocketio.OnDisconnection, func(c *gosocketio.Channel) {
 		log.Println("Disconnected")
 	})
 	serveMux := http.NewServeMux()
-	serveMux.Handle("/socket.io/",server)
+	serveMux.Handle("/socket.io/", server)
 	log.Println("Starting...")
-	log.Panic(http.ListenAndServe(":5000",serveMux))
+	log.Panic(http.ListenAndServe(":5000", serveMux))
 }
