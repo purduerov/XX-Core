@@ -9,7 +9,7 @@ import ThrusterInfo from './src/components/ThrusterInfo.jsx';
 import ThrusterScales from './src/components/ThrusterScales.jsx';
 
 //var packets = require("./src/packets.js");
-let socketHost = `ws://raspberrypi.local:5000`;
+let socketHost = `ws://localhost:5001`;
 let socket = io.connect(socketHost, {transports: ['websocket']});
 let {shell, app, ipcRenderer} = window.require('electron');
 
