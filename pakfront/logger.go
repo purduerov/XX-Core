@@ -55,7 +55,6 @@ func openfile(pat string) FileOpener {
 	clientlogfile := path + "/dearclientlog.txt" //path to the client file in the folder
 	flasklogfile := path + "/dearflaskFile.txt"  //path to the flask file in the folder
 
-	log.Println(clientlogfile)
 
 	f, err := os.Create(clientlogfile) // create file if doesn't exist
 

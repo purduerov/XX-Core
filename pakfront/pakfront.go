@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"strconv"
 	"time"
+	"log"
 )
 
 type Socketio struct {
@@ -43,7 +44,7 @@ type config struct {
 //Checks for a problem. Guess it could be better maybe
 func check(e error) {
 	if e != nil {
-		panic("OUR ERROR FUNCTION")
+		log.Println(e)
 	}
 }
 
@@ -161,7 +162,7 @@ func main() {
 
 	wait := time.NewTimer(time.Millisecond)
 	<-wait.C
-	fmt.Printf("\"Numcams\": %v}", numProc+conf.NumCams)
+	fmt.Printf("\"Numcams\": %v}\n", numProc+conf.NumCams)
 	//arbitrary wait times amiright
 	for {
 		wait := time.NewTimer(time.Second * 5)

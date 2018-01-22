@@ -12,3 +12,4 @@ mv pakfront bin/
 cp $pxydir/CV/* bin/
 cp $pxydir/proxyconfig.json .
 cp $pxydir/CVhandles.py bin/
+sudo chmod 770 bin/*

@@ -8,7 +8,7 @@ from json import dumps
 import time
 signal(SIGPIPE, SIG_DFL)
 MJPGPORT=1917
-ROVIP="10.42.0.234"
+ROVIP="localhost"
 
 
 def get_image(camnum):
