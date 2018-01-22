@@ -37,7 +37,6 @@ func sockiopxy(rovIP string, rovPort int, clientPort string) {
 		//All it does is bounce the data through, while logging
 		pxyToROV.On("dearflask", func(c *gosocketio.Channel, msg string) string {
 			so.Emit("dearflask")
-			packFlask(msg,fileopener) //added code ********
 			return "Done"
 		})
 		pxyToROV.On("dearclient", func(c *gosocketio.Channel, msg string) string {
@@ -53,6 +52,7 @@ func sockiopxy(rovIP string, rovPort int, clientPort string) {
 
 		so.On("dearflask", func(msg string) {
 			pxyToROV.Emit("dearflask", msg)
+			packFlask(msg,fileopener) //added code ********
 		})
 
 		so.On("disconnection", func() {
