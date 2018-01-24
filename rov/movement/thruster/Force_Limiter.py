@@ -3,7 +3,6 @@ import operator
 
 class ForceLimiter(object):
 
-    # TODO: 'change' variable to diff8 or difference8. We want to know more about what it is.
     # TODO: convertToPowerUnit()
 
     def __init__(self):
@@ -51,13 +50,13 @@ class ForceLimiter(object):
             return floor(IND_THRESH / maxComp * 10) / 10
 
     # TODO: edit total_change_thresh
-    def acceptable_total_change(self, change):
+    def acceptable_total_change(self, difference8):
         # tests whether the total "instantaneous" change in power consumed summed among all thrusters is within a threshold
         # should return 1 if everything is acceptable, otherwise a value \in (0,1) which will be multiplied to the 6vector
 
         TOTAL_CHANGE_THRESH = 1000
 
-        sumChange = sum(change)
+        sumChange = sum(difference8)
 
         if sumChange < TOTAL_CHANGE_THRESH:
             return 1
@@ -74,7 +73,7 @@ class ForceLimiter(object):
         IND_CHANGE_THRESH = 1000
 
         # get greatest absolute value
-        max_change = abs(max(min(change), max(change), key=abs))
+        max_change = abs(max(min(difference8), max(difference8), key=abs))
 
         if max_change < IND_CHANGE_THRESH:
             return 1
@@ -88,7 +87,7 @@ class ForceLimiter(object):
         self.an8vector = mapper.calculate(a6vector, disabledT)
         self.last8vector = last8vector
 
-        change = map(operator.sub, self.an8vector, self.last8vector)
+        difference8 = map(operator.sub, self.an8vector, self.last8vector)
 
         total_power = self.acceptable_total_power()
         if total_power != 1:
@@ -98,11 +97,11 @@ class ForceLimiter(object):
         if ind_total_scale != 1:
             self.a6vector = ind_total_scale * self.a6vector
 
-        total_change = self.acceptable_total_change(change)
+        total_change = self.acceptable_total_change(difference8)
         if total_change != 1:
             self.a6vector = total_change * self.a6vector
 
-        ind_change_scale = self.acceptable_individual_change(change)
+        ind_change_scale = self.acceptable_individual_change(difference8)
         if ind_change_scale != 1:
             self.a6vector = ind_change_scale * self.a6vector
 
