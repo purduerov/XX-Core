@@ -82,10 +82,10 @@ class ForceLimiter(object):
             # TODO: JASON: Need function to calculate direction scalar from power scalar.
             return floor(IND_CHANGE_THRESH / max_change * 10) / 10
 
-    def enforce(self, a6vector, last8vector):
+    def enforce(self, a6vector, last8vector, disabledT):
 
         self.a6vector = a6vector
-        self.an8vector = mapper.calculate(a6vector)
+        self.an8vector = mapper.calculate(a6vector, disabledT)
         self.last8vector = last8vector
 
         change = map(operator.sub, self.an8vector, self.last8vector)
