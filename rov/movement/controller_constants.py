@@ -11,3 +11,7 @@ THRUST_7 = 1
 #VERTICAL = TODO define constants for the vertical, horizontal, left, and right thrusters
 
 LIST_OF_THRUSTER = [THRUST_0, THRUST_1, THRUST_2, THRUST_3, THRUST_4, THRUST_5, THRUST_6, THRUST_7]
+
+PID_P = 1
+PID_I = 1
+PID_D = 1
