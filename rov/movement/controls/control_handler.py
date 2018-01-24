@@ -11,6 +11,7 @@ from Control_Algorithm import ControlAlgorithm
 #   1. handler = Master_Control_Handler([0,0,1,0,0,0], sensors)
 #   2. handler.master()
 #   -   This function returns the new thruster input ex: [0,1,0.4,-0.3,0]
+#   -   Use handler.tune(3,2,1) to change the pid values
 
 class Master_Control_Handler():
     # figure out the activation logic
@@ -47,6 +48,15 @@ class Master_Control_Handler():
 
         self.prev_activate = frozen_in
         return self.dof_control #returns the updated values
+
+    # allows tuning of the pid values when testing 
+    # will probably need to be able to change each individual dof
+    # but this will do for now and will be quick to change
+    def tune(self, p, i, d):
+        for i in range(6):
+            self.freeze[i].p = p
+            self.freeze[i].i = i
+            self.freeze[i].d = d
     
 if __name__ == "__main__":
     data = {'sensors':
