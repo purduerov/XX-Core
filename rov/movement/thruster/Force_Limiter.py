@@ -19,6 +19,10 @@ class ForceLimiter(object):
     4. acceptable_individual_change
     """
 
+    def convertToPowerUnit(self):
+        # equation: PWM vs Power = 0.1145x2 - 9.4025x + 193.1
+
+
     # TODO: edit powerThresh constant, import thruster_power function function, edit else return value
     def acceptable_total_power(self):
         # tests the total power consumed
@@ -31,7 +35,7 @@ class ForceLimiter(object):
             return 1
         else:
             # TODO: JASON: Need function to calculate direction scalar from power scalar.
-            return 0.5
+            return floor(POWER_THRESH/totalPower * 10) / 10
 
     # TODO: edit ind_thresh
     def acceptable_individual_total(self):
