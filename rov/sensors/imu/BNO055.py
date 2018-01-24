@@ -1,4 +1,4 @@
-import Adafruit_BNO055
+from Adafruit_BNO055 import BNO055
 
 
 class IMU(object):
@@ -44,7 +44,7 @@ class IMU(object):
         self._data['euler']['roll']    = euler[1]
         self._data['euler']['pitch']   = euler[2]
 
-        gyro = self._bno.read_gyroscrope()
+	gyro = self._bno.read_gyroscope()
         self._data['gyro']['x'] = gyro[0]
         self._data['gyro']['y'] = gyro[1]
         self._data['gyro']['z'] = gyro[2]
