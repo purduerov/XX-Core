@@ -1,4 +1,4 @@
-from rov.controls.PID_Controller import PID
+from PID_Controller import PID
 import time
 
 # Control Algorithm
@@ -53,7 +53,6 @@ class ControlAlgorithm():
         self._sensor = sensor_data
         self._current_position = [self._x, self._y, self._z, self._roll, self._pitch, self._yaw][self._dof]
 
-
     def current_position(self):
 	if self._dof == 0:
 	    return self._x()
@@ -96,11 +95,11 @@ class ControlAlgorithm():
         else:
             self.activate()
 
+    #allows potential opportunity of a velocity user input rather than thrust
     @property
     def desired_position(self):
         return self._desired_position
 
-    # TODO: Does this have any practical use? When should this be called? And can it be included as a parameter to a function instead?
     @desired_position.setter
     def desired_position(self, value):
         self._desired_position = value
@@ -109,8 +108,6 @@ class ControlAlgorithm():
         if self._activated:
             delta_time = time.time() - self._previous_time
             self._previous_time = time.time()
-           # TODO: I'm getting a divide by 0 inside this on sample data...
-            # value is a single value while output is an array for the dof            
             value = self._pid.calculate(self._error(), delta_time)
 
             if value > 1:
@@ -118,7 +115,6 @@ class ControlAlgorithm():
             elif value < -1:
                 value = -1
 
-            # TODO: What is the difference between _output and output????
             self._output[self._dof] = value
         else:
            self. _pid.reset()
