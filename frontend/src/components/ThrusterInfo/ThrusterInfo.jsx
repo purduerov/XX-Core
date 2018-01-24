@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Camera from 'react-camera';
 import ThrusterCircle from '../ThrusterCircle/ThrusterCircle.jsx';
 import styles from "./ThrusterInfo.css";
 
