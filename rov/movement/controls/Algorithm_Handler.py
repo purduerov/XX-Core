@@ -1,6 +1,6 @@
 from Control_Algorithm import ControlAlgorithm
 
-# Control Handler
+# Algorithm_Handler
 # README:
 #   This control handler takes in the users input and frozen dof's the create a new output for the thrusters
 #   This is initialized with which variables should be frozen
@@ -8,12 +8,12 @@ from Control_Algorithm import ControlAlgorithm
 #   This returns the new desired thrust for the thrust mapper and ramper
 #   This is to allows the ROV to lock a certain position in the water if needed
 # How to use:
-#   1. handler = Master_Control_Handler([0,0,1,0,0,0], sensors)
+#   1. handler = Master_Algorithm_Handler([0,0,1,0,0,0], sensors)
 #   2. handler.master()
 #   -   This function returns the new thruster input ex: [0,1,0.4,-0.3,0]
 #   -   Use handler.tune(3,2,1) to change the pid values
 
-class Master_Control_Handler():
+class Master_Algorithm_Handler():
     # figure out the activation logic
     # compare the activation logic
     def __init__(self, frozen_in, sensors): #refer to the XX-Core/frontend/src/packets.js
@@ -49,7 +49,7 @@ class Master_Control_Handler():
         self.prev_activate = frozen_in
         return self.dof_control #returns the updated values
 
-    # allows tuning of the pid values when testing 
+    # allows tuning of the pid values when testing
     # will probably need to be able to change each individual dof
     # but this will do for now and will be quick to change
     def tune(self, p, i, d):
@@ -57,7 +57,7 @@ class Master_Control_Handler():
             self.freeze[i].p = p
             self.freeze[i].i = i
             self.freeze[i].d = d
-    
+
 if __name__ == "__main__":
     data = {'sensors':
             {
@@ -82,7 +82,7 @@ if __name__ == "__main__":
             }
         }
 
-    master = Master_Control_Handler([0,0,0,0,0,0], data['sensors'])
+    master = Master_Algorithm_Handler([0,0,0,0,0,0], data['sensors'])
     master.master([0,0,0,0,0,0], [True,True,True,True,True,True])
     print(data)
 
