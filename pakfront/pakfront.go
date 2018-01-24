@@ -141,7 +141,7 @@ func main() {
 	assPort := conf.TransPortStart
 	camnum := 0
 	for assPort < conf.TransPortStart+conf.NumCams {
-		cam := Mktrans(conf.Rovip, 1917, camnum, assPort)
+		cam := Mktrans(conf.Rovip, 8080, camnum, assPort)
 		fmt.Printf("\"camnum%v\": {\"stream\": %v, \"data\": %v},",
 			camnum,
 			assPort,

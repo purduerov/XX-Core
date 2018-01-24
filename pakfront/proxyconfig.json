@@ -1,7 +1,7 @@
 {
-  "Rovip":"localhost",
+  "Rovip":"10.42.0.234",
   "TransPortStart": 8080,
-  "NumCams": 5,
+  "NumCams": 4,
   "Socketio":{
     "Port_to_rov":5000,
     "Port_to_client":5001

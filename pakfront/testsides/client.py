@@ -20,7 +20,7 @@ class NameSpace(BaseNamespace):
 	    print("Response", args)
 
 class ROVControl(object):
-	def __init__(self,IP = '127.0.0.1',port = 5001):
+	def __init__(self,IP = 'localhost',port = 5001):
                 self.datadown = {"ROV":"DOO THINGS"}
 		self.dataup = {}
 		self.socket = SocketIO(IP, port, NameSpace)
