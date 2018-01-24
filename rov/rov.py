@@ -18,6 +18,8 @@ from movement import controller
 
 from sensors import Pressure, IMU
 
+from camera import Cameras
+
 
 class ROV(object):
 
@@ -40,14 +42,14 @@ class ROV(object):
         self.init_hw()
 
     def init_hw(self):
-        pass
-        #self.cameras = Cameras(
-        #    resolution='640x480',
-        #    framerate=30,
-        #    port_start=8080,
-        #    brightness=16,
-        #    contrast=32
-        #)
+        self.cameras = Cameras(
+            resolution='640x480',
+            framerate=30,
+            port=8080,
+            brightness=16,
+            contrast=32,
+	    devices=['/dev/video0', '/dev/video2', '/dev/video4', '/dev/video5']
+        ).start()
 
         self.motor_control = MotorControl(
             zero_power=ZERO_POWER,
