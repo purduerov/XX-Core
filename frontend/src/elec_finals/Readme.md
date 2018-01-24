@@ -1,0 +1,1 @@
+This folder is the results of the compiler, and what the electron application should look to upon bootup. Files will be named build.[css, js, html] until further notice, as they're the 'build' compilation of our components.
