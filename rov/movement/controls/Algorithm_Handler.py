@@ -23,7 +23,7 @@ class Master_Algorithm_Handler():
         # not sure where this is used or if needed
         # self.dimension_lock = [False, False, False, False, False, False]
         self.dof_names = ['x', 'y', 'z', 'roll', 'pitch', 'yaw']
-        self.freeze = [ControlAlgorithm('x', sensors['imu']), ControlAlgorithm('y', sensors['imu']), ControlAlgorithm('z', sensors['pressure']), ControlAlgorithm('roll', sensors['imu']), ControlAlgorithm('pitch', sensors['imu']), ControlAlgorithm('yaw', sensors['imu'])]
+        self.freeze = [ControlAlgorithm('x', sensors), ControlAlgorithm('y', sensors), ControlAlgorithm('z', sensors), ControlAlgorithm('roll', sensors), ControlAlgorithm('pitch', sensors), ControlAlgorithm('yaw', sensors)]
         self.prev_activate = [0, 0, 0, 0, 0, 0]
         for i in range(6):
             if frozen_in[i]:

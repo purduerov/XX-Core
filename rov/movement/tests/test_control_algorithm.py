@@ -31,7 +31,7 @@ def sensor_data():
                 }
             }
         }
-    return data
+    return data['sensors']
 
 def test_returns_empty_user_input_if_deactivated():
     # initializes a control algorithm with the desired position of 4 for the z parameter
@@ -62,9 +62,11 @@ def test_correctly_gets_and_sets_desired_position():
     x = ControlAlgorithm('x', sensor_data()) 
     time.sleep(buffer)
     x.activate()
-    x.desired_position = 4
+    x.set_desired_position(100)
     output = x.calculate()
-    assert x.desired_position == 4
+    assert x.get_desired_position() == 100
+    time.sleep(buffer)
+    output = x.calculate()
     assert output[0] > 0
 
 def test_activate_deactivate_and_toggle_functions_work_properly():

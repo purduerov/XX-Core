@@ -86,7 +86,7 @@ class ControlAlgorithm():
         self._activated = False
         self._output = [0,0,0,0,0,0]
 
-    def getActivated():
+    def getActivated(self):
         return self._activated
 
     def toggle(self):
@@ -96,12 +96,10 @@ class ControlAlgorithm():
             self.activate()
 
     #allows potential opportunity of a velocity user input rather than thrust
-    @property
-    def desired_position(self):
+    def get_desired_position(self):
         return self._desired_position
-
-    @desired_position.setter
-    def desired_position(self, value):
+    
+    def set_desired_position(self, value):
         self._desired_position = value
 
     def calculate(self):
@@ -117,7 +115,7 @@ class ControlAlgorithm():
 
             self._output[self._dof] = value
         else:
-           self. _pid.reset()
+            self.reset()
 
         return self._output
 
@@ -133,7 +131,6 @@ class ControlAlgorithm():
     @property
     def i(self):
         return self._pid.i
-
     @i.setter
     def i(self, value):
         self._pid.i = value
@@ -153,15 +150,15 @@ class ControlAlgorithm():
         self._output = [0, 0, 0, 0, 0, 0]
 
     def _x(self):
-        return self._sensor['linear-acceleration']['x']
+        return self._sensor['imu']['linear-acceleration']['x']
     def _y(self):
-        return self._sensor['linear-acceleration']['y']
+        return self._sensor['imu']['linear-acceleration']['y']
     def _z(self):
-        return self._sensor['pressure']
+        return self._sensor['pressure']['pressure']
     def _roll(self):
-        return self._sensor['euler']['roll']
+        return self._sensor['imu']['euler']['roll']
     def _pitch(self):
-        return self._sensor['euler']['pitch']
+        return self._sensor['imu']['euler']['pitch']
     def _yaw(self):
-        return self._sensor['euler']['yaw']
+        return self._sensor['imu']['euler']['yaw']
 
