@@ -1,27 +1,37 @@
 <!DOCTYPE html>
 <html>
-  <head>
+
+<head>
     <meta charset="UTF-8">
     <title>New Window</title>
     <!-- Insert this line above script imports  -->
-    <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+    <script>
+        if (typeof module === 'object') {
+            window.module = module;
+            module = undefined;
+        }
+    </script>
 
     <script src="./src/assets/jquery-3.2.1.min.js"></script>
 
     <!-- Insert this line after script imports -->
-    <script>if (window.module) module = window.module;</script>
+    <script>
+        if (window.module) module = window.module;
+    </script>
+    <link rel="stylesheet" href="./src/assets/reset.css">
 
     <script src="./src/assets/socket.io.min.js"></script>
     <script src="./src/assets/popper.js"></script>
     <script src="./src/assets/bootstrap.min.js"></script>
-    <script src="./main.js"></script>
+    <!-- script src="./main.js"></script -->
 
     <link rel="stylesheet" type="text/css" href="src/assets/bootstrap.min.css">
-  </head>
-  <body>
-    <h1>New Window</h1>
-    We are using node <script>document.write(process.versions.node)</script>,
-    Chrome <script>document.write(process.versions.chrome)</script>,
-    and Electron <script>document.write(process.versions.electron)</script>.
-  </body>
+    <link rel="stylesheet" type="text/css" href="src/assets/main.css">
+</head>
+
+<body>
+    <div id="app" />
+    <script src="src/elec_finals/.build.js" type="text/javascript"></script>
+</body>
+
 </html>

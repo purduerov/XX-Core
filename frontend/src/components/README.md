@@ -1,3 +1,3 @@
-These are the components for the UI. Each component has its own subfolder for its respective html, js, and css files that are necessary.
+These are the components for the UI. Each component has its own subfolder for its respective react (jsx) and css files that are necessary.
 
-All get pulled into the 3 finalized html, js, and css files that are used by the webpage by our compiler. The html is the tricky part, the css and js is more concatenation and making sure it's not being redundant.
+All get pulled into the final FavaScript file that is used by the webpage by our compiler. There's potential to add a CSS file, since a CSS file is faster than rendering CSS through JavaScript, but for now this works for our purposes, and more important things need to happen first.

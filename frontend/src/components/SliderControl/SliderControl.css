@@ -1,0 +1,22 @@
+.container {
+    padding: 5px;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+}
+
+.right {
+    float: right;
+}
+
+.left {
+    float: left;
+}
+
+.killPad>p {
+    margin-bottom: 0;
+}
+
+.fill {
+    width: 100%;
+}
