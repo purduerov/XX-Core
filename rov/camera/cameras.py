@@ -9,7 +9,11 @@ class Cameras(object):
         self.resolution = resolution
         self.framerate = framerate
         if not devices:
-            self.devices = list(subprocess.check_output('ls /dev/video*', shell=True).splitlines())
+            self.devs = list(subprocess.check_output('ls /dev/video*', shell=True).splitlines())
+	    self.devices = []
+	    for dev in self.devs:
+		if int(subprocess.check_output('cat /sys/class/video4linux/' + dev[4:] + '/index', shell=True)) == 0:
+		    self.devices.append(dev)
         else:
             self.devices = devices
         self.port = port
