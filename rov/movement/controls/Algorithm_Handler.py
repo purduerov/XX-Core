@@ -1,4 +1,5 @@
 from Control_Algorithm import ControlAlgorithm
+from Movement_Algorithm import MovementAlgorithm
 
 # Algorithm_Handler
 # README:
@@ -14,49 +15,58 @@ from Control_Algorithm import ControlAlgorithm
 #   -   Use handler.tune(3,2,1) to change the pid values
 
 class Master_Algorithm_Handler():
-    # figure out the activation logic
     # compare the activation logic
     def __init__(self, frozen_in, sensors): #refer to the XX-Core/frontend/src/packets.js
         #dont think this is needed because it directly go inst o the control algorithms
         #self.sensors = sensors
-        self.dof_control = [0,0,0,0,0,0]
+        self._dof_control = [0,0,0,0,0,0]
+        
         # not sure where this is used or if needed
         # self.dimension_lock = [False, False, False, False, False, False]
-        self.dof_names = ['x', 'y', 'z', 'roll', 'pitch', 'yaw']
-        self.freeze = [ControlAlgorithm('x', sensors), ControlAlgorithm('y', sensors), ControlAlgorithm('z', sensors), ControlAlgorithm('roll', sensors), ControlAlgorithm('pitch', sensors), ControlAlgorithm('yaw', sensors)]
-        self.prev_activate = [0, 0, 0, 0, 0, 0]
+        self._dof_names = ['x', 'y', 'z', 'roll', 'pitch', 'yaw'] 
+        self._freeze = [0,0,0,0,0,0]
+        self._prev_activate = [0, 0, 0, 0, 0, 0]
         for i in range(6):
+            self._freeze[i] = ControlAlgorithm(self._dof_names[i], sensors)
             if frozen_in[i]:
-                freeze[i].activate()
+                self._freeze[i].activate()
+        
+        self._movement_control = False
+        self._movement = [0,0,0,0,0,0] 
+        for i in range(6):
+            self._movement[i] = MovementAlgorithm(self._dof_names[i], sensors)
 
     def master(self, desired_thrust_in, frozen_in): # "main" control handler
 
         # axis freeze activation:
         for i in range(6):
             # check if frozen control was toggled
-            if self.prev_activate[i] != frozen_in[i]:
-                self.freeze[i].toggle()
+            if self._prev_activate[i] != frozen_in[i]:
+                self._freeze[i].toggle()
 
         # Run the currently activated frozen axes
         for i in range(6):
             # if the dof is frozen - calculate the adjustment
             if frozen_in[i] == True:
-                self.dof_control[i] = self.freeze[i].calculate()[i]
+                self._dof_control[i] = self._freeze[i].calculate()[i]
             else:
-                # sets to user input value if not frozen
-                self.dof_control[i] = desired_thrust_in[i]
+                if self._movement_control and i != 2:
+                    self._dof_control[i] = self._movement.calculate(desired_thrust_in[i])
+                else:
+                    # sets to user input value if not frozen
+                    self._dof_control[i] = desired_thrust_in[i]
 
         self.prev_activate = frozen_in
-        return self.dof_control #returns the updated values
+        return self._dof_control #returns the updated values
 
     # allows tuning of the pid values when testing
     # will probably need to be able to change each individual dof
     # but this will do for now and will be quick to change
     def tune(self, p, i, d):
         for i in range(6):
-            self.freeze[i].p = p
-            self.freeze[i].i = i
-            self.freeze[i].d = d
+            self._freeze[i].p = p
+            self._freeze[i].i = i
+            self._freeze[i].d = d
 
 if __name__ == "__main__":
     data = {'sensors':

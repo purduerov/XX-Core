@@ -78,12 +78,12 @@ class MovementAlgorithm():
 
     # ensures quickest route to desired position
     def _error(self, speed):
-        error = self._desired_speed - speed
+        error = speed - self._desired_speed
         return error
 
     def activate(self):
         self._activated = True
-        self._desired
+        self._desired_speed = 0
         self.reset()
 
     def deactivate(self):
@@ -108,10 +108,10 @@ class MovementAlgorithm():
         self._desired_speed = value
 
     def calculate(self, desired_speed):
-        set_desired_speed(desired_speed) 
+        self.set_desired_speed(desired_speed) 
         if self._activated:
             if self._ready:
-                self._cp = current_position()
+                self._cp = self.current_position()
                 delta_time = time.time() - self._previous_time
                 self._previous_time = time.time()
                 speed = (self._cp - self._lp) / delta_time
@@ -122,8 +122,8 @@ class MovementAlgorithm():
                 elif self._value < -1:
                     self._value = -1
 
-                self._output[self._dof] = value
-           else:
+                self._output[self._dof] = self._value
+            else:
                self._ready = True
                self._output[self._dof] = 0
         
@@ -183,17 +183,17 @@ class MovementAlgorithm():
         dof = 3
         position = self._sensor['imu']['euler']['roll']
         self._jump(position, dof)
-        return position + factor * self._degrees 
+        return position + self._factor[dof] * self._degrees 
     
     def _pitch(self):
         dof = 4
         position = self._sensor['imu']['euler']['pitch']
         self._jump(position, dof)
-        return position + factor[dof] * 360
+        return position + self._factor[dof] * 360
 
     def _yaw(self):
         dof = 5
-        position = self._sensor['imu']['euler']['yaw'] + 360 * self._factor
+        position = self._sensor['imu']['euler']['yaw']
         self._jump(position, dof)
-        return position + factor * 360
+        return position + self._factor[dof] * 360
 

@@ -45,6 +45,7 @@ def test_returns_empty_user_input_if_deactivated():
     # checks to make sure an empty list is outputted
     assert z.calculate() == [0,0,0,0,0,0]
 
+
 def test_control_algorithm_correctly_gets_and_sets_pid_values():
     # initializes a control algorithm with the desired position of 2 for the y parameter
     y = ControlAlgorithm('y', sensor_data())

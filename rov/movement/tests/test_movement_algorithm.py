@@ -3,6 +3,7 @@ Set of tests for checking the functionality of the controller class. These tests
 """
 
 import pytest
+import time
 from rov.movement.controls.Movement_Algorithm import MovementAlgorithm
 
 buffer = 0.001
@@ -43,7 +44,7 @@ def test_returns_empty_user_input_if_deactivated():
     time.sleep(buffer)
     z.deactivate()
     # checks to make sure an empty list is outputted
-    assert z.calculate() == [0,0,0,0,0,0]
+    assert z.calculate(0) == [0,0,0,0,0,0]
 
 def test_control_algorithm_correctly_gets_and_sets_pid_values():
     # initializes a control algorithm with the desired position of 2 for the y parameter
@@ -64,6 +65,7 @@ def test_correctly_gets_and_sets_desired_position():
 def test_activate_deactivate_and_toggle_functions_work_properly():
     roll = MovementAlgorithm('roll', sensor_data())
     time.sleep(buffer)
+    assert roll.getActivated() == False
     roll.deactivate()
     assert roll.getActivated() == False
     roll.toggle()
@@ -72,5 +74,17 @@ def test_activate_deactivate_and_toggle_functions_work_properly():
     assert roll.getActivated() == False
 
 
-#def test_control_algorithm_output_results_make_sense():
- 
+def test_control_algorithm_output_results_make_sense():
+    yaw = MovementAlgorithm('yaw', sensor_data())
+    time.sleep(buffer)
+    yaw.activate()
+    assert yaw.calculate(4) == [0,0,0,0,0,0]
+    time.sleep(buffer)
+    assert yaw.calculate(4)[5] > 0
+    time.sleep(buffer)
+    yaw.calculate(-20)[5]
+    time.sleep(buffer)
+    time.sleep(buffer)
+    time.sleep(buffer)
+    assert yaw.calculate(-20)[5] < 0
+

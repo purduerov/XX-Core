@@ -1,1 +1,7 @@
 Add Project directory to PYTHONPATH env so we can use absolute paths
+
+How to do this as of now:
+- cd to your home directory
+- open .bashrc
+- add the following line of code, but change the path to your path to XX-Core
+export PYTHONPATH="${PYTHONPATH}:/path/to/XX-Core"
