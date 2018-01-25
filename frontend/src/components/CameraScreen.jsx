@@ -15,18 +15,9 @@ class Square extends React.Component {
 }
 
 class Stream extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            ip: "localhost",
-            camnum: this.props.cam,
-            query: ""
-        }
-    }
-
     render() {
         return (
-            <img src="http://localhost:1917/?action=stream_0" height="350"></img>
+            <img src={this.props.cam} height="350"></img>
         )
     }
 }
@@ -38,16 +29,11 @@ class CamSel extends React.Component {
             name: '',
             sub: "Name"
         };
-        this.handleNameChange = this.handleNameChange.bind(this);
-        this.handleSubmitChange = this.handleSubmitChange.bind(this);
+        this.handleNameChange = this.handleNameChange.bind(this)
     }
 
     handleNameChange(event) {
-        this.setState({name: event.target.value});
-    };
-
-    handleSubmitChange(event) {
-        this.props.onUpdate(event.target.value)
+        this.setState({name: event.target.value})
     }
 
     render() {
@@ -61,7 +47,7 @@ class CamSel extends React.Component {
                 <input
                     type="submit"
                     value={this.state.sub}
-                    onChange={this.handleSubmitChange}
+                    onClick={(e) => this.props.onNewName(this.state.name)}
                 />
             </div>
         );
@@ -86,9 +72,12 @@ export default class Camera_view extends Component {
                 "Cam4",
                 "Cam5"
             ],
-            CVprocsNames: ["ProcName1", "ProcName2"],
-            CVprocsPorts: [1917, 1918],
-            CVprocsActiv: [false, false]
+            stream : {
+                ip: "localhost",
+                query: "",
+                rovip:"raspberrypi.local",
+                startport:8080
+            }
         }
     }
 
@@ -102,20 +91,21 @@ export default class Camera_view extends Component {
 
     }
 
-    camUpdate(newName) {
+    camUpdate(screennum, newName) {
         const camnames = this.state.camnames.slice();
-        camnames[1] = newName;
+        camnames[this.state.camscreens[screennum]] = newName;
         this.setState({
             camnames: camnames
         })
     }
 
     renderCamSel(screennum) {
-        return <CamSel onUpdate={() => this.camUpdate("Blah")}/>;
+        return <CamSel onNewName={(val) => this.camUpdate(screennum,val)}/>;
     }
 
     renderStream(strnum) {
-        return <Stream cam={this.state.camscreens[strnum]}/>
+        let url = "http://" + this.state.stream.ip + ":" + (this.state.stream.startport + this.state.camscreens[strnum]);
+        return <Stream cam={url}/>
     }
 
     renderSquare(screennum, camnum) {
@@ -139,7 +129,7 @@ export default class Camera_view extends Component {
                         {this.renderSquare(0, 4)}
                     </div>
                     <div className={styles.column2}>
-                        {this.renderStream(1)}
+                        {this.renderStream(0)}
                     </div>
                 </div>
                 <div className={styles.contentBox}>
@@ -151,7 +141,7 @@ export default class Camera_view extends Component {
                         {this.renderSquare(1, 4)}
                     </div>
                     <div className={styles.column2}>
-                        <img src="http://localhost:1917/?action=stream_0" height="350"></img>
+                        {this.renderStream(1)}
                     </div>
                 </div>
             </div>
