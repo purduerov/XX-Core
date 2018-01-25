@@ -6,7 +6,7 @@ export default class SliderControl extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {val: props.val.power, inv: props.val.invert};
+        this.state = {val: props.power, inv: props.invert};
 
         this.onChangeCheck = this.onChangeCheck.bind(this);
         this.onChangeVal = this.onChangeVal.bind(this);
@@ -33,10 +33,10 @@ export default class SliderControl extends Component {
         <div className={styles.container}>
             <div className={styles.killPad}>
                 <p className={styles.fill}>{this.props.name}:</p>
-                <p className={styles.left}>{this.state.val}%</p>
+                <p className={styles.left}>{this.props.power}%</p>
                 {this.state.inv != undefined &&
                 <p className={styles.right}>
-                    <input type="checkbox" defaultChecked={this.state.inv===-1} onClick={this.onChangeCheck} />
+                    <input type="checkbox" defaultChecked={this.props.invert===-1} onClick={this.onChangeCheck} />
                     <label>Invert</label>
                 </p>}
             </div>

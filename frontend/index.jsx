@@ -4,9 +4,9 @@ import styles from './index.css';
 import packet from './src/packets.js';
 import Card from './src/components/Card/Card.jsx';
 import Cam_view from './src/components/CamView/CamView.jsx';
+import ForceScales from './src/components/ForceScales/ForceScales.jsx'
 import Titlebar from './src/components/Titlebar/Titlebar.jsx';
 import ThrusterInfo from './src/components/ThrusterInfo/ThrusterInfo.jsx';
-import ThrusterScales from './src/components/ThrusterScales/ThrusterScales.jsx';
 
 //var packets = require("./src/packets.js");
 let socketHost = `ws://raspberrypi.local:5000`;
@@ -63,6 +63,7 @@ class App extends React.Component {
 
     this.changeDisabled = this.changeDisabled.bind(this);
     this.changeThrustScales = this.changeThrustScales.bind(this);
+    this.changeForceScales = this.changeForceScales.bind(this);
   }
 
   render () {
@@ -79,14 +80,15 @@ class App extends React.Component {
                     <Card>
                       <ThrusterInfo thrusters={this.state.dearclient.thrusters}
                         disabled={this.state.dearflask.thrusters.disabled_thrusters}
-                        rend={this.changeDisabled} />
+                        rend={this.changeDisabled}
+                      />
                     </Card>
                   </div>
                   <div className="data-column">
-                    <Card title="Thruster Control">
-                      <ThrusterScales rend={this.changeThrustScales}
-                        scales={this.state.config.thruster_control}
-                      />
+                    <Card title="Directional Control">
+                      <ForceScales rend={this.changeForceScales}
+                        scales={this.state.config.thrust_scales}
+                        />
                     </Card>
                   </div>
                   <div className="data-column">
@@ -114,6 +116,14 @@ class App extends React.Component {
 
   changeThrustScales(scales) {
     confcpy.thruster_control = scales;
+
+    this.setState({
+      config: confcpy
+    });
+  }
+
+  changeForceScales(scales) {
+    confcpy.thrust_scales = scales;
 
     this.setState({
       config: confcpy
