@@ -66,6 +66,11 @@ def sensor_data():
 
 def test_returns_empty_user_input_if_deactivated():
     # initializes a control algorithm with the desired position of 4 for the z parameter
+    pass
+
+
+def test_activate_and_deactivate_functionality():
+    # initializes a control algorithm with the desired position of 4 for the z parameter
     frozen = [False, False, False, False, False, False]
     user_input = [0,0,0,0,0,0]
     mah = Master_Algorithm_Handler(frozen, sensor_data())
@@ -76,10 +81,8 @@ def test_returns_empty_user_input_if_deactivated():
         assert position(data)[i] == 1
     for i in range(6):
         assert mah.master(user_input, frozen)[i] == 0
-
-def test_returns_empty_user_input_if_deactivated2():
-    # initializes a control algorithm with the desired position of 4 for the z parameter
-    frozen = [False, False, False, False, False, False]
+    
+    
     user_input = [5,1,2,3,4,5]
     mah = Master_Algorithm_Handler(frozen, sensor_data())
     for i in range(6):
@@ -89,5 +92,3 @@ def test_returns_empty_user_input_if_deactivated2():
         assert position(data)[i] > 1
     for i in range(6):
         assert mah.master(user_input, frozen)[i] != 0
-
-

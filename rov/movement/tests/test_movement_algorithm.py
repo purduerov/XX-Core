@@ -81,9 +81,12 @@ def test_control_algorithm_output_results_make_sense():
     assert yaw.calculate(4) == [0,0,0,0,0,0]
     time.sleep(buffer)
     assert yaw.calculate(4)[5] > 0
+    yaw.deactivate()
     time.sleep(buffer)
-    yaw.calculate(-20)[5]
-    time.sleep(buffer)
+    yaw.activate()
+    for i in range(6):
+        yaw.calculate(-20)[5]
+        time.sleep(buffer)
     time.sleep(buffer)
     time.sleep(buffer)
     assert yaw.calculate(-20)[5] < 0

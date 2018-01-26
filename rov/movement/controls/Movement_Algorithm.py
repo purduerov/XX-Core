@@ -38,6 +38,7 @@ class MovementAlgorithm():
         self._ready = False
         self._cp = 0
         self._lp = 0
+        self._current_time = time.time()
         self._value = 0
         self._factor = [0,0,0,0,0,0]
         self._last_position = [0,0,0,0,0,0]
@@ -78,7 +79,8 @@ class MovementAlgorithm():
 
     # ensures quickest route to desired position
     def _error(self, speed):
-        error = speed - self._desired_speed
+        error = self._desired_speed - speed
+        print(speed)
         return error
 
     def activate(self):
@@ -106,17 +108,21 @@ class MovementAlgorithm():
 
     def set_desired_speed(self, value):
         self._desired_speed = value
+    
+    def _update(self):
+        self._lp = self._cp
+        self._cp = self.current_position()
+        self._previous_time = self._current_time
+        self._current_time = time.time()
 
     def calculate(self, desired_speed):
         self.set_desired_speed(desired_speed) 
         if self._activated:
-            if self._ready:
-                self._cp = self.current_position()
+            self._update()
+            if self._ready:    
                 delta_time = time.time() - self._previous_time
-                self._previous_time = time.time()
                 speed = (self._cp - self._lp) / delta_time
                 self._value += self._pid.calculate(self._error(speed), delta_time)
-
                 if self._value > 1:
                     self._value = 1
                 elif self._value < -1:
@@ -129,7 +135,6 @@ class MovementAlgorithm():
         
         else:
             self.reset()
-        self._lp = self._cp
 
         return self._output
 
