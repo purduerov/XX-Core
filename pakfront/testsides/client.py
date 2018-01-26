@@ -5,7 +5,7 @@ if __name__ == "__main__":
 	packets = getDefaultPackets("./packets.json")
 	i = 0
 	while True:
-            con.getClient()
+            print "XXXXXXXXXXXXXXXXXXXXXX", con.getClient()
             if i % 5 == 4:
-                    con.getFlask(packets['dearflask'])
+                    print "XXXXXX", con.getFlask(packets['dearflask'])
             i+=1

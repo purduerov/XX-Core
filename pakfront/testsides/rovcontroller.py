@@ -26,10 +26,10 @@ class ROVControl(object):
                 self.datadown = {"ROV":"DOO THINGS"}
 		self.dataup = {}
 		self.socket = SocketIO(IP, port, NameSpace)
+                self.socket.on('dearclient',self.dearclient)
 
 	def dearclient(self,*args):
 		self.dataup = args
-		print("GOT DEARCLIENT",self.dataup)
 
 	def getClient(self):
 		self.socket.emit('dearclient')
