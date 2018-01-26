@@ -14,7 +14,7 @@ import (
 
 func sockiopxy(rovIP string, rovPort int, clientPort string) {
 	//Makes it so we do not consume to many resources
-	path := os.Getenv("FOO") // added code ******
+	path := os.Getenv("LOGDIR") // added code ******
 
 	fileopener := openfile(path) //added code ******
 
