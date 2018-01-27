@@ -28,7 +28,8 @@ import time
 
 class MovementAlgorithm():
     
-    def __init__(self, parameter, sensor_data):
+    def __init__(self, parameter, sensor_data, tag):
+        self._tag = 0
         self._activated = False
         self._parameter = parameter
         self._desired_speed = 0
@@ -44,6 +45,9 @@ class MovementAlgorithm():
         self._last_position = [0,0,0,0,0,0]
         self._degrees = 360
         self._margin = 30
+        self._xdata = []
+        self._ydata = []
+        self._count = 0
 
         if parameter == 'x':
             self._dof = 0
@@ -108,7 +112,16 @@ class MovementAlgorithm():
 
     def set_desired_speed(self, value):
         self._desired_speed = value
-    
+   
+    def get_xdata(self):
+        return self._xdata
+
+    def get_ydata(self):
+        return self._ydata
+
+    def get_tag(self):
+        return self._tag
+
     def _update(self):
         self._lp = self._cp
         self._cp = self.current_position()
@@ -127,11 +140,17 @@ class MovementAlgorithm():
                     self._value = 1
                 elif self._value < -1:
                     self._value = -1
-
                 self._output[self._dof] = self._value
+        
+                if self._count == 0:
+                    self._xdata.append(0)
+                else:
+                    self._xdata.append(self._xdata[self._count - 1] + delta_time)
+                self._count += 1
+                self._ydata.append(self._value)
             else:
                self._ready = True
-               self._output[self._dof] = 0
+               self._output[self._dof] = 0.0
         
         else:
             self.reset()

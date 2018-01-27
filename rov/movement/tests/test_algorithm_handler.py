@@ -6,7 +6,7 @@ import pytest
 import time
 from rov.movement.controls.Algorithm_Handler import Master_Algorithm_Handler
 
-buffer = 0.001
+buffer = 0.01
 # last time
 lt = time.time()
 
@@ -85,10 +85,12 @@ def test_activate_and_deactivate_functionality():
     
     user_input = [5,1,2,3,4,5]
     mah = Master_Algorithm_Handler(frozen, sensor_data())
-    for i in range(6):
+    for i in range(20):
         time.sleep(buffer)
         update_data(mah.master(user_input, frozen), data, lt)
     for i in range(6):
         assert position(data)[i] > 1
     for i in range(6):
         assert mah.master(user_input, frozen)[i] != 0
+
+    #mah.plot_data()

@@ -1,6 +1,5 @@
 import numpy
 
-
 class PID(object):
     """A generic PID loop controller which can be inherited and used in other control algorithms"""
 
@@ -11,17 +10,15 @@ class PID(object):
         self._d = 0
         self._esum = 0              #Error sum for integral term
         self._le = startingError    #Last error value
-        #self._lo = 0                #Last output value
-
+        self._count = 0
+        
     def calculate(self, error, dt):
+
         """Calculates the output of the PID controller"""
-        #if dt == 0:
-        #    return lo
         self._esum += error*dt
         dError = (error - self._le)/dt
         u = self._p*error + self._i*self._esum + self._d *dError
         self._le = error
-        #self.lo = u
         return u
 
 

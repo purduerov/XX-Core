@@ -1,6 +1,6 @@
 from Control_Algorithm import ControlAlgorithm
 from Movement_Algorithm import MovementAlgorithm
-
+import matplotlib.pyplot as plt
 # Algorithm_Handler
 # README:
 #   This control handler takes in the users input and frozen dof's the create a new output for the thrusters
@@ -27,14 +27,14 @@ class Master_Algorithm_Handler():
         self._freeze = [0,0,0,0,0,0]
         self._prev_activate = [0, 0, 0, 0, 0, 0]
         for i in range(6):
-            self._freeze[i] = ControlAlgorithm(self._dof_names[i], sensors)
+            self._freeze[i] = ControlAlgorithm(self._dof_names[i], sensors, i+7)
             if frozen_in[i]:
                 self._freeze[i].activate()
         
         self._movement_control = False
         self._movement = [0,0,0,0,0,0] 
         for i in range(6):
-            self._movement[i] = MovementAlgorithm(self._dof_names[i], sensors)
+            self._movement[i] = MovementAlgorithm(self._dof_names[i], sensors, i+1)
 
     def master(self, desired_thrust_in, frozen_in): # "main" control handler
 
@@ -58,6 +58,23 @@ class Master_Algorithm_Handler():
 
         self.prev_activate = frozen_in
         return self._dof_control #returns the updated values
+
+
+    def plot_data(self):
+        count = 1
+        for alg in self._freeze:
+            plt.subplot(count + 110)
+            plt.plot(alg.get_xdata, alg.get_ydata)
+            count += 1
+
+        count = 1
+        for alg in self._movement:
+            plt.subplot(count + 210)
+            plt.plot(alg.get_xdata, alg.get_ydata)
+            count += 1
+
+        plt.show
+
 
     # allows tuning of the pid values when testing
     # will probably need to be able to change each individual dof

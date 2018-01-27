@@ -28,13 +28,17 @@ import time
 
 class ControlAlgorithm():
 
-    def __init__(self, parameter, sensor_data):
+    def __init__(self, parameter, sensor_data, tag):
+        self._tag = tag
         self._activated = False
         self._parameter = parameter
         self._desired_position = 0
         self._pid = PID(0)
         self._previous_time = time.time()
         self._dof = 0
+        self._xdata = []
+        self._ydata = []
+        self._count = 0
         if parameter == 'x':
             self._dof = 0
         elif parameter == 'y':
@@ -76,7 +80,7 @@ class ControlAlgorithm():
             elif error < -180:
                 error += 360
         return error
-
+    
     def activate(self):
         self._activated = True
         self._desired_position = self.current_position()
@@ -102,7 +106,16 @@ class ControlAlgorithm():
     def set_desired_position(self, value):
         self._desired_position = value
 
-    def calculate(self):
+    def get_xdata(self):
+        return self._xdata
+
+    def get_ydata(self):
+        return self._ydata
+
+    def get_tag(self):
+        return self._tag
+
+    def calculate(self):         
         if self._activated:
             delta_time = time.time() - self._previous_time
             self._previous_time = time.time()
@@ -114,9 +127,15 @@ class ControlAlgorithm():
                 value = -1
 
             self._output[self._dof] = value
+            if self._count == 0:
+                self._xdata.append(0)
+            else:
+                self._xdata.append(self._xdata[self._count - 1] + delta_time)  
+            self._ydata.append(self._output) 
+            self._count += 1
+
         else:
             self.reset()
-
         return self._output
 
     #tuner
