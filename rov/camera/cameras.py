@@ -1,5 +1,5 @@
 import subprocess
-
+import time
 
 class Cameras(object):
 
@@ -8,22 +8,30 @@ class Cameras(object):
         self.process = None
         self.resolution = resolution
         self.framerate = framerate
-        if not devices:
-            self.devs = list(subprocess.check_output('ls /dev/video*', shell=True).splitlines())
-	    self.devices = []
-	    for dev in self.devs:
-		if int(subprocess.check_output('cat /sys/class/video4linux/' + dev[4:] + '/index', shell=True)) == 0:
-		    self.devices.append(dev)
-        else:
-            self.devices = devices
         self.port = port
-        self.brightness = brightness
-        self.contrast = contrast
-        self.input = ['input_uvc.so -f {framerate} -r {resolution} -d {device}'.format(framerate=self.framerate, resolution=self.resolution, device=d) for d in self.devices]
         self.output = 'output_http.so -p {port} {web}'.format(
             port=port,
             web='-w /usr/local/www'
         )
+        if not devices:
+            devs = list(subprocess.check_output('ls /dev/video*', shell=True).splitlines())
+            self.devices = []
+            for dev in devs:
+                tempin = 'input_uvc.so -f {framerate} -r {resolution} -d {device}'.format(framerate=self.framerate, resolution=self.resolution, device=dev)
+                try:
+                    temp = subprocess.Popen(['mjpg_streamer', '-i', tempin, '-o', self.output])
+                    time.sleep(0.5)
+                    if temp.poll() is None:
+                        print(1)
+                        temp.kill()
+                        self.devices.append(dev)
+                except Exception:
+                    pass
+        else:
+            self.devices = devices
+        self.brightness = brightness
+        self.contrast = contrast
+        self.input = ['input_uvc.so -f {framerate} -r {resolution} -d {device}'.format(framerate=self.framerate, resolution=self.resolution, device=d) for d in self.devices]
 
     def start(self):
         command = ['mjpg_streamer']
