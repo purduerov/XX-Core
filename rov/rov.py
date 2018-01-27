@@ -47,8 +47,7 @@ class ROV(object):
             framerate=30,
             port=8080,
             brightness=16,
-            contrast=32,
-	    devices=['/dev/video0', '/dev/video2', '/dev/video4', '/dev/video5']
+            contrast=32
         ).start()
 
         self.motor_control = MotorControl(

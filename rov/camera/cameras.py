@@ -1,5 +1,8 @@
 import subprocess
+import os
 import time
+
+DEVNULL = open(os.devnull, 'w')
 
 class Cameras(object):
 
@@ -19,10 +22,9 @@ class Cameras(object):
             for dev in devs:
                 tempin = 'input_uvc.so -f {framerate} -r {resolution} -d {device}'.format(framerate=self.framerate, resolution=self.resolution, device=dev)
                 try:
-                    temp = subprocess.Popen(['mjpg_streamer', '-i', tempin, '-o', self.output])
+                    temp = subprocess.Popen(['mjpg_streamer', '-i', tempin, '-o', self.output], stdout=DEVNULL, stderr=DEVNULL)
                     time.sleep(0.5)
                     if temp.poll() is None:
-                        print(1)
                         temp.kill()
                         self.devices.append(dev)
                 except Exception:
@@ -41,7 +43,7 @@ class Cameras(object):
         command.append('-o')
         command.append(self.output)
         print command
-        self.process = subprocess.Popen(command)
+        self.process = subprocess.Popen(command, stdout=DEVNULL, stderr=DEVNULL)
 
 if __name__ == '__main__':
     print Cameras().start()
