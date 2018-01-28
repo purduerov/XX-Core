@@ -19,8 +19,12 @@ class ForceLimiter(object):
     4. acceptable_individual_change
     """
 
-    def convertToPowerUnit(self):
-        # equation: PWM vs Power = 0.1145x2 - 9.4025x + 193.1
+    def convertToPowerUnit(self, an8vector):
+        # equation: PWM vs Power = y = 0.00114535x^2-3.4372x+2579.273
+        #for x in an8vector:
+            #do something
+
+        return 1
 
 
     # TODO: edit powerThresh constant, import thruster_power function function, edit else return value
@@ -69,7 +73,7 @@ class ForceLimiter(object):
             return floor(TOTAL_CHANGE_THRESH / sumChange * 10) / 10
 
     # TODO: edit ind_change_thresh
-    def acceptable_individual_change(self, change):
+    def acceptable_individual_change(self, difference8):
         # tests whether the "instantaneous" change in the thruster value is acceptable for each individual thruster
         # "Ramping"
         # should return 1 if everything is acceptable, otherwise a value \in (0,1) which will be multiplied to the 6vector
