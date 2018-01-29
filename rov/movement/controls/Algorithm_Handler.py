@@ -24,17 +24,19 @@ class Master_Algorithm_Handler():
         # not sure where this is used or if needed
         # self.dimension_lock = [False, False, False, False, False, False]
         self._dof_names = ['x', 'y', 'z', 'roll', 'pitch', 'yaw'] 
-        self._freeze = [0,0,0,0,0,0]
+        self._freeze = []
         self._prev_activate = [0, 0, 0, 0, 0, 0]
         for i in range(6):
-            self._freeze[i] = ControlAlgorithm(self._dof_names[i], sensors, i+7)
+            self._freeze.append(ControlAlgorithm(self._dof_names[i], sensors, i+7))
             if frozen_in[i]:
                 self._freeze[i].activate()
         
-        self._movement_control = False
+        self._movement_control = True
         self._movement = [0,0,0,0,0,0] 
         for i in range(6):
             self._movement[i] = MovementAlgorithm(self._dof_names[i], sensors, i+1)
+            if frozen_in[i] == False:
+                self._movement[i].activate()
 
     def master(self, desired_thrust_in, frozen_in): # "main" control handler
 
@@ -43,6 +45,8 @@ class Master_Algorithm_Handler():
             # check if frozen control was toggled
             if self._prev_activate[i] != frozen_in[i]:
                 self._freeze[i].toggle()
+                if i > 2:
+                    self._movement[i].toggle()
 
         # Run the currently activated frozen axes
         for i in range(6):
@@ -50,30 +54,33 @@ class Master_Algorithm_Handler():
             if frozen_in[i] == True:
                 self._dof_control[i] = self._freeze[i].calculate()[i]
             else:
-                if self._movement_control and i != 2:
-                    self._dof_control[i] = self._movement.calculate(desired_thrust_in[i])
+                if self._movement_control and i > 2:
+                    self._dof_control[i] = self._movement[i].calculate(desired_thrust_in[i])[i]
                 else:
                     # sets to user input value if not frozen
                     self._dof_control[i] = desired_thrust_in[i]
 
-        self.prev_activate = frozen_in
+        self._prev_activate = frozen_in
         return self._dof_control #returns the updated values
 
 
     def plot_data(self):
         count = 1
         for alg in self._freeze:
-            plt.subplot(count + 110)
-            plt.plot(alg.get_xdata, alg.get_ydata)
-            count += 1
+            if alg.has_data():
+                plt.subplot(6, 2, count)
+                plt.plot(alg.get_xdata(), alg.get_y1data(), 'r', alg.get_xdata(), alg.get_y2data(), 'b')
+                plt.title('Freeze')
+                count += 1
 
-        count = 1
         for alg in self._movement:
-            plt.subplot(count + 210)
-            plt.plot(alg.get_xdata, alg.get_ydata)
-            count += 1
+            if alg.has_data():
+                plt.subplot(6, 2, count)
+                plt.plot(alg.get_xdata(), alg.get_y1data(), 'r', alg.get_xdata(), alg.get_y2data(), 'b')
+                plt.title('Movement')
+                count += 1
 
-        plt.show
+        plt.show()
 
 
     # allows tuning of the pid values when testing

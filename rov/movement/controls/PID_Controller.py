@@ -5,7 +5,7 @@ class PID(object):
 
     def __init__(self, startingError):
         """Return a instance of a un tuned PID controller"""
-        self._p = 1
+        self._p = 0.4
         self._i = 0
         self._d = 0
         self._esum = 0              #Error sum for integral term

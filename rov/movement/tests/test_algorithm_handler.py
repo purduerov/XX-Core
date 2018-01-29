@@ -5,8 +5,9 @@ Set of tests for checking the functionality of the controller class. These tests
 import pytest
 import time
 from rov.movement.controls.Algorithm_Handler import Master_Algorithm_Handler
+from random import *
 
-buffer = 0.01
+buffer = 0.001
 # last time
 lt = time.time()
 
@@ -33,15 +34,21 @@ data = {'sensors':
         }
     }
 
+def rand():
+    return (random() / 5.0) + 0.9
+
+def rand2():
+    return random() * 0.001 - 0.0005
+
 def update_data(user_input, data, lt):
     dt = time.time() - lt
     lt = time.time()
-    data['sensors']['imu']['linear-acceleration']['x'] += user_input[0] * dt
-    data['sensors']['imu']['linear-acceleration']['y'] += user_input[1] * dt
-    data['sensors']['pressure']['pressure'] += user_input[2] * dt
-    data['sensors']['imu']['euler']['roll'] += user_input[3] * dt
-    data['sensors']['imu']['euler']['pitch'] += user_input[4] * dt
-    data['sensors']['imu']['euler']['yaw'] += user_input[5] * dt
+    data['sensors']['imu']['linear-acceleration']['x'] += user_input[0] * dt * rand() + rand2()
+    data['sensors']['imu']['linear-acceleration']['y'] += user_input[1] * dt * rand() + rand2()
+    data['sensors']['pressure']['pressure'] += user_input[2] * dt * rand() + rand2()
+    data['sensors']['imu']['euler']['roll'] += user_input[3] * dt * rand() + rand2()
+    data['sensors']['imu']['euler']['pitch'] += user_input[4] * dt * rand() + rand2()
+    data['sensors']['imu']['euler']['yaw'] += user_input[5] * dt * rand() + rand2()
     if data['sensors']['imu']['euler']['roll'] > 360:
         data['sensors']['imu']['euler']['roll'] -= 360
     elif data['sensors']['imu']['euler']['roll'] < 0:
@@ -74,23 +81,30 @@ def test_activate_and_deactivate_functionality():
     frozen = [False, False, False, False, False, False]
     user_input = [0,0,0,0,0,0]
     mah = Master_Algorithm_Handler(frozen, sensor_data())
-    for i in range(6):
+    for i in range(100):
         time.sleep(buffer)
         update_data(mah.master(user_input, frozen), data, lt)
+    time.sleep(buffer)
     for i in range(6):
-        assert position(data)[i] == 1
-    for i in range(6):
-        assert mah.master(user_input, frozen)[i] == 0
+        if i < 2:
+            time.sleep(buffer)
+            assert mah.master(user_input, frozen)[i] == 0
     
     
     user_input = [5,1,2,3,4,5]
     mah = Master_Algorithm_Handler(frozen, sensor_data())
-    for i in range(20):
+    for i in range(100):
         time.sleep(buffer)
         update_data(mah.master(user_input, frozen), data, lt)
     for i in range(6):
-        assert position(data)[i] > 1
-    for i in range(6):
+        time.sleep(buffer)
         assert mah.master(user_input, frozen)[i] != 0
 
-    #mah.plot_data()
+    frozen = [1,1,1,0,1,0]
+    for i in range(100):
+        time.sleep(buffer)
+        update_data(mah.master(user_input, frozen), data, lt)
+    for i in range(6):
+        time.sleep(buffer)
+        mah.master(user_input, frozen)[i]
+    mah.plot_data()

@@ -37,7 +37,8 @@ class ControlAlgorithm():
         self._previous_time = time.time()
         self._dof = 0
         self._xdata = []
-        self._ydata = []
+        self._y1data = []
+        self._y2data = []
         self._count = 0
         if parameter == 'x':
             self._dof = 0
@@ -52,6 +53,7 @@ class ControlAlgorithm():
         elif parameter == 'yaw':
             self._dof = 5
         self._output = [0,0,0,0,0,0]
+        self._has_data = False
 
         # sets sensor data and the proper function to retrieve the right data from _sensor
         self._sensor = sensor_data
@@ -109,9 +111,15 @@ class ControlAlgorithm():
     def get_xdata(self):
         return self._xdata
 
-    def get_ydata(self):
-        return self._ydata
+    def get_y1data(self):
+        return self._y1data
 
+    def get_y2data(self):
+        return self._y2data
+
+    def has_data(self):
+        return self._has_data
+    
     def get_tag(self):
         return self._tag
 
@@ -129,9 +137,11 @@ class ControlAlgorithm():
             self._output[self._dof] = value
             if self._count == 0:
                 self._xdata.append(0)
+                self._has_data = True
             else:
                 self._xdata.append(self._xdata[self._count - 1] + delta_time)  
-            self._ydata.append(self._output) 
+            self._y1data.append(self._current_position())
+            self._y2data.append(self._desired_position)
             self._count += 1
 
         else:

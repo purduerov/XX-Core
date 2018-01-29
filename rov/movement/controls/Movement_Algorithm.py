@@ -46,8 +46,10 @@ class MovementAlgorithm():
         self._degrees = 360
         self._margin = 30
         self._xdata = []
-        self._ydata = []
+        self._y1data = []
+        self._y2data = []
         self._count = 0
+        self._has_data = False
 
         if parameter == 'x':
             self._dof = 0
@@ -116,8 +118,14 @@ class MovementAlgorithm():
     def get_xdata(self):
         return self._xdata
 
-    def get_ydata(self):
-        return self._ydata
+    def get_y1data(self):
+        return self._y1data
+    
+    def get_y2data(self):
+        return self._y2data
+
+    def has_data(self):
+        return self._has_data
 
     def get_tag(self):
         return self._tag
@@ -135,7 +143,7 @@ class MovementAlgorithm():
             if self._ready:    
                 delta_time = time.time() - self._previous_time
                 speed = (self._cp - self._lp) / delta_time
-                self._value += self._pid.calculate(self._error(speed), delta_time)
+                self._value += self._pid.calculate(self._error(speed), delta_time)/1000
                 if self._value > 1:
                     self._value = 1
                 elif self._value < -1:
@@ -144,10 +152,12 @@ class MovementAlgorithm():
         
                 if self._count == 0:
                     self._xdata.append(0)
+                    self._has_data = True
                 else:
                     self._xdata.append(self._xdata[self._count - 1] + delta_time)
                 self._count += 1
-                self._ydata.append(self._value)
+                self._y1data.append(speed)
+                self._y2data.append(self._desired_speed)
             else:
                self._ready = True
                self._output[self._dof] = 0.0
@@ -190,9 +200,9 @@ class MovementAlgorithm():
 
     def _jump(self, position, dof):
         if position > self._degrees - self._margin and self._last_position[dof] < self._margin:
-            factor[dof] = factor[dof] - 1
+            self._factor[dof] = self._factor[dof] - 1
         elif position < self._margin and self._last_position[dof] > self._degrees - self._margin:
-            factor[dof] = factor[dof]
+            self._factor[dof] = self._factor[dof] + 1
 
     def _x(self):
         return self._sensor['imu']['linear-acceleration']['x']
