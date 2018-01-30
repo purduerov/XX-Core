@@ -1,4 +1,5 @@
 from PID_Controller import PID
+from Base_Algorithm import Algorithm
 import time
 
 # Control Algorithm
@@ -26,124 +27,41 @@ import time
 # - ex: control.p = 5 or control.d = 2
 
 
-class MovementAlgorithm():
+class MovementAlgorithm(Algorithm):
     
-    def __init__(self, parameter, sensor_data, tag):
-        self._tag = 0
-        self._activated = False
-        self._parameter = parameter
+    def __init__(self, parameter, sensor_data):
+        Algorithm.__init__(self, parameter, sensor_data)
         self._desired_speed = 0
-        self._pid = PID(0)
-        self._previous_time = time.time()
-        self._dof = 0
         self._ready = False
         self._cp = 0
         self._lp = 0
-        self._current_time = time.time()
         self._value = 0
-        self._factor = [0,0,0,0,0,0]
         self._last_position = [0,0,0,0,0,0]
-        self._degrees = 360
-        self._margin = 30
-        self._xdata = []
-        self._y1data = []
-        self._y2data = []
-        self._count = 0
-        self._has_data = False
-
-        if parameter == 'x':
-            self._dof = 0
-        elif parameter == 'y':
-            self._dof = 1
-        elif parameter == 'z':
-            self._dof = 2
-        elif parameter == 'roll':
-            self._dof = 3
-        elif parameter == 'pitch':
-            self._dof = 4
-        elif parameter == 'yaw':
-            self._dof = 5
-        self._output = [0,0,0,0,0,0]
+        self._scale = 100
+        self._current_time = time.time()
 
         # sets sensor data and the proper function to retrieve the right data from _sensor
         self._sensor = sensor_data
-        self._current_position = [self._x, self._y, self._z, self._roll, self._pitch, self._yaw][self._dof]
 
-    def current_position(self):
-	if self._dof == 0:
-	    return self._x()
-	elif self._dof == 1:
-	    return self._y()
-	elif self._dof == 2:
-	    return self._z()
-	elif self._dof == 3:
-	    return self._roll()
-	elif self._dof == 4:
-	    return self._pitch()
-	elif self._dof == 5:
-	    return self._yaw()
 
-    # ensures quickest route to desired position
     def _error(self, speed):
         error = self._desired_speed - speed
-        print(speed)
         return error
-
-    def activate(self):
-        self._activated = True
-        self._desired_speed = 0
-        self.reset()
-
-    def deactivate(self):
-        self._activated = False
-        self._output = [0,0,0,0,0,0]
-        ready = False
-
-    def getActivated(self):
-        return self._activated
-
-    def toggle(self):
-        if self._activated:
-            self.deactivate()
-        else:
-            self.activate()
-
-    #allows potential opportunity of a velocity user input rather than thrust
-    def get_desired_speed(self):
-        return self._desired_speed
-
-    def set_desired_speed(self, value):
-        self._desired_speed = value
-   
-    def get_xdata(self):
-        return self._xdata
-
-    def get_y1data(self):
-        return self._y1data
-    
-    def get_y2data(self):
-        return self._y2data
-
-    def has_data(self):
-        return self._has_data
-
-    def get_tag(self):
-        return self._tag
 
     def _update(self):
         self._lp = self._cp
-        self._cp = self.current_position()
+        self._cp = self._current_position(self._dof)
         self._previous_time = self._current_time
         self._current_time = time.time()
 
     def calculate(self, desired_speed):
-        self.set_desired_speed(desired_speed) 
+        self._desired_speed = desired_speed 
         if self._activated:
             self._update()
             if self._ready:    
                 delta_time = time.time() - self._previous_time
                 speed = (self._cp - self._lp) / delta_time
-                self._value += self._pid.calculate(self._error(speed), delta_time)/1000
+                self._value += self._pid.calculate(self._error(speed), delta_time)/self._scale
                 if self._value > 1:
                     self._value = 1
                 elif self._value < -1:
@@ -151,83 +69,26 @@ class MovementAlgorithm():
                 self._output[self._dof] = self._value
         
                 if self._count == 0:
-                    self._xdata.append(0)
+                    self._graph_data[0].append(0)
                     self._has_data = True
                 else:
-                    self._xdata.append(self._xdata[self._count - 1] + delta_time)
+                    self._graph_data[0].append(self._graph_data[0][self._count - 1] + delta_time)
                 self._count += 1
-                self._y1data.append(speed)
-                self._y2data.append(self._desired_speed)
+                self._graph_data[1].append(speed)
+                self._graph_data[2].append(self._desired_speed)
             else:
                self._ready = True
                self._output[self._dof] = 0.0
         
         else:
-            self.reset()
+            self._reset()
 
         return self._output
 
-    #tuner
-    @property
-    def p(self):
-        return self._pid.p
-
-    @p.setter
-    def p(self, value):
-        self._pid.p = value
-
-    @property
-    def i(self):
-        return self._pid.i
-    @i.setter
-    def i(self, value):
-        self._pid.i = value
-
-    @property
-    def d(self):
-        return self._pid.d
-
-    @d.setter
-    def d(self, value):
-        self._pid.d = value
-
-    def reset(self):
-        self._desired_speed = 0
+    def _reset(self):
         self._pid.reset(0)
         self._previous_time = time.time()
         self._output = [0, 0, 0, 0, 0, 0]
         self._value = 0
 
-    def _jump(self, position, dof):
-        if position > self._degrees - self._margin and self._last_position[dof] < self._margin:
-            self._factor[dof] = self._factor[dof] - 1
-        elif position < self._margin and self._last_position[dof] > self._degrees - self._margin:
-            self._factor[dof] = self._factor[dof] + 1
-
-    def _x(self):
-        return self._sensor['imu']['linear-acceleration']['x']
-    
-    def _y(self):
-        return self._sensor['imu']['linear-acceleration']['y']
-    
-    def _z(self):
-        return self._sensor['pressure']['pressure']
-    
-    def _roll(self): 
-        dof = 3
-        position = self._sensor['imu']['euler']['roll']
-        self._jump(position, dof)
-        return position + self._factor[dof] * self._degrees 
-    
-    def _pitch(self):
-        dof = 4
-        position = self._sensor['imu']['euler']['pitch']
-        self._jump(position, dof)
-        return position + self._factor[dof] * 360
-
-    def _yaw(self):
-        dof = 5
-        position = self._sensor['imu']['euler']['yaw']
-        self._jump(position, dof)
-        return position + self._factor[dof] * 360
 

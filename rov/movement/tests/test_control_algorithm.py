@@ -35,7 +35,7 @@ def sensor_data():
 
 def test_returns_empty_user_input_if_deactivated():
     # initializes a control algorithm with the desired position of 4 for the z parameter
-    z = ControlAlgorithm('z', sensor_data(), 112)
+    z = ControlAlgorithm(2, sensor_data())
     time.sleep(buffer)
 
     # activates then deactivates
@@ -48,7 +48,7 @@ def test_returns_empty_user_input_if_deactivated():
 
 def test_control_algorithm_correctly_gets_and_sets_pid_values():
     # initializes a control algorithm with the desired position of 2 for the y parameter
-    y = ControlAlgorithm('y', sensor_data(), 113)
+    y = ControlAlgorithm(1, sensor_data())
     # activates    
     time.sleep(buffer)
     y.activate()
@@ -59,26 +59,15 @@ def test_control_algorithm_correctly_gets_and_sets_pid_values():
     assert y.i == 0.3
     assert y.d == 4
 
-def test_correctly_gets_and_sets_desired_position():
-    x = ControlAlgorithm('x', sensor_data(), 114) 
-    time.sleep(buffer)
-    x.activate()
-    x.set_desired_position(100)
-    output = x.calculate()
-    assert x.get_desired_position() == 100
-    time.sleep(buffer)
-    output = x.calculate()
-    assert output[0] > 0
-
 def test_activate_deactivate_and_toggle_functions_work_properly():
-    roll = ControlAlgorithm('roll', sensor_data(), 115)
+    roll = ControlAlgorithm(3, sensor_data())
     time.sleep(buffer)
     roll.deactivate()
-    assert roll.getActivated() == False
+    assert roll.get_activated() == False
     roll.toggle()
-    assert roll.getActivated() == True
+    assert roll.get_activated() == True
     roll.toggle()
-    assert roll.getActivated() == False
+    assert roll.get_activated() == False
 
 
 #def test_control_algorithm_output_results_make_sense():

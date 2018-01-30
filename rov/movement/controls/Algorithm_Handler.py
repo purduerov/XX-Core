@@ -1,8 +1,11 @@
 from Control_Algorithm import ControlAlgorithm
 from Movement_Algorithm import MovementAlgorithm
 import matplotlib.pyplot as plt
+
 # Algorithm_Handler
-# README:
+# -----------
+#   README:
+# -----------
 #   This control handler takes in the users input and frozen dof's the create a new output for the thrusters
 #   This is initialized with which variables should be frozen
 #   This is updated with the desired thrust with 6 degrees and which variables should be frozen
@@ -17,40 +20,30 @@ import matplotlib.pyplot as plt
 class Master_Algorithm_Handler():
     # compare the activation logic
     def __init__(self, frozen_in, sensors): #refer to the XX-Core/frontend/src/packets.js
-        #dont think this is needed because it directly go inst o the control algorithms
-        #self.sensors = sensors
         self._dof_control = [0,0,0,0,0,0]
-        
-        # not sure where this is used or if needed
-        # self.dimension_lock = [False, False, False, False, False, False]
         self._dof_names = ['x', 'y', 'z', 'roll', 'pitch', 'yaw'] 
         self._freeze = []
         self._prev_activate = [0, 0, 0, 0, 0, 0]
         for i in range(6):
-            self._freeze.append(ControlAlgorithm(self._dof_names[i], sensors, i+7))
+            self._freeze.append(ControlAlgorithm(i, sensors))
             if frozen_in[i]:
                 self._freeze[i].activate()
-        
+
         self._movement_control = True
-        self._movement = [0,0,0,0,0,0] 
+        self._movement = [] 
         for i in range(6):
-            self._movement[i] = MovementAlgorithm(self._dof_names[i], sensors, i+1)
+            self._movement.append(MovementAlgorithm(i, sensors))
             if frozen_in[i] == False:
                 self._movement[i].activate()
 
     def master(self, desired_thrust_in, frozen_in): # "main" control handler
-
-        # axis freeze activation:
         for i in range(6):
-            # check if frozen control was toggled
             if self._prev_activate[i] != frozen_in[i]:
                 self._freeze[i].toggle()
                 if i > 2:
                     self._movement[i].toggle()
 
-        # Run the currently activated frozen axes
         for i in range(6):
-            # if the dof is frozen - calculate the adjustment
             if frozen_in[i] == True:
                 self._dof_control[i] = self._freeze[i].calculate()[i]
             else:
@@ -63,25 +56,29 @@ class Master_Algorithm_Handler():
         self._prev_activate = frozen_in
         return self._dof_control #returns the updated values
 
+# -----------------------------------------------------
+#                   Graphs Data
+# -----------------------------------------------------
+
 
     def plot_data(self):
         count = 1
         for alg in self._freeze:
             if alg.has_data():
-                plt.subplot(6, 2, count)
-                plt.plot(alg.get_xdata(), alg.get_y1data(), 'r', alg.get_xdata(), alg.get_y2data(), 'b')
-                plt.title('Freeze')
+                plt.subplot(4, 3, count)
+                plt.title('Freeze: ' + self._dof_names[alg._dof])
+                plt.plot(alg.get_graph_data()[0], alg.get_graph_data()[1], 'r', alg.get_graph_data()[0], alg.get_graph_data()[2], 'b')
                 count += 1
 
         for alg in self._movement:
             if alg.has_data():
-                plt.subplot(6, 2, count)
-                plt.plot(alg.get_xdata(), alg.get_y1data(), 'r', alg.get_xdata(), alg.get_y2data(), 'b')
-                plt.title('Movement')
+                plt.subplot(4, 3, count)
+                plt.title('Movement: ' + self._dof_names[alg._dof])
+                plt.plot(alg.get_graph_data()[0], alg.get_graph_data()[1], 'r', alg.get_graph_data()[0], alg.get_graph_data()[2], 'b')
                 count += 1
 
         plt.show()
-
+        plt.close()
 
     # allows tuning of the pid values when testing
     # will probably need to be able to change each individual dof

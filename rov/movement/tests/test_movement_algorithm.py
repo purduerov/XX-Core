@@ -36,7 +36,7 @@ def sensor_data():
 
 def test_returns_empty_user_input_if_deactivated():
     # initializes a control algorithm with the desired position of 4 for the z parameter
-    z = MovementAlgorithm('roll', sensor_data(), 211)
+    z = MovementAlgorithm(3, sensor_data())
     time.sleep(buffer)
 
     # activates then deactivates
@@ -48,7 +48,7 @@ def test_returns_empty_user_input_if_deactivated():
 
 def test_control_algorithm_correctly_gets_and_sets_pid_values():
     # initializes a control algorithm with the desired position of 2 for the y parameter
-    y = MovementAlgorithm('pitch', sensor_data(), 212)
+    y = MovementAlgorithm(4, sensor_data())
     # activates    
     time.sleep(buffer)
     y.activate()
@@ -63,19 +63,19 @@ def test_correctly_gets_and_sets_desired_position():
     assert 1 > 0
 
 def test_activate_deactivate_and_toggle_functions_work_properly():
-    roll = MovementAlgorithm('roll', sensor_data(), 213)
+    roll = MovementAlgorithm(3, sensor_data())
     time.sleep(buffer)
-    assert roll.getActivated() == False
+    assert roll.get_activated() == False
     roll.deactivate()
-    assert roll.getActivated() == False
+    assert roll.get_activated() == False
     roll.toggle()
-    assert roll.getActivated() == True
+    assert roll.get_activated() == True
     roll.toggle()
-    assert roll.getActivated() == False
+    assert roll.get_activated() == False
 
 
 def test_control_algorithm_output_results_make_sense():
-    yaw = MovementAlgorithm('yaw', sensor_data(), 214)
+    yaw = MovementAlgorithm(5, sensor_data())
     time.sleep(buffer)
     yaw.activate()
     assert yaw.calculate(4) == [0,0,0,0,0,0]
