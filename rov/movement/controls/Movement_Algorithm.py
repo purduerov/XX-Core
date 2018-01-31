@@ -39,6 +39,7 @@ class MovementAlgorithm(Algorithm):
         self._last_position = [0,0,0,0,0,0]
         self._scale = 100
         self._current_time = time.time()
+        self._max_speed = 360
 
         # sets sensor data and the proper function to retrieve the right data from _sensor
         self._sensor = sensor_data
@@ -54,8 +55,11 @@ class MovementAlgorithm(Algorithm):
         self._previous_time = self._current_time
         self._current_time = time.time()
 
+    def set_max_speed(self, value);
+        self._max_speed = value
+
     def calculate(self, desired_speed):
-        self._desired_speed = desired_speed 
+        self._desired_speed = desired_speed * self._max_speed 
         if self._activated:
             self._update()
             if self._ready:    

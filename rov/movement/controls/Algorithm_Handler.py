@@ -36,6 +36,10 @@ class Master_Algorithm_Handler():
             if frozen_in[i] == False:
                 self._movement[i].activate()
 
+    def set_max_speed(value):
+        for alg in self._movement:
+            alg.set_max_speed(value)
+
     def master(self, desired_thrust_in, frozen_in): # "main" control handler
         for i in range(6):
             if self._prev_activate[i] != frozen_in[i]:

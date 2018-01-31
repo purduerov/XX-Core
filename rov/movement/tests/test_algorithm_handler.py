@@ -35,10 +35,10 @@ data = {'sensors':
     }
 
 def rand():
-    return (random() / 5.0) + 0.9
+    return 0#(random() / 5.0) + 0.9
 
 def rand2():
-    return random() * 0.001 - 0.0005
+    return 0#random() * 0.001 - 0.0005
 
 def update_data(user_input, data, lt):
     dt = time.time() - lt
@@ -101,6 +101,8 @@ def test_activate_and_deactivate_functionality():
         assert mah.master(user_input, frozen)[i] != 0
 
     frozen = [1,1,1,0,1,0]
+    user_input = [5,1,2,3,21,14]
+
     for i in range(100):
         time.sleep(buffer)
         update_data(mah.master(user_input, frozen), data, lt)
