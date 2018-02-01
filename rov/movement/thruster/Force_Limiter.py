@@ -82,7 +82,7 @@ class ForceLimiter(object):
         IND_CHANGE_THRESH = 1000
 
         # get the greatest absolute value
-        max_change = abs(max(min(diff_thruster_powers), max(diff_thruster_powers), key=abs))
+        max_change = max(abs(diff_thruster_powers))
 
         if max_change < IND_CHANGE_THRESH:
             return 1
@@ -98,21 +98,8 @@ class ForceLimiter(object):
 
         diff_thruster_powers = map(operator.sub, self.thruster_powers, self.prev_thruster_powers)
 
-        total_power = self.acceptable_total_power()
-        if total_power != 1:
-            self.force_direction = total_power * self.force_direction
-
-        ind_total_scale = self.acceptable_individual_total()
-        if ind_total_scale != 1:
-            self.force_direction = ind_total_scale * self.force_direction
-
-        total_change = self.acceptable_total_change(diff_thruster_powers)
-        if total_change != 1:
-            self.force_direction = total_change * self.force_direction
-
-        ind_change_scale = self.acceptable_individual_change(diff_thruster_powers)
-        if ind_change_scale != 1:
-            self.force_direction = ind_change_scale * self.force_direction
-
-        return self.force_direction
+        return (self.force_direction * self.acceptable_total_power()
+                                     * self.acceptable_individiual_total()
+                                     * self.acceptable_total_change(diff_thruster_powers)
+                                     * self.acceptable_individual_change(diff_thruster_powers))
 
