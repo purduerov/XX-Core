@@ -27,17 +27,26 @@ class Cameras(object):
             self.devices = []
             
             # attempt to run a specfic camera to see if it works.
+            temp = {}
+            # variable to change the port
+            x = 1 
             for dev in devs:
                 tempin = 'input_uvc.so -f {framerate} -r {resolution} -d {device}'.format(framerate=self.framerate, resolution=self.resolution, device=dev)
-                
                 try:
-                    temp = subprocess.Popen(['mjpg_streamer', '-i', tempin, '-o', self.output], stdout=DEVNULL, stderr=DEVNULL)
-                    time.sleep(0.05)
-                    if temp.poll() is None:
-                        temp.kill()
-                        self.devices.append(dev)
+                    output = 'output_http.so -p {port} {web}'.format(
+                        port=port+x,
+                        web='-w /usr/local/www'
+                    )
+                    temp.update({dev: subprocess.Popen(['mjpg_streamer', '-i', tempin, '-o', output], stdout=DEVNULL, stderr=DEVNULL)})
+                    x+=1
                 except Exception:
                     pass
+            # let them get set up then check
+            time.sleep(0.05)
+            for k, v in temp.items():
+                if v.poll() is None:
+                    v.kill()
+                    self.devices.append(k)
         else:
             self.devices = devices
         
