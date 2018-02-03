@@ -50,6 +50,7 @@ class Algorithm():
         self._has_data = False
         # sets sensor data and the proper function to retrieve the right data from _sensor
 
+    # returns position using sensor data
     def _current_position(self, dof):
         if dof == 0:
             self._last_position[dof] = self._position[dof]
@@ -90,23 +91,28 @@ class Algorithm():
     def _error(self):
         pass
 
+    # checks if algorithm is activated
     def get_activated(self):
         return self._activated
-
+ 
+    # activated algorithm
     def activate(self):
         self._activated = True
         self._reset()
 
+    # deactivates algorithm
     def deactivate(self):
         self._activated = False
         self._output = [0,0,0,0,0,0]
 
+    # toggles activation state
     def toggle(self):
         if self._activated:
             self.deactivate()
         else:
             self.activate()
 
+    # returns data of pid controllers
     def get_graph_data(self):
         return self._graph_data
 
@@ -144,6 +150,7 @@ class Algorithm():
     def _reset(self):
         pass
 
+    # scales data past 0 and 360
     def _jump(self, position, dof):
         degrees = self._degrees
         margin = 30

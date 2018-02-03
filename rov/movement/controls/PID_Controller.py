@@ -27,6 +27,9 @@ class PID(object):
         self._esum = 0
         self._le = startingError
 
+    def reset_esum(self):
+        self._esum = 0
+
     @property
     def p(self):
         return self._p

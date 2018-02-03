@@ -27,37 +27,42 @@ import time
 # - ex: control.p = 5 or control.d = 2
 
 
-class MovementAlgorithm(Algorithm):
+class SpeedStabilizer(Algorithm):
     
     def __init__(self, parameter, sensor_data):
         Algorithm.__init__(self, parameter, sensor_data)
         self._desired_speed = 0
+        # wait's till it can calculate speed to produce output
         self._ready = False
-        self._cp = 0
-        self._lp = 0
-        self._value = 0
-        self._last_position = [0,0,0,0,0,0]
-        self._scale = 100
+        self._cp = 0 # current position
+        self._lp = 0 # last position
+        self._value = 0 # output to pid controller
+        self._scale = 1000 # how much it should scale pid output for easier tuning
         self._current_time = time.time()
-        self._max_speed = 360
+        
+        self._max_speed = 100 # max speed in degress / sec when u_i is max
 
         # sets sensor data and the proper function to retrieve the right data from _sensor
         self._sensor = sensor_data
 
 
+    # calculates error for the pid
     def _error(self, speed):
         error = self._desired_speed - speed
         return error
 
-    def _update(self):
+    # updates position and time
+    def _update(self): 
         self._lp = self._cp
         self._cp = self._current_position(self._dof)
         self._previous_time = self._current_time
         self._current_time = time.time()
 
-    def set_max_speed(self, value);
+    # sets max speed
+    def set_max_speed(self, value):
         self._max_speed = value
 
+    # calculates output and saves data
     def calculate(self, desired_speed):
         self._desired_speed = desired_speed * self._max_speed 
         if self._activated:
@@ -68,8 +73,10 @@ class MovementAlgorithm(Algorithm):
                 self._value += self._pid.calculate(self._error(speed), delta_time)/self._scale
                 if self._value > 1:
                     self._value = 1
+                    self._pid.reset_esum()
                 elif self._value < -1:
                     self._value = -1
+                    self._pid.reset_esum()
                 self._output[self._dof] = self._value
         
                 if self._count == 0:
@@ -89,10 +96,12 @@ class MovementAlgorithm(Algorithm):
 
         return self._output
 
+    # resets pid controller and all values
     def _reset(self):
         self._pid.reset(0)
-        self._previous_time = time.time()
+        self._update()
         self._output = [0, 0, 0, 0, 0, 0]
         self._value = 0
+        self._ready = False
 
 

@@ -26,16 +26,18 @@ import time
 # - For PID tuning you can directly get and set the values using .p, .i, .d
 # - ex: control.p = 5 or control.d = 2
 
-class ControlAlgorithm(Algorithm):
+class PositionStabilizer(Algorithm):
 
     def __init__(self, parameter, sensor_data):
         Algorithm.__init__(self, parameter, sensor_data)
         self._desired_position = 0
 
+    # calculates error for pid
     def _error(self):
         error = self._desired_position - self._current_position(self._dof)
         return error
-    
+   
+    # calculates output for thrust mapper and graphs data
     def calculate(self):         
         if self._activated:
             delta_time = time.time() - self._previous_time
@@ -44,8 +46,10 @@ class ControlAlgorithm(Algorithm):
 
             if value > 1:
                 value = 1
+                self._pid.reset_esum()
             elif value < -1:
                 value = -1
+                self._pid.reset_esum()
 
             self._output[self._dof] = value
             if self._count == 0:
@@ -61,8 +65,9 @@ class ControlAlgorithm(Algorithm):
             self._reset()
         return self._output
 
+    # resets time and position values
     def _reset(self):
-        self._desired_position = self._current_position(self._dof)
         self._pid.reset(0)
+        self._desired_position = self._current_position(self._dof)
         self._previous_time = time.time()
         self._output = [0, 0, 0, 0, 0, 0]

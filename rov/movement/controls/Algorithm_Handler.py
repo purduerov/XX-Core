@@ -1,5 +1,5 @@
-from Control_Algorithm import ControlAlgorithm
-from Movement_Algorithm import MovementAlgorithm
+from Position_Stabilizer import PositionStabilizer
+from Speed_Stabilizer import SpeedStabilizer
 import matplotlib.pyplot as plt
 
 # Algorithm_Handler
@@ -13,26 +13,28 @@ import matplotlib.pyplot as plt
 #   This is to allows the ROV to lock a certain position in the water if needed
 # How to use:
 #   1. handler = Master_Algorithm_Handler([0,0,1,0,0,0], sensors)
-#   2. handler.master()
+#   2. handler.master([0,0,0,0,0,0], [0,0,0,0,0,0])
 #   -   This function returns the new thruster input ex: [0,1,0.4,-0.3,0]
 #   -   Use handler.tune(3,2,1) to change the pid values
 
 class Master_Algorithm_Handler():
     # compare the activation logic
     def __init__(self, frozen_in, sensors): #refer to the XX-Core/frontend/src/packets.js
-        self._dof_control = [0,0,0,0,0,0]
+        self._dof_control = [0,0,0,0,0,0] # holds the output for movement
         self._dof_names = ['x', 'y', 'z', 'roll', 'pitch', 'yaw'] 
-        self._freeze = []
-        self._prev_activate = [0, 0, 0, 0, 0, 0]
+        self._freeze = [] # contains the position stabilizers
+        self._prev_activate = [0, 0, 0, 0, 0, 0] # used to see if freeze is toggled
         for i in range(6):
-            self._freeze.append(ControlAlgorithm(i, sensors))
+            self._freeze.append(PositionStabilizer(i, sensors)) 
+            # activates if it should be used
             if frozen_in[i]:
                 self._freeze[i].activate()
-
+        # option to not used movement controls 
         self._movement_control = True
-        self._movement = [] 
+        self._movement = [] # contains the movement stabilizers 
         for i in range(6):
-            self._movement.append(MovementAlgorithm(i, sensors))
+            self._movement.append(SpeedStabilizer(i, sensors))
+            # activates it if it should be used
             if frozen_in[i] == False:
                 self._movement[i].activate()
 
@@ -42,13 +44,15 @@ class Master_Algorithm_Handler():
 
     def master(self, desired_thrust_in, frozen_in): # "main" control handler
         for i in range(6):
+            # check if frozen was toggled to toggle algorithms
             if self._prev_activate[i] != frozen_in[i]:
                 self._freeze[i].toggle()
                 if i > 2:
                     self._movement[i].toggle()
 
+        # only caluclates roll, pitch and yaw
         for i in range(6):
-            if frozen_in[i] == True:
+            if frozen_in[i] == True and i > 2:
                 self._dof_control[i] = self._freeze[i].calculate()[i]
             else:
                 if self._movement_control and i > 2:
@@ -58,13 +62,13 @@ class Master_Algorithm_Handler():
                     self._dof_control[i] = desired_thrust_in[i]
 
         self._prev_activate = frozen_in
-        return self._dof_control #returns the updated values
+        return self._dof_control # returns the updated values
 
 # -----------------------------------------------------
 #                   Graphs Data
 # -----------------------------------------------------
-
-
+   
+    # uses matplotlib to graph algorithm data
     def plot_data(self):
         count = 1
         for alg in self._freeze:

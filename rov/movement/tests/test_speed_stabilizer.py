@@ -4,7 +4,7 @@ Set of tests for checking the functionality of the controller class. These tests
 
 import pytest
 import time
-from rov.movement.controls.Movement_Algorithm import MovementAlgorithm
+from rov.movement.controls.Speed_Stabilizer import SpeedStabilizer
 
 buffer = 0.001
 
@@ -36,7 +36,7 @@ def sensor_data():
 
 def test_returns_empty_user_input_if_deactivated():
     # initializes a control algorithm with the desired position of 4 for the z parameter
-    z = MovementAlgorithm(3, sensor_data())
+    z = SpeedStabilizer(3, sensor_data())
     time.sleep(buffer)
 
     # activates then deactivates
@@ -48,7 +48,7 @@ def test_returns_empty_user_input_if_deactivated():
 
 def test_control_algorithm_correctly_gets_and_sets_pid_values():
     # initializes a control algorithm with the desired position of 2 for the y parameter
-    y = MovementAlgorithm(4, sensor_data())
+    y = SpeedStabilizer(4, sensor_data())
     # activates    
     time.sleep(buffer)
     y.activate()
@@ -63,7 +63,7 @@ def test_correctly_gets_and_sets_desired_position():
     assert 1 > 0
 
 def test_activate_deactivate_and_toggle_functions_work_properly():
-    roll = MovementAlgorithm(3, sensor_data())
+    roll = SpeedStabilizer(3, sensor_data())
     time.sleep(buffer)
     assert roll.get_activated() == False
     roll.deactivate()
@@ -75,7 +75,7 @@ def test_activate_deactivate_and_toggle_functions_work_properly():
 
 
 def test_control_algorithm_output_results_make_sense():
-    yaw = MovementAlgorithm(5, sensor_data())
+    yaw = SpeedStabilizer(5, sensor_data())
     time.sleep(buffer)
     yaw.activate()
     assert yaw.calculate(4) == [0,0,0,0,0,0]
