@@ -48,7 +48,7 @@ export default class ForceScale extends Component {
             if (!val.startsWith('vel') && val !== 'master') {
                 return (
                     <SliderControl min="0" max="100" indx={ val }
-                        power={ this.state.scales[val] } re nd={ this.rendData }
+                        power={ this.state.scales[val] } rend={ this.rendData }
                         name={ 'Force '+val } key={ 'force'+val }
                     />
                 );
