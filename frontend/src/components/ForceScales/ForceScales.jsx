@@ -31,13 +31,12 @@ export default class ForceScale extends Component {
     }
 
     rendLeftScales() {
-        var that = this;
-        return Object.keys(this.props.scales).map(function(val, index) {
+        return Object.keys(this.props.scales).map((val, index) => {
             if (val.startsWith('vel')) {
                 return (
-                    <SliderControl min = "0" max = "100" indx = { val }
-                    power = { that.state.scales[val] } rend = { that.rendData }
-                    name = { 'Force ' + val.slice(-1) } key={'force'+val}
+                    <SliderControl min="0" max="100" indx={ val }
+                        power={ this.state.scales[val] } rend={ this.rendData }
+                        name={ 'Force '+val.slice(-1) } key={ 'force'+val }
                     />
                 );
             }
@@ -45,13 +44,12 @@ export default class ForceScale extends Component {
     }
 
     rendRightScales() {
-        var that = this;
-        return Object.keys(this.props.scales).map(function(val, index) {
+        return Object.keys(this.props.scales).map((val, index) => {
             if (!val.startsWith('vel') && val !== 'master') {
                 return (
-                    <SliderControl min = "0" max = "100" indx = { val }
-                    power = { that.state.scales[val] } rend = { that.rendData }
-                    name = { 'Force ' + val } key={'force'+val}
+                    <SliderControl min="0" max="100" indx={ val }
+                        power={ this.state.scales[val] } re nd={ this.rendData }
+                        name={ 'Force '+val } key={ 'force'+val }
                     />
                 );
             }
@@ -60,11 +58,11 @@ export default class ForceScale extends Component {
 
     render() {
         return (
-            <div className = { styles.container } >
-                <div className = { styles.fullAll } >
-                    <SliderControl min = "0" max = "100" key = { 'force master' } indx = { 'master' } power = { this.state.scales['master'] } rend = { this.rendData } name = { 'Force master' } />{' '}
-                    <div className = { styles.halfLeft } > { this.rendLeftScales() } </div>
-                    <div className = { styles.halfRight } > { this.rendRightScales() } </div>
+            <div className={ styles.container } >
+                <div className={ styles.fullAll } >
+                    <SliderControl min="0" max="100" key={ 'force master' } indx={ 'master' } power={ this.state.scales['master'] } rend={ this.rendData } name={ 'Force master' } />
+                    <div className={ styles.halfLeft } > { this.rendLeftScales() } </div>
+                    <div className={ styles.halfRight } > { this.rendRightScales() } </div>
                 </div>
             </div>
         );
