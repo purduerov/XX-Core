@@ -1,5 +1,5 @@
 {
-  "Rovip":"10.42.0.234",
+  "Rovip":"localhost",
   "TransPortStart": 8080,
   "NumCams": 4,
   "Socketio":{
