@@ -1,7 +1,8 @@
 {
   "Rovip":"localhost",
-  "TransPortStart": 8080,
-  "NumCams": 4,
+  "TransPortStart": 8000,
+  "GetInfo":1905,
+  "NumCams": 1,
   "Socketio":{
     "Port_to_rov":5000,
     "Port_to_client":5001

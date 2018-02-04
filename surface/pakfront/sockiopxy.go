@@ -66,7 +66,6 @@ func sockiopxy(rovIP string, rovPort int, clientPort string) {
 	//Launch server
 	http.Handle("/socket.io/", pxyToClient)
 	http.Handle("/", http.FileServer(http.Dir("./bin")))
-	log.Println("Serving at localhost:5001...")
 	log.Fatal(http.ListenAndServe(clientPort, nil))
 	return
 }

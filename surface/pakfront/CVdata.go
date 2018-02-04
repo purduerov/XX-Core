@@ -65,6 +65,7 @@ func MkChanDataWrite(datalen int)(writer datawrite){
 func (ch *datawrite) APIserve(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Stalin", "You know stalin is one of those guys who really was a pretty bad guy")
 	w.Header().Set("Date", "Sat, 1 Jan 2000 12:00:00 GMT")
+	w.Header().Set("Content-Type", "application/json") 
 	w.WriteHeader(http.StatusOK)
 	_, data := ch.Buffer.Dump()
 	_, err := w.Write(data)

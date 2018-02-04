@@ -36,6 +36,7 @@ type Cvhandler struct {
 type config struct {
 	Rovip          string
 	TransPortStart int
+	GetInfo 	   int
 	NumCams        int
 	Socketio       Socketio
 	Cvhandler      Cvhandler
@@ -87,7 +88,7 @@ func getconfig(filename string) config {
 func numtoportstr(port int) string {
 	return ":" + strconv.Itoa(port)
 }
-func cvproc(conf config, procnum int) {
+func cvproc(conf config, procnum int, ret map[string]map[string]int) {
 	var read int
 	var msg []byte
 	numimg := conf.Cvhandler.Number_of_images
@@ -98,10 +99,11 @@ func cvproc(conf config, procnum int) {
 	to_client_data := 4*conf.Cvhandler.Processes[procnum].ID + 2 + 1917
 	to_cv_process := 4*conf.Cvhandler.Processes[procnum].ID + 3 + 1917
 	to_cv_process_data := 4*conf.Cvhandler.Processes[procnum].ID + 4 + 1917
-	fmt.Printf("\"%v\": {\"stream\": %v, \"data\": %v},",
-		conf.Cvhandler.Processes[procnum].Name,
-		to_client_video,
-		to_client_data)
+
+	submap := make(map[string]int)
+	submap["stream"] = to_client_video
+	submap["data"] = to_client_data
+	ret[conf.Cvhandler.Processes[procnum].Name] = submap
 
 	//Channel is made with a certain buffer size
 	chanwrite1 := Mkchanwrite(numimg, sizeimg)
@@ -126,14 +128,23 @@ func cvproc(conf config, procnum int) {
 			datawrite1.Buffer.Load(msg[:read], read)
 			wait := time.NewTimer(time.Nanosecond * 100)
 			<-wait.C
-		}
+			}
 	}()
 
 }
-
+func returnConfig(ret map[string]map[string]int) func(http.ResponseWriter, * http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json") 
+		w.WriteHeader(http.StatusOK)
+		data, err := json.Marshal(ret)
+		check(err)
+		_, err = w.Write(data)
+		check(err)
+	}
+}
 //main: where the magic:the gathering happens
 func main() {
-	fmt.Printf("{")
+	ret := make(map[string]map[string]int)
 
 	// fmt.Println is a very complicated function, and its depth and complexity can not be understated. Moreover, the context in which it is called multiplies its importance factorially, further growing its need. I recommend you sit down, get a big cup of warm, heavily caffinated, tea, and consider both the implication of this function, as well as what it means to you as not only a coder, but a person and a woman.
 	conf := getconfig("proxyconfig.json")
@@ -142,30 +153,30 @@ func main() {
 	camnum := 0
 	for assPort < conf.TransPortStart+conf.NumCams {
 		cam := Mktrans(conf.Rovip, 8080, camnum, assPort)
-		fmt.Printf("\"camnum%v\": {\"stream\": %v, \"data\": %v},",
-			camnum,
-			assPort,
-			-1)
+		submap := make(map[string]int)
+		submap["stream"] = assPort
+		submap["data"]	= -1
+		ret[fmt.Sprintf("camnum%v",camnum)] = submap
 		go http.ListenAndServe(numtoportstr(cam.serverport), http.HandlerFunc(cam.Transreq))
 		assPort += 1
 		camnum += 1
 	}
 
+	submap := make(map[string]int)
+	submap["pakfront"] = conf.Socketio.Port_to_client
+	submap["rovdirect"]	= conf.Socketio.Port_to_rov
+	ret["socketio"] = submap
 	numProc := conf.Cvhandler.Num_processes
 	go sockiopxy(conf.Rovip, conf.Socketio.Port_to_rov, numtoportstr(conf.Socketio.Port_to_client))
 
 	procnum := 0
 	for procnum < numProc {
-		go cvproc(conf, procnum)
+		go cvproc(conf, procnum, ret)
 		procnum++
 	}
 
 	wait := time.NewTimer(time.Millisecond)
 	<-wait.C
-	fmt.Printf("\"Numcams\": %v}\n", numProc+conf.NumCams)
-	//arbitrary wait times amiright
-	for {
-		wait := time.NewTimer(time.Second * 5)
-		<-wait.C
-	}
+
+	log.Fatal(http.ListenAndServe(numtoportstr(conf.GetInfo), http.HandlerFunc(returnConfig(ret))))
 }
