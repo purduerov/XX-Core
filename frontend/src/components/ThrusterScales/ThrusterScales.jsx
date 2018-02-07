@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import Camera from 'react-camera';
-import SliderControl from './SliderControl.jsx';
+import SliderControl from '../SliderControl/SliderControl.jsx';
 import styles from "./ThrusterScales.css";
 
 let that;
@@ -14,7 +13,7 @@ export default class ThrusterScales extends Component {
     constructor(props) {
         super(props);
         this.state = {'scales': props.scales};
-        
+
         this.rendLeftScales = this.rendLeftScales.bind(this);
         this.rendRightScales = this.rendRightScales.bind(this);
 
