@@ -35,9 +35,7 @@ class Algorithm():
         self._degrees = 360
         self._previous_time = time.time()
         self._dof = 0
-        self._graph_data = []
-        for x in range(3):
-            self._graph_data.append([])
+        self._graph_data = [[], [], []]
         self._count = 0
         self._factor = [0,0,0,0,0,0]
         self._last_position = [0,0,0,0,0,0]
@@ -87,6 +85,33 @@ class Algorithm():
             self._jump(position, dof)
             self._position[dof] = position + self._factor[dof] * 360
             return self._position[dof]
+
+    def _position_raw(self, dof):
+        position = 0
+        
+        if dof == 0:
+            position = self._sensor['imu']['linear-acceleration']['x'] 
+
+        elif dof == 1:
+            position = self._sensor['imu']['linear-acceleration']['y']
+    
+        elif dof == 2:
+            position = self._sensor['pressure']['pressure']
+    
+        elif dof == 3: 
+            position = self._sensor['imu']['euler']['roll']
+    
+        elif dof == 4:
+            position = self._sensor['imu']['euler']['pitch']
+
+        elif dof == 5:
+            position = self._sensor['imu']['euler']['yaw']
+
+        if dof > 2: 
+            if position >= 180:
+                position -= 360
+        
+        return position
 
     def _error(self):
         pass

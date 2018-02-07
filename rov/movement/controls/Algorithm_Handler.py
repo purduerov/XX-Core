@@ -1,5 +1,6 @@
 from Position_Stabilizer import PositionStabilizer
 from Speed_Stabilizer import SpeedStabilizer
+from Height_Stabilizer import HeightStabilizer
 import matplotlib.pyplot as plt
 
 # Algorithm_Handler
@@ -32,12 +33,14 @@ class Master_Algorithm_Handler():
         # option to not used movement controls 
         self._movement_control = True
         self._movement = [] # contains the movement stabilizers 
+        
         for i in range(6):
             self._movement.append(SpeedStabilizer(i, sensors))
             # activates it if it should be used
             if frozen_in[i] == False:
                 self._movement[i].activate()
 
+        self._freeze_height = HeightStabilizer(sensors)
     def set_max_speed(value):
         for alg in self._movement:
             alg.set_max_speed(value)
@@ -54,12 +57,22 @@ class Master_Algorithm_Handler():
         for i in range(6):
             if frozen_in[i] == True and i > 2:
                 self._dof_control[i] = self._freeze[i].calculate()[i]
+            elif frozen_in[i] == True and i == 2:
+                output = self._freeze_height.calculate()
+                for j in range(3):
+                    self._dof_control[j] += output[j]
             else:
                 if self._movement_control and i > 2:
                     self._dof_control[i] = self._movement[i].calculate(desired_thrust_in[i])[i]
                 else:
                     # sets to user input value if not frozen
                     self._dof_control[i] = desired_thrust_in[i]
+
+        for i in range(6):
+            if self._dof_control[i] > 1:
+                self._dof_control[i] = 1
+            elif self._dof_control[i] < -1:
+                self._dof_control[i] = -1
 
         self._prev_activate = frozen_in
         return self._dof_control # returns the updated values
@@ -124,4 +137,3 @@ if __name__ == "__main__":
     master = Master_Algorithm_Handler([0,0,0,0,0,0], data['sensors'])
     master.master([0,0,0,0,0,0], [True,True,True,True,True,True])
     print(data)
-
