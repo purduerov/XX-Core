@@ -3,13 +3,12 @@ import SliderControl from '../SliderControl/SliderControl.jsx';
 import styles from './ForceScales.css';
 
 /*
-    <SliderControl min='0' max='100' key={'thrust0'} indx={0} val={this.state.scales[0]} inv={this.state.inv[0]} rend={this.rendData.bind(this)} name={"Thruster 0"} />
+    <SliderControl min='0' max='100' key={'thrust0'} indx={0} val={this.props.scales[0]} inv={this.props.inv[0]} rend={this.rendData.bind(this)} name={"Thruster 0"} />
 */
 
 export default class ForceScale extends Component {
     constructor(props) {
         super(props);
-        this.state = { scales: props.scales };
 
         this.rendLeftScales = this.rendLeftScales.bind(this);
         this.rendRightScales = this.rendRightScales.bind(this);
@@ -17,17 +16,11 @@ export default class ForceScale extends Component {
     }
 
     rendData(val, inv, key) {
-        //console.log(this.state.scales[key]);
-        let scalescpy = this.state.scales;
+        //console.log(this.props.scales[key]);
+        let scalescpy = this.props.scales;      //props aren't 
         scalescpy[key] = val;
         //scalescpy[key].invert = inv;
-        this.setState({
-                scales: scalescpy,
-            },
-            function() {
-                this.props.rend(this.state.scales);
-            }
-        );
+        this.props.rend(scalescpy);
     }
 
     rendLeftScales() {
@@ -35,7 +28,7 @@ export default class ForceScale extends Component {
             if (val.startsWith('vel')) {
                 return (
                     <SliderControl min="0" max="100" indx={ val }
-                        power={ this.state.scales[val] } rend={ this.rendData }
+                        power={ this.props.scales[val] } rend={ this.rendData }
                         name={ 'Force '+val.slice(-1) } key={ 'force'+val }
                     />
                 );
@@ -48,7 +41,7 @@ export default class ForceScale extends Component {
             if (!val.startsWith('vel') && val !== 'master') {
                 return (
                     <SliderControl min="0" max="100" indx={ val }
-                        power={ this.state.scales[val] } rend={ this.rendData }
+                        power={ this.props.scales[val] } rend={ this.rendData }
                         name={ 'Force '+val } key={ 'force'+val }
                     />
                 );
@@ -60,7 +53,7 @@ export default class ForceScale extends Component {
         return (
             <div className={ styles.container } >
                 <div className={ styles.fullAll } >
-                    <SliderControl min="0" max="100" key={ 'force master' } indx={ 'master' } power={ this.state.scales['master'] } rend={ this.rendData } name={ 'Force master' } />
+                    <SliderControl min="0" max="100" key={ 'force master' } indx={ 'master' } power={ this.props.scales['master'] } rend={ this.rendData } name={ 'Force master' } />
                     <div className={ styles.halfLeft } > { this.rendLeftScales() } </div>
                     <div className={ styles.halfRight } > { this.rendRightScales() } </div>
                 </div>
