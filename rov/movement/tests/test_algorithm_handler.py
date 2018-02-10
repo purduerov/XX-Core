@@ -7,7 +7,7 @@ import time
 from rov.movement.controls.Algorithm_Handler import Master_Algorithm_Handler
 from random import *
 
-buffer = 0.001
+buffer = 0.005
 # last time
 lt = time.time()
 
@@ -78,7 +78,7 @@ def test_returns_empty_user_input_if_deactivated():
 
 def test_activate_and_deactivate_functionality():
     # initializes a control algorithm with the desired position of 4 for the z parameter
-    frozen = [False, False, False, False, False, False]
+    frozen = [0,0,0,0,0,0]
     user_input = [0,0,0,0,0,0]
     mah = Master_Algorithm_Handler(frozen, sensor_data())
     for i in range(100):
@@ -100,7 +100,7 @@ def test_activate_and_deactivate_functionality():
         time.sleep(buffer)
         assert mah.master(user_input, frozen)[i] != 0
 
-    frozen = [1,1,1,0,1,0]
+    frozen = [0,0,3,2,1,2]
     user_input = [0.5, 0.1, 0.2, 0.3, 0.21, 0.14]
 
     for i in range(100):
@@ -109,4 +109,5 @@ def test_activate_and_deactivate_functionality():
     for i in range(6):
         time.sleep(buffer)
         mah.master(user_input, frozen)[i]
+    
     mah.plot_data()

@@ -18,55 +18,64 @@ import matplotlib.pyplot as plt
 #   -   This function returns the new thruster input ex: [0,1,0.4,-0.3,0]
 #   -   Use handler.tune(3,2,1) to change the pid values
 
+# Meanings of frozen_in input
+# 0 - no control
+# 1 - speed
+# 2 - movement
+# 3 - height
+
 class Master_Algorithm_Handler():
-    # compare the activation logic
-    def __init__(self, frozen_in, sensors): #refer to the XX-Core/frontend/src/packets.js
-        self._dof_control = [0,0,0,0,0,0] # holds the output for movement
+    # COMPARE THE ACTIVATION LOGIC
+    def __init__(self, activate, sensors): # refer to the XX-Core/frontend/src/packets.js
+        self._dof_control = [0,0,0,0,0,0] # HOLDS THE OUTPUT FOR MOVEMENT
         self._dof_names = ['x', 'y', 'z', 'roll', 'pitch', 'yaw'] 
-        self._freeze = [] # contains the position stabilizers
-        self._prev_activate = [0, 0, 0, 0, 0, 0] # used to see if freeze is toggled
-        for i in range(6):
+        self._freeze = [] # CONTAINS THE POSITION STABILIZERS
+        self._freeze_height = HeightStabilizer(sensors)
+        self._prev_activate = [0, 0, 0, 0, 0, 0] # USED TO SEE IF FREEZE IS TOGGLED
+        for i in range(0, 6):
             self._freeze.append(PositionStabilizer(i, sensors)) 
-            # activates if it should be used
-            if frozen_in[i]:
-                self._freeze[i].activate()
-        # option to not used movement controls 
-        self._movement_control = True
-        self._movement = [] # contains the movement stabilizers 
+            # ACTIVATES IF IT SHOULD BE USED
+            if activate[i]:
+                if i == 2 and activate[i] == 3:
+                    self._freeze_height.activate()
+                elif i > 2 and activate[i] == 2:
+                    self._freeze[i].activate()
+
+        self._movement = [] # CONTAINS THE MOVEMENT STABILIZERS 
         
-        for i in range(6):
+        for i in range(0,6):
             self._movement.append(SpeedStabilizer(i, sensors))
-            # activates it if it should be used
-            if frozen_in[i] == False:
+            # ACTIVATES IT IF IT SHOULD BE USED
+            if activate[i] == 1:
                 self._movement[i].activate()
 
-        self._freeze_height = HeightStabilizer(sensors)
     def set_max_speed(value):
         for alg in self._movement:
             alg.set_max_speed(value)
 
-    def master(self, desired_thrust_in, frozen_in): # "main" control handler
-        for i in range(6):
-            # check if frozen was toggled to toggle algorithms
-            if self._prev_activate[i] != frozen_in[i]:
+    def master(self, desired_thrust_in, activate): # "MAIN" CONTROL HANDLER
+        for i in range(2, 6):
+            # CHECK IF FROZEN WAS TOGGLED TO TOGGLE CONTROLS  
+            if i > 2 and ((activate[i] == 1) != (self._prev_activate[i] == 1)):
+                self._movement[i].toggle()
+            if i > 2 and ((activate[i] == 2) != (self._prev_activate[i] == 2)):
                 self._freeze[i].toggle()
-                if i > 2:
-                    self._movement[i].toggle()
+            if i == 2 and ((activate[i] == 3) != (self._prev_activate[i] == 3)):
+                self._freeze_height.toggle()
 
-        # only caluclates roll, pitch and yaw
+        # ONLY CALCULATES ROLL, PITCH AND YAW
         for i in range(6):
-            if frozen_in[i] == True and i > 2:
+            if activate[i] == 1 and i > 2:
+                self._dof_control[i] = self._movement[i].calculate(desired_thrust_in[i])[i]
+            elif activate[i] == 2 and i > 2:
                 self._dof_control[i] = self._freeze[i].calculate()[i]
-            elif frozen_in[i] == True and i == 2:
+            elif activate[i] == 3 and i == 2:
                 output = self._freeze_height.calculate()
                 for j in range(3):
                     self._dof_control[j] += output[j]
             else:
-                if self._movement_control and i > 2:
-                    self._dof_control[i] = self._movement[i].calculate(desired_thrust_in[i])[i]
-                else:
-                    # sets to user input value if not frozen
-                    self._dof_control[i] = desired_thrust_in[i]
+                # SETS TO USER INPUT VALUE IF NOT FROZEN
+                self._dof_control[i] = desired_thrust_in[i]
 
         for i in range(6):
             if self._dof_control[i] > 1:
@@ -74,36 +83,41 @@ class Master_Algorithm_Handler():
             elif self._dof_control[i] < -1:
                 self._dof_control[i] = -1
 
-        self._prev_activate = frozen_in
-        return self._dof_control # returns the updated values
+        self._prev_activate = activate
+        return self._dof_control # RETURNS THE UPDATED VALUES
 
 # -----------------------------------------------------
-#                   Graphs Data
+#                   GRAPHS DATA
 # -----------------------------------------------------
    
-    # uses matplotlib to graph algorithm data
+    # USES MATPLOTLIB TO GRAPH ALGORITHM DATA
     def plot_data(self):
         count = 1
         for alg in self._freeze:
             if alg.has_data():
                 plt.subplot(4, 3, count)
                 plt.title('Freeze: ' + self._dof_names[alg._dof])
-                plt.plot(alg.get_graph_data()[0], alg.get_graph_data()[1], 'r', alg.get_graph_data()[0], alg.get_graph_data()[2], 'b')
+                plt.plot(alg.get_data()[0], alg.get_data()[1], 'r', alg.get_data()[0], alg.get_data()[2], 'b')
                 count += 1
 
         for alg in self._movement:
             if alg.has_data():
                 plt.subplot(4, 3, count)
                 plt.title('Movement: ' + self._dof_names[alg._dof])
-                plt.plot(alg.get_graph_data()[0], alg.get_graph_data()[1], 'r', alg.get_graph_data()[0], alg.get_graph_data()[2], 'b')
+                plt.plot(alg.get_data()[0], alg.get_data()[1], 'r', alg.get_data()[0], alg.get_data()[2], 'b')
                 count += 1
+        
+        if self._freeze_height.has_data():
+            plt.subplot(4, 3, count)
+            plt.title('Height Control')
+            plt.plot(self._freeze_height.get_data()[0], self._freeze_height.get_data()[1], 'r', self._freeze_height.get_data()[0], self._freeze_height.get_data()[2], 'b')
 
         plt.show()
         plt.close()
 
-    # allows tuning of the pid values when testing
-    # will probably need to be able to change each individual dof
-    # but this will do for now and will be quick to change
+    # ALLOWS TUNING OF THE PID VALUES WHEN TESTING
+    # WILL PROBABLY NEED TO BE ABLE TO CHANGE EACH INDIVIDUAL DOF
+    # BUT THIS WILL DO FOR NOW AND WILL BE QUICK TO CHANGE
     def tune(self, p, i, d):
         for i in range(6):
             self._freeze[i].p = p

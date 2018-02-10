@@ -138,7 +138,7 @@ class Algorithm():
             self.activate()
 
     # returns data of pid controllers
-    def get_graph_data(self):
+    def get_data(self):
         return self._graph_data
 
     def has_data(self):

@@ -54,13 +54,17 @@ class HeightStabilizer(Algorithm):
                 self._pid.reset_esum()
 
             # stores the sin(theta) output for these angles
-            pitch = math.sin(self._current_position(4))
-            roll = math.sin(self._current_position(3))
+            pitch = math.sin(self._current_position(4) * math.pi / 180)
+            roll = math.sin(self._current_position(3) * math.pi / 180)
             
             # Calculates each component needed for upward motion
             x = -1 * pitch * value
             y = roll * value
-            z = math.sqrt(1 - math.pow(roll, 2) - math.pow(pitch, 2)) * value
+            c = 1 - math.pow(roll, 2) - math.pow(pitch, 2)
+            if c < 0:
+                c = 0
+            
+            z = math.sqrt(c) * value
 
             # Places these values in the output vector
             self._output[0] = x
