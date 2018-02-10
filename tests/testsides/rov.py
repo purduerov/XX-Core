@@ -27,11 +27,8 @@ class ROV(object):
             # # print 'Data connection lost'
             # self.motor_control.kill()
             # self.thruster_control.stop()
-        print "RUNNING"
-        self._data["dearclient"] = {"People who suck": "Everyone"}
         try:
             df = self.dearflask
-            print df
 
 
             """ Disabled until hardware is done and sw is tested
