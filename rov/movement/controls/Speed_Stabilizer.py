@@ -36,6 +36,8 @@ class SpeedStabilizer(Algorithm):
         self._ready = False
         self._cp = 0 # current position
         self._lp = 0 # last position
+        self._delta_time = 1
+        self._current_speed = 0
         self._value = 0 # output to pid controller
         self._scale = 1000 # how much it should scale pid output for easier tuning
         self._current_time = time.time()
@@ -57,6 +59,8 @@ class SpeedStabilizer(Algorithm):
         self._cp = self._current_position(self._dof)
         self._previous_time = self._current_time
         self._current_time = time.time()
+        self._delta_time = time.time() - self._previous_time
+        self._current_speed = (self._cp - self._lp) / self._delta_time
 
     # sets max speed
     def set_max_speed(self, value):
@@ -64,13 +68,10 @@ class SpeedStabilizer(Algorithm):
 
     # calculates output and saves data
     def calculate(self, desired_speed):
-        self._desired_speed = desired_speed * self._max_speed 
         if self._activated:
             self._update()
             if self._ready:    
-                delta_time = time.time() - self._previous_time
-                speed = (self._cp - self._lp) / delta_time
-                self._value += self._pid.calculate(self._error(speed), delta_time)/self._scale
+                self._value += self._pid.calculate(self._error(self._current_speed), self._delta_time)/self._scale
                 if self._value > 1:
                     self._value = 1
                     self._pid.reset_esum()
@@ -83,9 +84,9 @@ class SpeedStabilizer(Algorithm):
                     self._graph_data[0].append(0)
                     self._has_data = True
                 else:
-                    self._graph_data[0].append(self._graph_data[0][self._count - 1] + delta_time)
+                    self._graph_data[0].append(self._graph_data[0][self._count - 1] + self._delta_time)
                 self._count += 1
-                self._graph_data[1].append(speed)
+                self._graph_data[1].append(self._current_speed)
                 self._graph_data[2].append(self._desired_speed)
             else:
                self._ready = True
@@ -98,6 +99,7 @@ class SpeedStabilizer(Algorithm):
 
     # resets pid controller and all values
     def _reset(self):
+        self._desired_speed = self._current_speed 
         self._pid.reset(0)
         self._update()
         self._output = [0, 0, 0, 0, 0, 0]

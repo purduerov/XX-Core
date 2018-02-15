@@ -20,8 +20,8 @@ import matplotlib.pyplot as plt
 
 # Meanings of frozen_in input
 # 0 - no control
-# 1 - speed
-# 2 - movement
+# 1 - position
+# 2 - speed
 # 3 - height
 
 class Master_Algorithm_Handler():
@@ -30,44 +30,44 @@ class Master_Algorithm_Handler():
         self._dof_control = [0,0,0,0,0,0] # HOLDS THE OUTPUT FOR MOVEMENT
         self._dof_names = ['x', 'y', 'z', 'roll', 'pitch', 'yaw'] 
         self._freeze = [] # CONTAINS THE POSITION STABILIZERS
+        self._movement = [] # CONTAINS THE MOVEMENT STABILIZERS 
         self._freeze_height = HeightStabilizer(sensors)
-        self._prev_activate = [0, 0, 0, 0, 0, 0] # USED TO SEE IF FREEZE IS TOGGLED
-        for i in range(0, 6):
-            self._freeze.append(PositionStabilizer(i, sensors)) 
+        self._prev_activate = activate # USED TO SEE IF FREEZE IS TOGGLED
+        
+        for i in range(6):
             # ACTIVATES IF IT SHOULD BE USED
+            self._freeze.append(PositionStabilizer(i, sensors)) 
+            self._movement.append(SpeedStabilizer(i, sensors))
+            # ACTIVATES IT IF IT SHOULD BE USED
             if activate[i]:
                 if i == 2 and activate[i] == 3:
                     self._freeze_height.activate()
-                elif i > 2 and activate[i] == 2:
+                elif activate[i] == 1:
                     self._freeze[i].activate()
-
-        self._movement = [] # CONTAINS THE MOVEMENT STABILIZERS 
-        
-        for i in range(0,6):
-            self._movement.append(SpeedStabilizer(i, sensors))
-            # ACTIVATES IT IF IT SHOULD BE USED
-            if activate[i] == 1:
-                self._movement[i].activate()
+                elif activate[i] == 2:
+                    self._movement[i].activate()
 
     def set_max_speed(value):
         for alg in self._movement:
             alg.set_max_speed(value)
 
     def master(self, desired_thrust_in, activate): # "MAIN" CONTROL HANDLER
-        for i in range(2, 6):
+        for i in range(6):
             # CHECK IF FROZEN WAS TOGGLED TO TOGGLE CONTROLS  
-            if i > 2 and ((activate[i] == 1) != (self._prev_activate[i] == 1)):
+            if ((activate[i] == 2) != (self._prev_activate[i] == 2)):
                 self._movement[i].toggle()
-            if i > 2 and ((activate[i] == 2) != (self._prev_activate[i] == 2)):
+            if ((activate[i] == 1) != (self._prev_activate[i] == 1)):
                 self._freeze[i].toggle()
             if i == 2 and ((activate[i] == 3) != (self._prev_activate[i] == 3)):
                 self._freeze_height.toggle()
 
         # ONLY CALCULATES ROLL, PITCH AND YAW
         for i in range(6):
-            if activate[i] == 1 and i > 2:
+            if activate[i] == 1:
+                self._dof_control[i] = self._freeze[i].calculate()[i]
+            elif activate[i] == 2:
                 self._dof_control[i] = self._movement[i].calculate(desired_thrust_in[i])[i]
-            elif activate[i] == 2 and i > 2:
+            elif activate[i] == 1:
                 self._dof_control[i] = self._freeze[i].calculate()[i]
             elif activate[i] == 3 and i == 2:
                 output = self._freeze_height.calculate()
@@ -95,20 +95,20 @@ class Master_Algorithm_Handler():
         count = 1
         for alg in self._freeze:
             if alg.has_data():
-                plt.subplot(4, 3, count)
+                plt.subplot(4, 4, count)
                 plt.title('Freeze: ' + self._dof_names[alg._dof])
                 plt.plot(alg.get_data()[0], alg.get_data()[1], 'r', alg.get_data()[0], alg.get_data()[2], 'b')
                 count += 1
 
         for alg in self._movement:
             if alg.has_data():
-                plt.subplot(4, 3, count)
+                plt.subplot(4, 4, count)
                 plt.title('Movement: ' + self._dof_names[alg._dof])
                 plt.plot(alg.get_data()[0], alg.get_data()[1], 'r', alg.get_data()[0], alg.get_data()[2], 'b')
                 count += 1
         
         if self._freeze_height.has_data():
-            plt.subplot(4, 3, count)
+            plt.subplot(4, 4, count)
             plt.title('Height Control')
             plt.plot(self._freeze_height.get_data()[0], self._freeze_height.get_data()[1], 'r', self._freeze_height.get_data()[0], self._freeze_height.get_data()[2], 'b')
 

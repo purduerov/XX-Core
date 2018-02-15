@@ -78,18 +78,13 @@ def test_returns_empty_user_input_if_deactivated():
 
 def test_activate_and_deactivate_functionality():
     # initializes a control algorithm with the desired position of 4 for the z parameter
-    frozen = [0,0,0,0,0,0]
+    frozen = [1,2,1,2,1,2]
     user_input = [0,0,0,0,0,0]
     mah = Master_Algorithm_Handler(frozen, sensor_data())
     for i in range(100):
         time.sleep(buffer)
         update_data(mah.master(user_input, frozen), data, lt)
     time.sleep(buffer)
-    for i in range(6):
-        if i < 2:
-            time.sleep(buffer)
-            assert mah.master(user_input, frozen)[i] == 0
-    
     
     user_input = [0.5, 0.1, 0.2, 0.3, 0.4, 0.5]
     mah = Master_Algorithm_Handler(frozen, sensor_data())
@@ -98,9 +93,8 @@ def test_activate_and_deactivate_functionality():
         update_data(mah.master(user_input, frozen), data, lt)
     for i in range(6):
         time.sleep(buffer)
-        assert mah.master(user_input, frozen)[i] != 0
-
-    frozen = [0,0,3,2,1,2]
+    
+    frozen = [2,1,2,1,2,1]
     user_input = [0.5, 0.1, 0.2, 0.3, 0.21, 0.14]
 
     for i in range(100):
@@ -109,5 +103,25 @@ def test_activate_and_deactivate_functionality():
     for i in range(6):
         time.sleep(buffer)
         mah.master(user_input, frozen)[i]
+ 
+    frozen = [1,2,1,2,1,2]
+    user_input = [0.5, 0.1, 0.2, 0.3, 0.21, 0.14]
+
+    for i in range(100):
+        time.sleep(buffer)
+        update_data(mah.master(user_input, frozen), data, lt)
+    for i in range(6):
+        time.sleep(buffer)
+        mah.master(user_input, frozen)[i]
+    
+    frozen = [3,3,3,3,3,3]
+    user_input = [0.5, 0.1, 0.2, 0.3, 0.21, 0.14]
+
+    for i in range(100):
+        time.sleep(buffer)
+        update_data(mah.master(user_input, frozen), data, lt)
+    for i in range(6):
+        time.sleep(buffer)
+        mah.master(user_input, frozen)[i]   
     
     mah.plot_data()
