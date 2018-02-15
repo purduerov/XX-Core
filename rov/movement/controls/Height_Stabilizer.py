@@ -27,6 +27,8 @@ import math
 # - For PID tuning you can directly get and set the values using .p, .i, .d
 # - ex: control.p = 5 or control.d = 2
 
+#   NOTE: This will modify X, Y, and Z force so no Speed Stabilizers can be activated on X and Y when this is activated
+
 class HeightStabilizer(Algorithm):
 
     def __init__(self, sensor_data):
@@ -37,9 +39,9 @@ class HeightStabilizer(Algorithm):
     def _error(self):
         error = self._desired_position - self._current_position(self._dof)
         return error
-   
+
     # calculates output for thrust mapper and graphs data
-    def calculate(self):         
+    def calculate(self):
         if self._activated:
             delta_time = time.time() - self._previous_time
             self._previous_time = time.time()
@@ -56,30 +58,30 @@ class HeightStabilizer(Algorithm):
             # stores the sin(theta) output for these angles
             pitch = math.sin(self._current_position(4) * math.pi / 180)
             roll = math.sin(self._current_position(3) * math.pi / 180)
-            
+
             # Calculates each component needed for upward motion
             x = -1 * pitch * value
             y = roll * value
             c = 1 - math.pow(roll, 2) - math.pow(pitch, 2)
             if c < 0:
                 c = 0
-            
+
             z = math.sqrt(c) * value
 
             # Places these values in the output vector
             self._output[0] = x
             self._output[1] = y
             self._output[2] = z
-           
+
             # adds data to the graph
             if self._count == 0:
                 self._graph_data[0].append(0)
                 self._has_data = True
             else:
-                self._graph_data[0].append(self._graph_data[0][self._count - 1] + delta_time)  
+                self._graph_data[0].append(self._graph_data[0][self._count - 1] + delta_time)
             self._graph_data[1].append(self._current_position(self._dof))
             self._graph_data[2].append(self._desired_position)
-            
+
             self._count += 1
 
         else:

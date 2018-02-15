@@ -26,6 +26,8 @@ import time
 # - For PID tuning you can directly get and set the values using .p, .i, .d
 # - ex: control.p = 5 or control.d = 2
 
+#   NOTE: This Stabilizer can only be activated on Z, Roll, Pitch, and Yaw. X and Y have no positional sensor data (sonar).
+
 class PositionStabilizer(Algorithm):
 
     def __init__(self, parameter, sensor_data):
@@ -36,9 +38,9 @@ class PositionStabilizer(Algorithm):
     def _error(self):
         error = self._desired_position - self._current_position(self._dof)
         return error
-   
+
     # calculates output for thrust mapper and graphs data
-    def calculate(self):         
+    def calculate(self):
         if self._activated:
             delta_time = time.time() - self._previous_time
             self._previous_time = time.time()
@@ -56,7 +58,7 @@ class PositionStabilizer(Algorithm):
                 self._graph_data[0].append(0)
                 self._has_data = True
             else:
-                self._graph_data[0].append(self._graph_data[0][self._count - 1] + delta_time)  
+                self._graph_data[0].append(self._graph_data[0][self._count - 1] + delta_time)
             self._graph_data[1].append(self._current_position(self._dof))
             self._graph_data[2].append(self._desired_position)
             self._count += 1
