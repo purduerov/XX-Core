@@ -1,0 +1,11 @@
+.title {
+    height: 100%;
+    width: 100%;
+    background-color: #003366;
+    /*border: 1px solid black;*/
+    color: white;
+    font-family: fantasy;
+    padding: .5rem;
+    display: flex;
+    align-items: center;
+}

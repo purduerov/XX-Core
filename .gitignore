@@ -1,3 +1,6 @@
+# ROV Specific Ignores
+mjpg-streamer/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -24,6 +27,9 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+
+# Extras (as we need them)
+.build*
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -95,9 +101,13 @@ ENV/
 .ropeproject
 
 node_modules/
+package-lock.json
 
 # mkdocs documentation
 /site
 
 # mypy
 .mypy_cache/
+
+# jetbrains
+.idea/
