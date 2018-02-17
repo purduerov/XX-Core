@@ -1,7 +1,7 @@
 //writing the object that cancerous aids will call from
 
 //make loop that wants to check id and bind keys if it matches
-var layouts = {
+global.layouts = {
   rock: {
     "idMatch": ["Some other gamepad with the same mapping", "Xbox 360 Controller (XInput STANDARD GAMEPAD)"],
     "buttons" : [        //array

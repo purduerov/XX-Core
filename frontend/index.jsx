@@ -7,19 +7,28 @@ import Cam_view from './src/components/CamView/CamView.jsx';
 import ForceScales from './src/components/ForceScales/ForceScales.jsx'
 import Titlebar from './src/components/Titlebar/Titlebar.jsx';
 import ThrusterInfo from './src/components/ThrusterInfo/ThrusterInfo.jsx';
+import ThrusterScales from './src/components/ThrusterScales/ThrusterScales.jsx';
+import Gpinfo from './src/components/Gpinfo/Gpinfo.jsx';
+import PacketView from './src/components/PacketView/PacketView.jsx';
+import gp from './src/gamepad/bettergamepad.js';
+import betterlayouts from './src/gamepad/betterlayouts.js';
 
 //var packets = require("./src/packets.js");
 let socketHost = `ws://localhost:5001`;
+
 let socket = io.connect(socketHost, {transports: ['websocket']});
 let {shell, app, ipcRenderer} = window.require('electron');
 
 let flaskcpy;
 let confcpy;
 
+
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = require("./src/packets.js"); //= $.extend(true, {}, packets);
+
+    this.state.gp = require ("./src/gamepad/bettergamepad.js");
 
     this.state.config = {
             version: 1.1, //INCREMENT IF YOU CHANGE THIS DATA STRUCTURE!
@@ -83,6 +92,9 @@ class App extends React.Component {
                         rend={this.changeDisabled}
                       />
                     </Card>
+                    <Card>
+                    <PacketView packet={this.state.dearflask.thrusters.desired_thrust} />
+                    </Card>
                   </div>
                   <div className="data-column">
                     <Card title="Directional Control">
@@ -92,6 +104,12 @@ class App extends React.Component {
                     </Card>
                   </div>
                   <div className="data-column">
+                    <Card>
+                      <Gpinfo buttons={this.state.gp.buttons}
+                              ready={this.state.gp.ready}
+                              axes={this.state.gp.axes}
+                      />
+                    </Card>
                   </div>
               </div>
           </div>
@@ -142,11 +160,26 @@ class App extends React.Component {
           arr[i] = 0;
         }
       });
-
       that.setState(                            //Initiates rendering process
         all
       );
     }, 3000);
+
+    setInterval(function() {
+      if(gp.ready === false) {
+//        console.log("not yet");
+        gp.selectController();
+      }
+      if(gp.ready === true) {
+        gp.update();
+//        console.log('success');
+      }
+
+      that.setState( {                           //Initiates rendering process
+        gp: gp }
+      );
+    }, 100);
+
 
     // upon new data, save it locally
     socket.on("dearclient", function(data) {    //Updates the data sent back from the server

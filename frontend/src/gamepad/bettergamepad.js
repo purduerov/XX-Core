@@ -1,4 +1,6 @@
-//will have a setInterval
+require("./betterlayouts.js");
+var bind = require('./bindfunc.js')
+
 var gp = {
   buttons:  {},
   axes:     {},
@@ -45,6 +47,7 @@ var gp = {
           }
             gp.gamepadIndex = key;
             gp.layoutKey = key_gp;
+            bind.activate;
             gp.zero();
         }
       }
@@ -53,21 +56,36 @@ var gp = {
 // update doesn't have a function call yet
 
  update: function() {
-   cur = navigator.getGamepads();
+   var cur = navigator.getGamepads();
    //console.log(layouts[gp.layoutKey]);
    for(var index = 0; index < layouts[gp.layoutKey].buttons.length; index++)
    {
      gp.buttons[layouts[gp.layoutKey].buttons[index].name].curVal = cur[gp.gamepadIndex].buttons[index].value;
      gp.pressRelease(layouts[gp.layoutKey].buttons[index].name);
+
+     name = layouts[gp.layoutKey].buttons[index].name;
+
+     if(bind.btn[name]) {
+       if(bind['btn'][name]['press'].func && gp.buttons[name].pressed) {    //runs bindfunc
+          bind['btn'][name]['press'].func();
+       }
+
+       if(bind['btn'][name]['release'].func && gp.buttons[name].released) {
+          bind['btn'][name]['release'].func();
+       }
+     }
    }
    for(var index_2 = 0; index_2 < layouts[gp.layoutKey].axes.length; index_2++)
    {
+     name = layouts[gp.layoutKey].axes[index_2].name;
      if(.1 < Math.abs(gp.adjust(index_2))) {
        gp.axes[layouts[gp.layoutKey].axes[index_2].name].curVal = gp.adjust(index_2);
      } else {
        gp.axes[layouts[gp.layoutKey].axes[index_2].name].curVal = 0;
      }
-     //console.log(gp.axes);
+     if (bind['axes']) { //runs bindfunc
+       bind['axes'][name].func();
+     }
    }
  },
 
@@ -89,7 +107,7 @@ var gp = {
  },
 
  zero: function() {  //gets values of constants
-   cur = navigator.getGamepads();
+   var cur = navigator.getGamepads();
    for(var j = 0; j < layouts[gp.layoutKey].axes.length; j++) {  //initializes the array for each axis
      gp.axes[layouts[gp.layoutKey].axes[j].name] = {changed: 0, curVal: 0, constant: 0, past: 0};
    }
@@ -101,7 +119,7 @@ var gp = {
  },
 
  adjust: function(index_2) {
-   cur = navigator.getGamepads();
+   var cur = navigator.getGamepads();
    let newVal = cur[gp.gamepadIndex].axes[index_2] - gp.axes[layouts[gp.layoutKey].axes[index_2].name].constant;
    if (newVal > 0) {
      newVal = (newVal / (1 - gp.axes[layouts[gp.layoutKey].axes[index_2].name].constant));
@@ -117,3 +135,4 @@ var gp = {
 
 }//end gp
 //gp.select(50);
+module.exports = gp;
