@@ -74,14 +74,11 @@ class ROV(object):
         try:
 	    self.IMU.update()
 	    self.dearflask['imu'] = self.IMU.data
-            df = self.dearflask
+            df = self.dearclient
             print df
 
 
-            """ Disabled until hardware is done and sw is tested
             self.pressure.update()
-            self.IMU.update()
-            """
             self.IMU.update()
         except Exception as e:
             print "Failed updating things"
