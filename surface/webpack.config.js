@@ -3,11 +3,11 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var combineLoaders = require('webpack-combine-loaders');
 var path = require('path');
 
-var BUILD_DIR = path.resolve(__dirname, 'src/elec_finals/');
+var BUILD_DIR = path.resolve(__dirname, 'frontend/src/elec_finals/');
 var APP_DIR = __dirname;
 
 var config = {
-    entry: APP_DIR + '/index.jsx',
+    entry: APP_DIR + '/frontend/index.jsx',
     output: {
         path: BUILD_DIR,
         filename: '.build.js'
