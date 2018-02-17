@@ -50,7 +50,8 @@ var bind = {
     lb:{ //roll counterclockwise
       press: {
         func: function() {
-          react.state.dearflask.thrusters.desired_thrust[3] = -react.state.gp.buttons.lb.curVal;
+          var stuff = react.state.config.thrust_scales;
+          react.state.dearflask.thrusters.desired_thrust[3] = -react.state.gp.buttons.lb.curVal * stuff.master * stuff.roll / 10000;
         },
       },
       release: {
@@ -64,7 +65,8 @@ var bind = {
     rb:{ //roll clockwise
       press: {
         func: function() {
-          react.state.dearflask.thrusters.desired_thrust[3] = react.state.gp.buttons.rb.curVal;
+          var stuff = react.state.config.thrust_scales;
+          react.state.dearflask.thrusters.desired_thrust[3] = react.state.gp.buttons.rb.curVal * stuff.master * stuff.roll / 10000;
         },
       },
       release: {
@@ -78,7 +80,8 @@ var bind = {
     ltrigger:{ //descend
       press: {
         func: function() {
-          react.state.dearflask.thrusters.desired_thrust[2] = -react.state.gp.buttons.ltrigger.curVal;
+          var stuff = react.state.config.thrust_scales;
+          react.state.dearflask.thrusters.desired_thrust[2] = -react.state.gp.buttons.ltrigger.curVal * stuff.master * stuff.velZ / 10000;
         },
       },
       release: {
@@ -92,7 +95,8 @@ var bind = {
     rtrigger:{ //ascend
       press: {
         func: function() {
-          react.state.dearflask.thrusters.desired_thrust[2] = react.state.gp.buttons.rtrigger.curVal;
+          var stuff = react.state.config.thrust_scales;
+          react.state.dearflask.thrusters.desired_thrust[2] = react.state.gp.buttons.rtrigger.curVal * stuff.master * stuff.velZ / 10000;
         },
       },
       release: {
@@ -109,22 +113,26 @@ var bind = {
   axes: {
     LstickXaxis: {
       func: function() {
-        react.state.dearflask.thrusters.desired_thrust[1] = react.state.gp.axes.LstickXaxis.curVal;
+        var stuff = react.state.config.thrust_scales;
+        react.state.dearflask.thrusters.desired_thrust[1] = react.state.gp.axes.LstickXaxis.curVal * stuff.master * stuff.velY / 10000;
       }
     },
     LstickYaxis: {
       func: function() {
-        react.state.dearflask.thrusters.desired_thrust[0] = -react.state.gp.axes.LstickYaxis.curVal;
+        var stuff = react.state.config.thrust_scales;
+        react.state.dearflask.thrusters.desired_thrust[0] = -react.state.gp.axes.LstickYaxis.curVal * stuff.master * stuff.velX / 10000;
       }
     },
     RstickXaxis: {
       func: function() {
-        react.state.dearflask.thrusters.desired_thrust[5] = react.state.gp.axes.RstickXaxis.curVal;
+        var stuff = react.state.config.thrust_scales;
+        react.state.dearflask.thrusters.desired_thrust[5] = react.state.gp.axes.RstickXaxis.curVal * stuff.master * stuff.yaw / 10000;
       }
     },
     RstickYaxis: {
       func: function() {
-        react.state.dearflask.thrusters.desired_thrust[4] = -react.state.gp.axes.RstickYaxis.curVal;
+        var stuff = react.state.config.thrust_scales;
+        react.state.dearflask.thrusters.desired_thrust[4] = -react.state.gp.axes.RstickYaxis.curVal * stuff.master * stuff.pitch / 10000;
       }
     },
   },

@@ -43,7 +43,7 @@
 }
 
 .title {
-    height: 35px;
+    height: auto;
     line-height: 35px;
     font-size: 24px;
     color: white;
@@ -55,4 +55,8 @@
 .squashed {
     margin-top: 0;
     margin-bottom: 0;
+}
+
+.fitTitle {
+    height: auto;
 }

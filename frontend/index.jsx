@@ -4,6 +4,7 @@ import styles from './index.css';
 import packet from './src/packets.js';
 import Card from './src/components/Card/Card.jsx';
 import Cam_view from './src/components/CamView/CamView.jsx';
+import ForceScales from './src/components/ForceScales/ForceScales.jsx'
 import Titlebar from './src/components/Titlebar/Titlebar.jsx';
 import ThrusterInfo from './src/components/ThrusterInfo/ThrusterInfo.jsx';
 import ThrusterScales from './src/components/ThrusterScales/ThrusterScales.jsx';
@@ -12,7 +13,9 @@ import PacketView from './src/components/PacketView/PacketView.jsx';
 import gp from './src/gamepad/bettergamepad.js';
 import betterlayouts from './src/gamepad/betterlayouts.js';
 
-let socketHost = `ws://raspberrypi.local:5000`;
+//var packets = require("./src/packets.js");
+let socketHost = `ws://localhost:5001`;
+
 let socket = io.connect(socketHost, {transports: ['websocket']});
 let {shell, app, ipcRenderer} = window.require('electron');
 
@@ -69,6 +72,7 @@ class App extends React.Component {
 
     this.changeDisabled = this.changeDisabled.bind(this);
     this.changeThrustScales = this.changeThrustScales.bind(this);
+    this.changeForceScales = this.changeForceScales.bind(this);
   }
 
   render () {
@@ -85,17 +89,18 @@ class App extends React.Component {
                     <Card>
                       <ThrusterInfo thrusters={this.state.dearclient.thrusters}
                         disabled={this.state.dearflask.thrusters.disabled_thrusters}
-                        rend={this.changeDisabled} />
+                        rend={this.changeDisabled}
+                      />
                     </Card>
                     <Card>
                     <PacketView packet={this.state.dearflask.thrusters.desired_thrust} />
                     </Card>
                   </div>
                   <div className="data-column">
-                    <Card title="Thruster Control">
-                      <ThrusterScales rend={this.changeThrustScales}
-                        scales={this.state.config.thruster_control}
-                      />
+                    <Card title="Directional Control">
+                      <ForceScales rend={this.changeForceScales}
+                        scales={this.state.config.thrust_scales}
+                        />
                     </Card>
                   </div>
                   <div className="data-column">
@@ -129,6 +134,14 @@ class App extends React.Component {
 
   changeThrustScales(scales) {
     confcpy.thruster_control = scales;
+
+    this.setState({
+      config: confcpy
+    });
+  }
+
+  changeForceScales(scales) {
+    confcpy.thrust_scales = scales;
 
     this.setState({
       config: confcpy
