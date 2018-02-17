@@ -53,7 +53,7 @@ def test_turning_on_vertical_thrusters_to_go_up():
     thruster_values = controls.get_thruster_values()
 
     # Check that each value is equal to 0
-    horrizontal_thrusters = thruster_values[0:4]
+    horizontal_thrusters = thruster_values[0:4]
     vertical_thrusters = thruster_values[4:8]
 
     for value in vertical_thrusters:
