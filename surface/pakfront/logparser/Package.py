@@ -1,4 +1,5 @@
 import os
+import sys
 import numpy as np
 import argparse
 
@@ -94,6 +95,14 @@ def thruster_scales_parser(scales,scales_index):
         index = sub+1
 
 
+def print_Neatly(toprint, label,times):
+    print ("Time          " + label)
+
+    toprint = np.column_stack((times,toprint))
+    print('\n'.join([''.join(['{:14}'.format(item) for item in row])
+                     for row in toprint]),end='\n\n')
+
+
 def getAverage(thrusters):
     nparray = np.array(thrusters)
    # print nparray.std(axis=0,dtype=np.longfloat)
@@ -101,18 +110,18 @@ def getAverage(thrusters):
     return ave
 
 
-def print_Neatly2d(toprint, label):
-    print (label)
+def print_Neatly2d(toprint, label,times):
+    print ("\n"+label+"\n"+"Time   ", end ='')
     i=0
-    print "    ",
     while (i< len(toprint[0])):
-        print (" Scale " + str(i)),
-        i=i+1;
+        print ("       Scale " + str(i),end='')
+        i=i+1
     print ("")
 
-    print('\n'.join([''.join(['{:9}'.format(item) for item in row])
-                     for row in toprint]))
-    print ("")
+    toprint = np.column_stack((times,toprint))
+
+    print('\n'.join([''.join(['{:14}'.format(item) for item in row])
+                     for row in toprint]),end='\n\n')
 
 
 
@@ -120,58 +129,102 @@ def print_Neatly2d(toprint, label):
 #dearflask: {thrusters: {desired_thrust: [0, 0, 0, 0, 0, 0 ],frozen: [0, 0, 0, 0, 0, 0 ],disabled_thrusters: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
 # thruster_scales: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]},claw: {power: 0.0},cameras: {},leds: {bluetooth_led: false,camera_leds: false}},
 
-def parse(lines):
-
+def parse(lines,timefrom,timeto):
+   # print (str(timefrom) + "----" + str(timeto))
+    #print (len(lines))
+    j=0
     for i in range(len(lines)):
-        all_lines = lines[i].split(":")
+     #   print (i)
+        if ((i>=timefrom) & (i<timeto)):
+            all_lines = lines[i].split(":")
 
-        desired_thrust.append([])
-        frozen_thrust.append([])
-        disabled_thrust.append([])
-        thruster_scales.append([])
+            desired_thrust.append([])
+            frozen_thrust.append([])
+            disabled_thrust.append([])
+            thruster_scales.append([])
 
-        all_lines[4] = all_lines[4].replace(" ", "")
-        all_lines[5] = all_lines[5].replace(" ", "")
-        all_lines[6] = all_lines[6].replace(" ", "")
-        all_lines[7] = all_lines[7].replace(" ", "")
+            all_lines[4] = all_lines[4].replace(" ", "")
+            all_lines[5] = all_lines[5].replace(" ", "")
+            all_lines[6] = all_lines[6].replace(" ", "")
+            all_lines[7] = all_lines[7].replace(" ", "")
+            all_lines[9] = all_lines[9].replace(" ","")
+            all_lines[12] = all_lines[12].replace(" ","")
+            all_lines[13] = all_lines[13].replace(" ","")
 
-        desired_thrust_parser(all_lines[4],i)
-        frozen_thrust_parser(all_lines[5],i)
-        disabled_thrust_parser(all_lines[6],i)
-        thruster_scales_parser(all_lines[7],i)
-
-
-
-
-def main():
-      # getting the value from the environment variable
-
-
-    # print "0-DeerFlask\n1-DeerLog"
-    # choice = int(raw_input())
-
-    # parse(lines)
-    #
-    # print_Neatly2d(desired_thrust, "Desired Thrust")
-    # print ("Average of Desired: " + str(getAverage(desired_thrust)) + "\n")
-    #
-    # print_Neatly2d(frozen_thrust, "Frozen Thrust")
-    # print ("Average of Frozen: " + str(getAverage(frozen_thrust)) + "\n")
-    #
-    # print ("Disabled Thrust: " + str(disabled_thrust))
-    # print ("Thruster Scales: " + str(thruster_scales))
-
-    print ("A")
+            bluetooth = all_lines[12].split(",")
+            camera = all_lines[13].split(",")
+            power = all_lines[9].split(",")
+            power[0] = power[0][0:len(power[0])-1]
+            camera[0] = (camera[0])[0:len(camera[0])-2]
 
 
+            all_time.append(all_lines[0])
+            desired_thrust_parser(all_lines[4],j)
+            frozen_thrust_parser(all_lines[5],j)
+            disabled_thrust_parser(all_lines[6],j)
+            thruster_scales_parser(all_lines[7],j)
+            bluetooth_led.append(bluetooth[0])
+            camera_led.append(camera[0])
+            power_claw.append(power[0])
 
-def printTime(lines):
-    for i in lines:
+            j=j+1
+
+
+def timeErrorCheck(timefrom,timeto):
+    if (timefrom > len(lines)):
+        sys.stderr.write('From exceeds total number of entries')
+        exit(1)
+
+    if (timefrom < 0):
+        sys.stderr.write('From cannot be negative')
+        exit(1)
+
+    if (timeto > len(lines)):
+        sys.stderr.write('To exceeds total number of entries')
+        exit(1)
+
+    if (timeto < 0):
+        sys.stderr.write('To cannot be negative')
+        exit(1)
+
+    if (timeto - timefrom < 0):
+        sys.stderr.write('Please enter valid time intervals')
+        exit(1)
+
+
+
+def printTime(alltimes):
+    for i in alltimes:
         i=i.split(":")
         print ("Time: " + str(i[0]))
 
-if __name__ == "__main__":
 
+def getTime(lines,fro,to):
+
+    timefromindex=0
+    timetoindex=len(lines)
+    j=0
+
+    for i in lines:
+        i=i.split(":")
+
+        if (i[0]==fro):
+            timefromindex = j
+            break
+
+        if (i[0]==to):
+            timetoindex=j
+            break
+        j=j+1;
+
+    return timefromindex,timetoindex
+
+
+
+
+if __name__ == "__main__":
+    print ("Hello")
+    dir_list = []
     LOG_DIR = "LOGDIR"
     env = os.environ[LOG_DIR]
     log_num = 0
@@ -181,8 +234,7 @@ if __name__ == "__main__":
 
     choice = 0
     file_list = os.listdir(env)
-    env = [env + "/" + file_list[0], env + "/" + file_list[1]][
-        choice == 0]  # setting the path to either dearflask or dearclient
+    env = [env + "/" + file_list[0], env + "/" + file_list[1]][choice == 0]  # setting the path to either dearflask or dearclient
     file_object = open(env, "r")
     lines = file_object.readlines()
 
@@ -191,20 +243,14 @@ if __name__ == "__main__":
     frozen_thrust = []
     disabled_thrust = []
     thruster_scales = []
-    claw = []
-    dir_list = []
+    bluetooth_led = []
+    camera_led = []
+    power_claw = []
+    all_time = []
 
 
-
-
-    print_time = False
-    dbt_thr = False
-    froz_thr = False
-    des_thr = False
-    thr_sca = False
     timefrom =0
     timeto =0
-
 
 
     parser = argparse.ArgumentParser()
@@ -213,52 +259,43 @@ if __name__ == "__main__":
     parser.add_argument("-dbt" , action='store_true', help="Prints out the logs for disabled thrust")
     parser.add_argument("-ft" , action='store_true', help="Prints out the logs for disabled thrust")
     parser.add_argument("-ts", action='store_true', help="Prints out the logs for thruster scales")
-    parser.add_argument("-fr" , type=int, help="the starting point for the logs")
-    parser.add_argument("-to" ,  type=int, help="The ending point of the logs")
+    parser.add_argument("-fr" , type=str, help="the starting point for the logs")
+    parser.add_argument("-to" ,  type=str, help="The ending point of the logs")
+    parser.add_argument("-cled", action='store_true',help="Prints out the camera LED's")
+    parser.add_argument("-bled", action='store_true', help="Prints out the Bluetooth LED's")
+    parser.add_argument("-pclw", action='store_true', help="Prints the power: Claw")
     args=parser.parse_args()
 
-
-
-   # print (lines)
-    parse(lines)
-
-
-    #print ("Average of Desired: " + str(getAverage(desired_thrust)) + "\n")
-
-
-    #print ("Average of Frozen: " + str(getAverage(frozen_thrust)) + "\n")
-
-    #print ("Disabled Thrust: " + str(disabled_thrust))
-    print ("Thruster Scales: " + str(thruster_scales))
-    print_Neatly2d(thruster_scales, "Thruster Scales")
-
-    if args.t:
-        printTime(lines)
-
-    if args.des:
-        print_Neatly2d(desired_thrust, "Desired Thrust")
-
-    if args.dbt:
-        print_Neatly2d(disabled_thrust,"Disabled Thrust")
-
-    if args.ft:
-        print_Neatly2d(frozen_thrust, "Frozen Thrust")
-
-    if args.ts:
-        print_Neatly2d(thruster_scales,"Thruster Scales")
-
     if args.fr:
-        timefrom=args.fr
-        
+        timefrom = args.fr
+
     if args.to:
         timeto = args.to
 
+    timefrom,timeto = getTime(lines,timefrom,timeto)
+    timeErrorCheck(timefrom,timeto)
+    parse(lines, timefrom, timeto)
 
+    if args.t:
+        printTime(all_time)
 
-    #print ("print time = " + str(print_time))
-    #print ("Desired thrust = " + str(des_thr))
-    #print ("Disabled thrust = " + str(dbt_thr))
-    #print ("Frozen thrust = " + str(froz_thr))
-    #print ("Thruster scales = " + str(thr_sca))
-    #print ("time from = " + str(timefrom) + " time to = " + str(timeto))
+    if args.des:
+        print_Neatly2d(desired_thrust, "Desired Thrust",all_time)
 
+    if args.dbt:
+        print_Neatly2d(disabled_thrust,"Disabled Thrust",all_time)
+
+    if args.ft:
+        print_Neatly2d(frozen_thrust, "Frozen Thrust",all_time)
+
+    if args.ts:
+        print_Neatly2d(thruster_scales,"Thruster Scales",all_time)
+
+    if args.cled:
+        print_Neatly(camera_led,"Camera LED",all_time)
+
+    if args.bled:
+        print_Neatly(bluetooth_led,"Bluetooth LED",all_time)
+
+    if args.pclw:
+        print_Neatly(power_claw,"Power : Claw",all_time)
