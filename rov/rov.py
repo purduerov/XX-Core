@@ -2,7 +2,7 @@ import copy
 import os
 import traceback
 
-# this folder no longer exists 
+# this folder no longer exists
 # nor were the files being used
 # from controls import *	#Tested
 
@@ -17,7 +17,7 @@ from init_hw_constants import *
 from hardware.motor_control import MotorControl
 
 # Class that controls the rov movement
-from movement import controller
+from movement import Movement_Controller
 
 from sensors import Pressure, IMU
 
@@ -45,13 +45,15 @@ class ROV(object):
         self.init_hw()
 
     def init_hw(self):
-        self.cameras = Cameras(
-            resolution='640x480',
-            framerate=30,
-            port=8080,
-            brightness=16,
-            contrast=32
-        ).start()
+
+        if ENABLE_CAMERAS:
+            self.cameras = Cameras(
+                resolution='640x480',
+                framerate=30,
+                port=8080,
+                brightness=16,
+                contrast=32
+            ).start()
 
         self.motor_control = MotorControl(
             zero_power=ZERO_POWER,
@@ -60,7 +62,7 @@ class ROV(object):
             frequency=FREQUENCY
         )
 
-        self.controls = controller(self.motor_control)
+        self.controls = Movement_Controller(dearflask, dearclient, self.motor_control)
 
         #""" Disabled until hardware is done and sw is tested
         # self.IMU = IMU()
