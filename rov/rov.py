@@ -71,17 +71,12 @@ class ROV(object):
             # self.thruster_control.stop()
 
         try:
-	    self.IMU.update()
-	    self.dearflask['imu'] = self.IMU.data
             df = self.dearflask
             print df
-
-
-            """ Disabled until hardware is done and sw is tested
+           
             self.pressure.update()
             self.IMU.update()
-            """
-            self.IMU.update()
+            
         except Exception as e:
             print "Failed updating things"
             print "Exception: %s" % e
@@ -91,10 +86,18 @@ class ROV(object):
         # retrieve all sensor data
         self.dearclient['imu'] = self.IMU.data
 
+        self.dearclient['pressure'] = self.pressure.data
+
         self.last_update = time()
 
         self.dearclient['last_update'] = self.last_update
 
+        """ Prints IMU data to terminal in a readable way (you should disable other print statements
+        print (chr(27) + "[2J")
+
+        print "Yaw\t:\t{0}\nRoll\t:\t{1}\nPitch\t:\t{2}\nX\t:\t{3}\nY\t:\t{4}\nZ\t:\t{5}".format(self.IMU.data['euler']['yaw'], self.IMU.data['euler']['roll'], self.IMU.data['euler']['pitch'], self.IMU.data['gyro']['x'], self.IMU.data['gyro']['y'], self.IMU.data['gyro']['z']) 
+        """
+        
         with self._data_lock:
             self._data['dearclient'] = self.dearclient
 
