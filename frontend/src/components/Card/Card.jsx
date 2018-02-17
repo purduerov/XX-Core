@@ -12,7 +12,7 @@ export default class Card extends Component {
   makeTitle(here) {
       if(here === true) {
           return (
-              <div>
+              <div className={styles.fitTitle}>
                 <h1 className={styles.title}>{this.props.title}</h1>
                 <hr className={styles.squashed}/>
               </div>  

@@ -36,7 +36,7 @@ export default class ThrusterScales extends Component {
     rendLeftScales() {
         return [0, 1, 2, 3].map(function(val, index) {
                     return (
-                        <SliderControl min='0' max='100' key={'thrust'+val} indx={val} val={that.state.scales[val]} rend={that.rendData.bind(that)} name={"Thruster "+(val+1)} />
+                        <SliderControl min='0' max='100' key={'thrust'+val} indx={val} power={that.state.scales[val].power} inv={that.state.scales[val].invert} rend={that.rendData.bind(that)} name={"Thruster "+(val+1)} />
                     );
                 });
     }
@@ -44,7 +44,7 @@ export default class ThrusterScales extends Component {
     rendRightScales() {
         return [4, 5, 6, 7].map(function(val, index) {
                     return (
-                        <SliderControl min='0' max='100' key={'thrust'+val} indx={val} val={that.state.scales[val]} rend={that.rendData.bind(that)} name={"Thruster "+(val+1)} />
+                        <SliderControl min='0' max='100' key={'thrust'+val} indx={val} power={that.state.scales[val].power} inv={that.state.scales[val].invert} rend={that.rendData.bind(that)} name={"Thruster "+(val+1)} />
                     );
                 });
     }
