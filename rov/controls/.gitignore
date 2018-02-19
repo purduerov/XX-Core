@@ -1,6 +1,0 @@
-# This is Keith's actually useful .gitignore...
-# *******all passive agression is entailed*******
-*
-!.gitignore
-!*.py
-!*.md
