@@ -2,6 +2,8 @@ import os
 import sys
 import numpy as np
 import argparse
+import json
+from pprint import pprint
 
 def get_Directory():
 
@@ -223,7 +225,7 @@ def getTime(lines,fro,to):
 
 
 if __name__ == "__main__":
-    print ("Hello")
+
     dir_list = []
     LOG_DIR = "LOGDIR"
     env = os.environ[LOG_DIR]
@@ -234,10 +236,16 @@ if __name__ == "__main__":
 
     choice = 0
     file_list = os.listdir(env)
-    env = [env + "/" + file_list[0], env + "/" + file_list[1]][choice == 0]  # setting the path to either dearflask or dearclient
+    env = [env + "/" + file_list[0], env + "/" + file_list[1]][choice == 1]  # setting the path to either dearflask or dearclient
     file_object = open(env, "r")
     lines = file_object.readlines()
+    json_data = open(env).read()
+    data= json.loads(json_data)
 
+
+
+    #pr = json.loads(lines)
+    pprint(data)
 
     desired_thrust = []
     frozen_thrust = []
@@ -266,15 +274,18 @@ if __name__ == "__main__":
     parser.add_argument("-pclw", action='store_true', help="Prints the power: Claw")
     args=parser.parse_args()
 
+
+
+
     if args.fr:
         timefrom = args.fr
 
     if args.to:
         timeto = args.to
 
-    timefrom,timeto = getTime(lines,timefrom,timeto)
-    timeErrorCheck(timefrom,timeto)
-    parse(lines, timefrom, timeto)
+    # timefrom,timeto = getTime(lines,timefrom,timeto)
+    # timeErrorCheck(timefrom,timeto)
+    # parse(lines, timefrom, timeto)
 
     if args.t:
         printTime(all_time)
