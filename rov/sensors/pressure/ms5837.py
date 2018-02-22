@@ -229,4 +229,5 @@ class MS5837_30BA(MS5837):
         
 class MS5837_02BA(MS5837):
     def __init__(self, bus=1):
-		MS5837.__init__(self, MODEL_02BA, bus)
+        MS5837.__init__(self, MODEL_02BA, bus)
+        

@@ -73,7 +73,9 @@ class ROV(object):
 
         try:
 	    self.IMU.update()
-	    self.dearflask['imu'] = self.IMU.data
+	    self.pressure.update()
+            self.dearflask['imu'] = self.IMU.data
+            self.dearflask['pressure'] = self.pressure.data            
             df = self.dearclient
             print df
 
