@@ -44,30 +44,7 @@ data["dearflask"] = {
         { "port": 8083, "status": 0 },
         { "port": 8084, "status": 1 },
         { "port": 8085, "status": 1 },
-    ],
-    "imu": {
-        'euler': {
-            'yaw':   0,
-            'roll':  0,
-            'pitch': 0,
-        },
-        'gyro': {
-            'x': 0,
-            'y': 0,
-            'z': 0,
-        },
-        'acceleration': {
-            'x': 0,
-            'y': 0,
-            'z': 0,
-        },
-        'linear-acceleration': {
-            'x': 0,
-            'y': 0,
-            'z': 0,
-        },
-        'temp': 0	
-    }	
+    ]
 }
 """
 try:

@@ -12,9 +12,9 @@ class IMU(object):
 
         self._data =  {
             'euler': {
-                'yaw':   0,
-                'roll':  0,
-                'pitch': 0,
+                'yaw':   0,  # Rotation about z axis (vertical)
+                'roll':  0,  # Rotation about y axix (perpindicular to the pins IMU)
+                'pitch': 0,  # Rotation about x axis (parallel to the pins of IMU)
             },
             'gyro': {
                 'x': 0,
