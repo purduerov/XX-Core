@@ -42,7 +42,7 @@ class Complex():
     THRUST = np.matrix([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
     POWER = np.matrix([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
 	
-    FINAL_POWER = np.matrix([0.0])
+    FINAL_POWER = 0.0
 
     def __init__(self):
         self.thruster_layout = np.matrix(Complex.X9_THRUSTERS - Complex.X9_COM)
@@ -73,13 +73,14 @@ class Complex():
         self.map = self.pseudo_inverse_matrix.dot(desired_thrust)
 
         self.normalize()
-        initial_power = self.calc_thrust_power(self.map)
-        #limit power if necessary: **scale up power to always be at maximum allowable??
-        if initial_power > 960.0:
-            FINAL_POWER[0,0] = self.limit_power()
+        initial_power, limitPower = self.calc_thrust_power(self.map)
+        #limit power if necessary: 
+        global FINAL_POWER
+        if limitPower == 1:
+            self.FINAL_POWER = self.limit_power(initial_power)
             print('\nPower was limited, force vector changed!')
         else:
-            FINAL_POWER[0,0] = initial_power
+            self.FINAL_POWER = initial_power
         return self.map
 
     def generate_matrix(self):
@@ -105,42 +106,48 @@ class Complex():
         #if max_val > 1:
         self.map /= max_val
 
-    def limit_power(self):
+    def limit_power(self, initialPower):
         """
         Ensure power limit is not exceeded by scaling the thruster values down if necessary
         :return: limitedPower
         """
-        limitedPower = self.initial_power
-        while limitedPower > 960.0:
+        limitedPower = initialPower
+        limitPower = 0
+        while limitPower == 0:
             #initialize maxPower as lowest power value 
             maxPower = 0.51
             maxPowerIndex = 0
             for thruster in range(8):
                 if self.POWER[0, thruster] > maxPower:
                     maxPower = self.POWER[0, thruster]
+                    maxThrust = self.THRUST[0, thruster]
                     maxPowerIndex = thruster
             scaleFactor = limitedPower/maxPower
             #scale desired thrust vector and recalculate matrix and power
             self.desired_thrust = scaleFactor * self.desired_thrust
             self.map = self.pseudo_inverse_matrix.dot(desired_thrust)
             self.normalize()
-            limitedPower = self.calc_thrust_power(self.map)
+            limitedPower, limitPower = self.calc_thrust_power(self.map)
+        return limitedPower
 
     def calc_thrust_power(self, thrusters):
         """
         Find the total power used by all 8 thrusters for given pwm values
         Also calculate the thrust and power for each individual thruster for global variables
-        :return: totalPower
+        :return: totalPower, limitPower
         """ 
         # calculate thrust output and power used values for each thruster
         totalPower = 0.0
+        limitPower = 0
         for thruster in range(8):
             pwm_output = thrusters[0, thruster]
             self.THRUST[0, thruster] = self.pwm_to_thrust(pwm_output)
             self.POWER[0, thruster] = self.pwm_to_power(pwm_output)
             totalPower = totalPower + self.POWER[0, thruster]
-
-        return totalPower
+            # set flag to limit power if any use more than allocated 120 W (based on power design)
+            if self.POWER[0, thruster] > 120:
+                limitPower = 1
+        return totalPower, limitPower
         
     def pwm_to_thrust(self, pwm):
         """
