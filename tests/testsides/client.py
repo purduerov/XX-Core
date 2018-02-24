@@ -1,7 +1,7 @@
 from rovcontroller import ROVControl, getDefaultPackets
 
 if __name__ == "__main__":
-    con = ROVControl(port=5000)
+    con = ROVControl(port=5001)
     packets = getDefaultPackets("./packets.json")
     i = 0
     while True:
