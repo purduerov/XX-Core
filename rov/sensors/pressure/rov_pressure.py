@@ -14,18 +14,20 @@ if not sensor.read():
     print "Sensor read failed!"
     exit(1)
 
-print("Pressure: %.2f mbar") % (sensor.pressure())
+#print("Pressure: %.2f mbar") % (sensor.pressure())
 
-print("Temperature: %.2f C") % (sensor.temperature(ms5837.UNITS_Centigrade))
+#print("Temperature: %.2f C") % (sensor.temperature(ms5837.UNITS_Centigrade))
 
-time.sleep(5)
+#time.sleep(2)
+
+print("Time \tPressure (mbar) \tTemperature (C)")
 
 # Spew readings
 while True:
         if sensor.read():
-                print("P: %0.1f mbar \tT: %0.2f C") % (
+            print("%s \t%0.1f \t%0.2f") % (time.strftime("%H:%M:%S", time.localtime()) + '.%d' % (time.time() % 1 * 1000),
                 sensor.pressure(), # Default is mbar (no arguments)
-                sensor.temperature()) # Default is degrees C (no arguments)
+                sensor.temperature()) # Default is degrees C (no arguments) 
         else:
                 print "Sensor read failed!"
                 exit(1)
