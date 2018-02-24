@@ -21,10 +21,10 @@ class NameSpace(BaseNamespace):
 
 class ROVControl(object):
     def __init__(self,IP = 'localhost',port = 5001):
-                self.datadown = {"ROV":"DOO THINGS"}
+        self.datadown = {"ROV":"DOO THINGS"}
         self.dataup = {}
         self.socket = SocketIO(IP, port, NameSpace)
-                self.socket.on('dearclient',self.dearclient)
+        self.socket.on('dearclient',self.dearclient)
 
     def dearclient(self,*args):
         self.dataup = args
@@ -46,5 +46,5 @@ def getDefaultPackets(packetpath):
     else:
         with open(packetpath, "r") as fh:
                     data = loads(fh.read().decode('string-escape').strip('"'))
-                return data
+    return data
                 
