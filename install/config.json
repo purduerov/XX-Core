@@ -5,7 +5,8 @@
         "gcc",
         "python",
         "python-dev",
-        "python-pip"
+        "python-pip",
+	"libfreetype6-dev"
     ],
     "aptget-hw": [
         "python-smbus",
@@ -20,7 +21,7 @@
         "libv4l-dev",
         "cmake"
     ],
-    "virtualenv": "~/.local/bin/virtualenv",
+    "virtualenv": "/usr/bin/virtualenv",
     "venv": "venv",
     "testfiles": [
         "application.py",
