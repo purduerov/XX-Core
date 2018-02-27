@@ -150,25 +150,10 @@ def basic_test(command, files):
 
 
 def install(args):
-    is_ras_pi = False
-    # install cameras
-    if is_ras_pi or '--cam' in args:
-        if os.path.isdir(get_file_path('install/mjpg-streamer')):
-            print_color("\nmjpg-streamer folder already exists! Not installing.")
-        else:
-            install_cam = [
-                "apt-get install -y " + " ".join(Config.get("aptget-cam")),
-                "ln -sf /usr/include/linux/videodev2.h /usr/include/linux/videodev.h",
-                "git clone https://github.com/jacksonliam/mjpg-streamer.git install/mjpg-streamer",
-                "make -C %s" % get_file_path("install/mjpg-streamer/mjpg-streamer-experimental"),
-                "make install -C %s" % get_file_path("install/mjpg-streamer/mjpg-streamer-experimental"),
-                "chmod 777 /usr/local/lib/mjpg-streamer -R"
-            ]
-
-            run_commands(install_cam)
     """ Install things
     """
 
+    is_ras_pi = False
 
     # if argument is passed and it's valid, set is_ras_pi if it's --pi
     if len(args) > 0 and args[0] in ['--pi', '--dev']:
@@ -249,6 +234,21 @@ def install(args):
         run_commands([command])
 
 
+    # install cameras
+    if is_ras_pi or '--cam' in args:
+        if os.path.isdir(get_file_path('install/mjpg-streamer')):
+            print_color("\nmjpg-streamer folder already exists! Not installing.")
+        else:
+            install_cam = [
+                "apt-get install -y " + " ".join(Config.get("aptget-cam")),
+                "ln -sf /usr/include/linux/videodev2.h /usr/include/linux/videodev.h",
+                "git clone https://github.com/jacksonliam/mjpg-streamer.git install/mjpg-streamer",
+                "make -C %s" % get_file_path("install/mjpg-streamer/mjpg-streamer-experimental"),
+                "make install -C %s" % get_file_path("install/mjpg-streamer/mjpg-streamer-experimental"),
+                "chmod 777 /usr/local/lib/mjpg-streamer -R"
+            ]
+
+            run_commands(install_cam)
 
     if is_ras_pi:
         i2c_enabled = os.system("i2cdetect -y 1 > /dev/null 2>&1")
