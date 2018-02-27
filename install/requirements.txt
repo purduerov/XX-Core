@@ -15,6 +15,7 @@ Jinja2==2.9.5
 lazy-object-proxy==1.2.2
 pytest==3.3.2
 MarkupSafe==0.23
+matplotlib==2.1.2
 mccabe==0.6.1
 packaging==16.8
 pep8==1.7.0
