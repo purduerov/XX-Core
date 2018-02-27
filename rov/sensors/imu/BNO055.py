@@ -12,26 +12,28 @@ class IMU(object):
 
         self._data =  {
             'euler': {
-                'yaw':   0,  # Rotation about z axis (vertical)
-                'roll':  0,  # Rotation about y axix (perpindicular to the pins IMU)
-                'pitch': 0,  # Rotation about x axis (parallel to the pins of IMU)
+                # Resolution found from a forumn post
+                'yaw':   0,  # Rotation about z axis (vertical) +/- 0.01 degree
+                'roll':  0,  # Rotation about y axix (perpindicular to the pins IMU) +/- 0.01 degree
+                'pitch': 0,  # Rotation about x axis (parallel to the pins of IMU) +/- 0.01 degree
+
             },
             'gyro': {
-                'x': 0,
-                'y': 0,
-                'z': 0,
+                'x': 0, # 3e-2 degree/sec
+                'y': 0, # 3e-2 degree/sec
+                'z': 0, # 3e-2 degree/sec
             },
             'acceleration': {
-                'x': 0,
-                'y': 0,
-                'z': 0,
+                'x': 0, # +/- 5e-4 g
+                'y': 0, # +/- 5e-4 g
+                'z': 0, # +/- 5e-4 g
             },
             'linear-acceleration': {
-                'x': 0,
-                'y': 0,
-                'z': 0,
+                'x': 0, # +/- 0.25 m/s^2
+                'y': 0, # +/- 0.25 m/s^2
+                'z': 0, # +/- 0.25 m/s^2
             },
-            'temp': 0,
+            'temp': 0, # Good enough
         }
 
     @property
