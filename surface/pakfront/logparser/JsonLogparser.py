@@ -18,8 +18,6 @@ def get_Directory():
         directory = "Run " + str(i) + ":  " + dir_list[i]                   #printing all the directories in a neat order
         print (directory)
 
-    #log_num = int(raw_input())                                    #user choosing a directory
-    #return log_num
 
 #to get the all the keys .. not applicable right now
 
