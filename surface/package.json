@@ -6,7 +6,8 @@
     "repository": "https://github.com/purduerov/XX-Core",
     "scripts": {
         "start": "electron .",
-	"install": "./pakfront/proxyinstall.sh",
+	"proxy": "./pakfront/proxyinstall.sh",
+	"proxyup": "./pakfront/proxyrun.sh",
         "dev": "webpack -d",
         "watch": "webpack -d --watch",
         "build": "webpack -p"
