@@ -40,6 +40,22 @@ def get_Directory():
 #         #print ("** Skipping item of type: {}".format(type(d_or_l)))
 #     return keys_list
 
+def print1dim(dic,key,label,starttime,endtime):
+    print("\n"+label)
+
+    while (starttime < endtime):
+        print (dic[starttime][key])
+        starttime = starttime + 1
+
+
+def print2dim(dic,key,key2,label,starttime,endtime):
+    print("\n" + label)
+
+    while (starttime < endtime):
+        print (dic[starttime][key][key2])
+        starttime = starttime + 1
+
+
 
 if __name__ == "__main__":
 
@@ -71,8 +87,6 @@ if __name__ == "__main__":
     #print (data1)
 
 
-
-
     #sets up the argument parser
 
     parser = argparse.ArgumentParser()
@@ -80,28 +94,41 @@ if __name__ == "__main__":
     parser.add_argument("-run", type=int, help="Selects the run you want tot access")
     parser.add_argument("-t", action='store_true',help="Prints out the times for all the logs")
 
-    parser.add_argument("-thruster" ,action='store_true', help="Prints out all the contents in the thrusters")
+    parser.add_argument("-df", action='store_true', help="Prints out logs for deerflask")
     parser.add_argument("-des", action='store_true', help="Prints out the logs for desired thrust")
     parser.add_argument("-dbt", action='store_true', help="Prints out the logs for disabled thrust")
     parser.add_argument("-trs", action='store_true', help="Prints out the logs for thruster scales")
-    parser.add_argument("-frt", action='store_true', help="Prints out the logs for frozen thrusters")
 
     parser.add_argument("-claw", action='store_true', help="Prints out all the contents in claw")
     parser.add_argument("-pow", action='store_true', help="Prints out the power component in claw")
     parser.add_argument("-led", action='store_true', help="Prints out all the contents in led")
     parser.add_argument("-cled", action='store_true', help="Prints out the Camera LED")
     parser.add_argument("-bled", action='store_true', help="Prints out the Bluetooth LED")
+
     parser.add_argument("-cam", action='store_true', help="Prints all the cameras")
+    parser.add_argument("-thruster" ,action='store_true', help="Prints out all the contents in the thrusters")
+    parser.add_argument("-frt", action='store_true', help="Prints out the logs for frozen/frozen thrusters")
+
+
+    parser.add_argument("-dc", action='store_true', help="Prints out the logs for deerclient")
+    parser.add_argument("-IMU",action='store_true', help="Prints out the logs for deerflask")
+    parser.add_argument("-pres", action='store_true', help="Prints out contests for pressure")
+    parser.add_argument("-camnum", type=int, help='Which camera do u want to print?')
+
 
     parser.add_argument("-fr", type=int, help="the starting point for the logs")
     parser.add_argument("-to", type=int, help="The ending point of the logs")
+
+
+
+
     args = parser.parse_args()
 
-    #gets all the directories i.e. the directories with time stamps for each run
+    # gets all the directories i.e. the directories with time stamps for each run
     dir_list = next(os.walk(env))[1]
 
 
-    #if a run is provided then access that run, else default to the most recent run
+    # if a run is provided then access that run, else default to the most recent run
     if args.run != None:
         log_num = args.run
     else:
@@ -112,13 +139,16 @@ if __name__ == "__main__":
         exit(10)
 
 
-   # log_num = 0      #for now because first directory is the only one with data
+    # log_num = 0      #for now because first directory is the only one with data
     env += dir_list[log_num]
 
     choice = 0      #because we only produced deerflask samples right now
     file_list = os.listdir(env)
+    if (args.dc):
+        choice = 1
+
     env = [env + "/" + file_list[0], env + "/" + file_list[1]][choice == 0]  # setting the path to either dearflask or dearclient
-  #  print (env, "   ", log_num)
+    #  print (env, "   ", log_num)
 
 
     data = []
@@ -141,85 +171,63 @@ if __name__ == "__main__":
 
 
     #Printing all the arguments , whatever was asked for
-    if (args.thruster):
-        i= fromtime
-        print ("\nThrusters:")
-        while (i<totime):
-            print (data[i]['thrusters'])
-            i = i + 1
 
-    if (args.des):
-        i = fromtime
-        print ("\nThruster: Desired Thrusters")
-        while (i<totime):
-            print (data[i]['thrusters']['desired_thrust'])
-            i = i + 1
+    if (args.df):
+        if (args.thruster):
+            print1dim(data,'thrusters','Thrusters',fromtime,totime)
 
-    if (args.dbt):
-        i = fromtime
-        print ("\nThruster: Disabled Thrusters")
-        while (i<totime):
-            print (data[i]['thrusters']['disabled_thrusters'])
-            i = i + 1
+        if (args.des):
+            print2dim(data, 'thrusters','desired_thrust', 'Desired Thrusters', fromtime, totime)
 
-    if (args.trs):
-        i = fromtime
-        print ("\nThruster: Thruster Scales")
-        while (i < totime):
-            print (data[i]['thrusters']['thruster_scales'])
-            i = i + 1
+        if (args.dbt):
+            print2dim(data, 'thrusters','disabled_thrusters', 'Disabled thrusters', fromtime, totime)
 
+        if (args.trs):
+            print2dim(data, 'thrusters','thruster_scales', 'Thruster scales', fromtime, totime)
 
-    if (args.frt):
-        i = fromtime
-        print ("\nThrusters: Frozen Thrusters")
-        while (i<totime):
-            print (data[i]['thrusters']['frozen'])
-            i = i + 1
+        if (args.frt):
+            print2dim(data, 'thrusters','frozen', 'Frozen', fromtime, totime)
 
+        if (args.claw):
+            print1dim(data,'claw','Claw',fromtime,totime)
 
-    if (args.claw):
-        i = fromtime
-        print ("\nClaw")
-        while (i < totime):
-            print (data[i]['claw'])
-            i = i + 1
+        if (args.pow):
+            print2dim(data, 'claw','power', 'Claw: Power', fromtime, totime)
+
+        if (args.led):
+            print1dim(data,'leds','LED\'s',fromtime,totime)
+
+        if (args.cled):
+            print2dim(data, 'leds','camera_leds', 'LED : Camera LED', fromtime, totime)
+
+        if (args.bled):
+            print2dim(data, 'leds','bluetooth_led', 'LED: Bluetooth LED', fromtime, totime)
+
+        if (args.cam):
+            print1dim(data,'cameras','Camera',fromtime,totime)
 
 
-    if (args.pow):
-        i = fromtime
-        print ("\nClaw: Power")
-        while (i < totime):
-            print (data[i]['claw']['power'])
-            i = i + 1
+    if (args.dc):
 
-    if (args.led):
-        i = fromtime
-        print ("\nLED's")
-        while (i < totime):
-            print (data[i]['leds'])
-            i = i + 1
+        if (args.thruster):
+            print1dim(data,'thrusters','Thrusters',fromtime,totime)
+
+        if (args.IMU):
+            print1dim(data,'IMU','IMU',fromtime,totime)
+
+        if (args.pres):
+            print1dim(data,'pressure','Pressure',fromtime,totime)
 
 
-    if (args.cled):
-        i = fromtime
-        print ("\nLED : Camera LED")
-        while (i < totime):
-            print (data[i]['leds']['camera_leds'])
-            i = i + 1
+        if (args.cam):
+            if (args.camnum!=None):
+                cam_num = args.camnum
+                str = 'Cam_' + str(cam_num)
 
+                try:
+                    print2dim(data, 'cameras', str, 'Camera '+str, fromtime, totime)
+                except:
+                    print ("Camera Number out of range")
 
-    if (args.bled):
-        i = fromtime
-        print ("\nLED: Bluetooth LED")
-        while (i < totime):
-            print (data[i]['leds']['bluetooth_led'])
-            i = i + 1
-
-
-    if (args.cam):
-        i = fromtime
-        print ("\nCameras")
-        while (i < totime):
-            print (data[i]['cameras'])
-            i = i + 1
+            else :
+                print1dim(data,'cameras','Cameras',fromtime,totime)
