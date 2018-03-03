@@ -14,6 +14,9 @@ class Complex():
     equation by it. If a inverse of the matrix A exists the pseudo-inverse(A) = inverse(A) if not then
     pseudo-inverse(A) * A can be ignored because math leaving
     thrust map matrix = pseudo-inverse(A) * desired thrust
+    *For location and rotation vectors, the first four thrusters are the horizontal thrusters: first is front left, 
+    second is front right, third is back left, and fourth is back right. The last four are the vertical thrusters in
+    the same order: front left, front right, back left, and back right.
     """
     # X9 Thruster locations and center of mass relative to an arbitrary(?) point converted from inches to meters
     # Each column is X, Y, Z: X is forward/back, Y is left/right, Z is up/down
@@ -261,7 +264,7 @@ if __name__ == '__main__':
     print('\nPSEUDO-INVERSE MATRIX')
     pp.pprint(c.pseudo_inverse_matrix)
     print('\nRESULT 8D VECTOR')
-    pp.pprint(c.calculate(np.array([1, 1, 1, 0, 0, 0]), [0, 0, 0, 0, 0, 0, 0, 0]))
+    pp.pprint(c.calculate(np.array([1, 0, 1, 0, 1, 0]), [0, 0, 0, 0, 0, 0, 0, 0]))
     print('\nTHRUST')
     pp.pprint(c.THRUST)
     print('POWER')
