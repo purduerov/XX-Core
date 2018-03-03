@@ -63,6 +63,7 @@ class HeightStabilizer(Algorithm):
             x = -1 * pitch * value
             y = roll * value
             c = 1 - math.pow(roll, 2) - math.pow(pitch, 2)
+            
             if c < 0:
                 c = 0
 
