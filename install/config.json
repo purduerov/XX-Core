@@ -21,7 +21,7 @@
         "libv4l-dev",
         "cmake"
     ],
-    "virtualenv": "/usr/bin/virtualenv",
+    "virtualenv": "/usr/local/bin/virtualenv",
     "venv": "venv",
     "testfiles": [
         "application.py",
