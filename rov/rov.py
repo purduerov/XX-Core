@@ -1,6 +1,7 @@
 import copy
 import os
 import traceback
+import datetime
 
 # this folder no longer exists 
 # nor were the files being used
@@ -78,7 +79,7 @@ class ROV(object):
 
         try:
             df = self.dearflask
-            print df
+            print df, self.dearclient
 
 
             """ Disabled until hardware is done and sw is tested
@@ -96,7 +97,12 @@ class ROV(object):
 
         self.last_update = time()
 
-        self.dearclient['last_update'] = self.last_update
+        now = datetime.datetime.now()
+        self.dearclient['last_update'] = "{day}_{hour}_{minu}_{sec}_{usec}".format(day=now.day,
+                                                                            hour=now.hour,
+                                                                            minu=now.minute,
+                                                                            sec=now.second,
+                                                                            usec=now.microsecond)
 
         with self._data_lock:
             self._data['dearclient'] = self.dearclient

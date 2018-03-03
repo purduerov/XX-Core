@@ -14,7 +14,7 @@ import gp from './src/gamepad/bettergamepad.js';
 import betterlayouts from './src/gamepad/betterlayouts.js';
 
 //var packets = require("./src/packets.js");
-let socketHost = `ws://localhost:5001`;
+let socketHost = `ws://localhost:5000`;
 
 let socket = io.connect(socketHost, {transports: ['websocket']});
 let {shell, app, ipcRenderer} = window.require('electron');
@@ -204,6 +204,7 @@ class App extends React.Component {
         all                         //Linearizes changes that should go unseen as well
       );
     */
+      that.state.dearflask.last_update = that.state.dearclient.last_update
       socket.emit("dearflask", that.state.dearflask);
     }, 50);
   }
