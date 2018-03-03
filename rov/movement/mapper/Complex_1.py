@@ -60,7 +60,7 @@ class Complex():
 
         self.generate_matrix()
 
-    def calculate(self, desired_thrust, disabled_thrusters=None):
+    def calculate(self, desired_thrust, disabled_thrusters=None, disable_limiting=False):
         """
         Calculate the needed thrust for each thruster to achieve desired
         :param desired_thrust: The 6 dimensional vector which we want to achieve vector as 6x1 matrix
@@ -81,7 +81,7 @@ class Complex():
         global FINAL_POWER
         self.FINAL_POWER = initial_power
         iteration = 0
-        while limitPower == 1:
+        while limitPower == 1 and disable_limiting == False:
             if iteration > 3:
                 print('Limit power function iteration limit exceeded, assume values are close enough.')
                 break
@@ -264,7 +264,7 @@ if __name__ == '__main__':
     print('\nPSEUDO-INVERSE MATRIX')
     pp.pprint(c.pseudo_inverse_matrix)
     print('\nRESULT 8D VECTOR')
-    pp.pprint(c.calculate(np.array([1, 0, 1, 0, 1, 0]), [0, 0, 0, 0, 0, 0, 0, 0]))
+    pp.pprint(c.calculate(np.array([1, 0, 1, 0, 1, 0]), [0, 0, 0, 0, 0, 0, 0, 0], True))
     print('\nTHRUST')
     pp.pprint(c.THRUST)
     print('POWER')
