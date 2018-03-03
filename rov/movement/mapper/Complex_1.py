@@ -16,11 +16,11 @@ class Complex():
     thrust map matrix = pseudo-inverse(A) * desired thrust
     """
     # X9 Thruster locations and center of mass relative to an arbitrary(?) point converted from inches to meters
-    # Each column is X, Y, Z
+    # Each column is X, Y, Z: X is forward/back, Y is left/right, Z is up/down
     X9_THRUSTERS = np.matrix([
-		[11.2148, 11.2148, -7.631, -7.631, 6.0419, 6.0419, -2.485, -2.485],
-        [-4.7524, 4.7524, -4.7524, 4.7524, -5.5709, 5.5709, -5.5709, 5.5709],
-        [0, 0, 0, 0, 5.6384, 5.6384, 5.6384, 5.6384]
+        [6.7593, 6.7593, -6.7593, -6.7593, 7.6887, 7.6887, -7.6887, 17.6887],
+		[-6.625, 6.625, -6.625, 6.625, -3.75, 3.75, -3.75, 3.75],
+        [-0.5809, -0.5809, -0.5809, -0.5809, 4.8840, 4.8840, 4.8840, 4.8840] 
     ]) * 0.0254
 	
     X9_COM = np.matrix([
@@ -76,11 +76,15 @@ class Complex():
         initial_power, limitPower = self.calc_thrust_power(self.map)
         #limit power if necessary: 
         global FINAL_POWER
-        if limitPower == 1:
+        self.FINAL_POWER = initial_power
+        iteration = 0
+        while limitPower == 1:
+            if iteration > 3:
+                print('Limit power function iteration limit exceeded, assume values are close enough.')
+                break
             self.FINAL_POWER = self.limit_power(initial_power)
-            print('\nPower was limited, force vector changed!')
-        else:
-            self.FINAL_POWER = initial_power
+            self.FINAL_POWER, limitPower = self.calc_thrust_power(self.map)
+            print('Power was limited, force vector changed!')
         return self.map
 
     def generate_matrix(self):
@@ -103,31 +107,46 @@ class Complex():
         :return: None
         """ 
         max_val = np.amax(np.abs(self.map))
-        #if max_val > 1:
-        self.map /= max_val
+        if max_val > 1:
+            self.map /= max_val
 
     def limit_power(self, initialPower):
         """
         Ensure power limit is not exceeded by scaling the thruster values down if necessary
         :return: limitedPower
         """
-        limitedPower = initialPower
-        limitPower = 0
-        while limitPower == 0:
-            #initialize maxPower as lowest power value 
-            maxPower = 0.51
-            maxPowerIndex = 0
-            for thruster in range(8):
-                if self.POWER[0, thruster] > maxPower:
-                    maxPower = self.POWER[0, thruster]
-                    maxThrust = self.THRUST[0, thruster]
-                    maxPowerIndex = thruster
-            scaleFactor = limitedPower/maxPower
-            #scale desired thrust vector and recalculate matrix and power
-            self.desired_thrust = scaleFactor * self.desired_thrust
-            self.map = self.pseudo_inverse_matrix.dot(desired_thrust)
-            self.normalize()
-            limitedPower, limitPower = self.calc_thrust_power(self.map)
+        limitedPower = 0.0
+        #initialize maxPower as lowest power value 
+        maxPower = 0.51
+        maxPowerIndex = 0
+        for thruster in range(8):
+            if self.POWER[0, thruster] > maxPower:
+                maxPower = self.POWER[0, thruster]
+                maxThrust = self.THRUST[0, thruster]
+                maxPowerIndex = thruster
+        orig_thrust_maxP = maxThrust;
+        self.THRUST[0, maxPowerIndex] = self.power_to_thrust(120, orig_thrust_maxP)
+        overMaxPower = np.matrix([0, 0, 0, 0, 0, 0, 0, 0])
+        # find thrusters with over 120W and make them 120W based on PWM value and mark which were changed
+        for thruster in range(8):
+            if self.THRUST[0, thruster] < 0:
+                while self.pwm_to_power(self.map[0, thruster]) > 120:
+                    self.map[0, thruster] = self.map[0, thruster] + 0.005
+                    overMaxPower[0, thruster] = 1
+            if self.THRUST[0, thruster] > 0:
+                while self.pwm_to_power(self.map[0, thruster]) > 120:
+                    self.map[0, thruster] = self.map[0, thruster] - 0.005
+                    overMaxPower[0, thruster] = 1
+            if thruster == maxPowerIndex:
+                self.THRUST[0, maxPowerIndex] = self.power_to_thrust(self.pwm_to_power(self.map[0, thruster]), orig_thrust_maxP)
+        # change thrust values to 
+        for thruster in range(8):
+            if thruster != maxPowerIndex:
+                self.THRUST[0, thruster] = self.THRUST [0, thruster] * self.THRUST[0, maxPowerIndex] / orig_thrust_maxP
+                self.POWER[0, thruster] = self.thrust_to_power(self.THRUST[0, thruster])
+            limitedPower = limitedPower + self.POWER[0, thruster]
+            if overMaxPower[0, thruster] != 1:
+                self.map[0, thruster] = self.thrust_to_pwm(self.THRUST[0, thruster])
         return limitedPower
 
     def calc_thrust_power(self, thrusters):
@@ -172,6 +191,47 @@ class Complex():
         else:
             power = 35.949*(pwm**3)+150.51*(pwm**2)-3.0096*pwm+0.51
         return power
+		
+    def power_to_thrust(self, power, sign):
+        """
+        Convert power value to thrust value based on 12V data from thrusters, given desired sign of thrust
+        Note that sign can be any positive or negative value, or 0 if thrust is zero
+        :return: thrust value (lbf)
+        """
+        if sign > 0:
+            thrust = 0.000001*(power**3)-0.0004*(power**2)+0.0855*power
+        elif sign < 0:
+            thrust = -0.0000008*(power**3)+0.0003*(power**2)-0.0697*power
+        else:
+            thrust = 0;
+        return thrust
+		
+    def thrust_to_power(self, thrust):
+        """
+        Convert thrust value to power value based on 12V data from thrusters
+        :return: power value (W)
+        """
+        if thrust < 0:
+            power = 2.3329*(thrust**2)-12.016*thrust+0.0959
+        if thrust > 0:
+            power = 1.8977*(thrust**2)+8.37*thrust+1.2563
+        else:
+            power = 0.51;
+        return power
+		
+    def thrust_to_pwm(self, thrust):
+        """
+        Convert thrust value to PWM value based on 12V data from thrusters
+        :return: PWM value
+        """
+        if thrust < 0:
+            pwm = 0.0021*(thrust**3)+0.0298*(thrust**2)+0.2426*thrust-0.0775
+        elif thrust > 0:
+            pwm = 0.0017*(thrust**3)-0.025*(thrust**2)+0.213*thrust+0.0675
+        else:
+            # assume 0 even though dead band has range of pwm values
+            pwm = 0;
+        return pwm;
         
     def get_results(self):
         """
@@ -201,7 +261,7 @@ if __name__ == '__main__':
     print('\nPSEUDO-INVERSE MATRIX')
     pp.pprint(c.pseudo_inverse_matrix)
     print('\nRESULT 8D VECTOR')
-    pp.pprint(c.calculate(np.array([1, 0, 1, 0, 0, 0]), [0, 0, 0, 0, 0, 0, 0, 0]))
+    pp.pprint(c.calculate(np.array([1, 1, 1, 0, 0, 0]), [0, 0, 0, 0, 0, 0, 0, 0]))
     print('\nTHRUST')
     pp.pprint(c.THRUST)
     print('POWER')
