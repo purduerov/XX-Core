@@ -260,7 +260,7 @@ def install(args):
             if raw_input().lower() == 'y':
                 run_commands(["raspi-config"])
                 print_color("\nYou may have to reboot to fully enable i2c")
-
+    updatepacket()
     print_color("\nFinished Install!\n", color="green")
 
 

@@ -2,7 +2,7 @@ import copy
 import os
 import traceback
 import datetime
-import json
+from json import loads, load
 
 # this folder no longer exists 
 # nor were the files being used
@@ -40,7 +40,8 @@ class ROV(object):
         self._running = True
 
         with open("packets.json","r") as fh:
-                self.dearclient = json.loads(json.load(fh))['dearclient']
+                self.dearclient = loads(load(fh))['dearclient']
+
 
         self.dearflask = {}
 
@@ -82,7 +83,7 @@ class ROV(object):
 
         try:
             df = self.dearflask
-            print df, self.dearclient
+            print df, '\n', self.dearclient, '\n\n'
 
 
             """ Disabled until hardware is done and sw is tested
