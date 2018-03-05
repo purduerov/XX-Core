@@ -4,8 +4,8 @@ package main
 import (
 	"log"
 	"net/http"
-	"runtime"
 	"os"
+	"runtime"
 
 	"github.com/googollee/go-socket.io"
 	"github.com/graarh/golang-socketio"
@@ -15,12 +15,11 @@ import (
 func sockiopxy(rovIP string, rovPort int, clientPort string) {
 	//Makes it so we do not consume to many resources
 	path := os.Getenv("LOGDIR")
-        if len(path) == 0 {
-                path = "."
-        }
+	if len(path) == 0 {
+		path = "."
+	}
 
 	fileopener := openfile(path)
-
 
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
@@ -43,8 +42,8 @@ func sockiopxy(rovIP string, rovPort int, clientPort string) {
 			return "Done"
 		})
 		pxyToROV.On("dearclient", func(c *gosocketio.Channel, msg interface{}) string {
-			so.Emit("dearclient",msg)
-			packClient(msg,fileopener)
+			so.Emit("dearclient", msg)
+			packClient(msg, fileopener)
 
 			return "Done"
 		})
@@ -53,9 +52,9 @@ func sockiopxy(rovIP string, rovPort int, clientPort string) {
 			pxyToROV.Emit("dearclient", "")
 		})
 
-		so.On("dearflask", func( msg interface{}) {
+		so.On("dearflask", func(msg interface{}) {
 			pxyToROV.Emit("dearflask", msg)
-			packFlask(msg,fileopener)
+			packFlask(msg, fileopener)
 		})
 
 		so.On("disconnection", func() {

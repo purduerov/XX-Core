@@ -8,11 +8,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net"
 	"net/http"
 	"strconv"
 	"time"
-	"log"
 )
 
 type Socketio struct {
@@ -36,7 +36,7 @@ type Cvhandler struct {
 type config struct {
 	Rovip          string
 	TransPortStart int
-	GetInfo 	   int
+	GetInfo        int
 	NumCams        int
 	Socketio       Socketio
 	Cvhandler      Cvhandler
@@ -128,13 +128,13 @@ func cvproc(conf config, procnum int, ret map[string]map[string]int) {
 			datawrite1.Buffer.Load(msg[:read], read)
 			wait := time.NewTimer(time.Nanosecond * 100)
 			<-wait.C
-			}
+		}
 	}()
 
 }
-func returnConfig(ret map[string]map[string]int) func(http.ResponseWriter, * http.Request) {
+func returnConfig(ret map[string]map[string]int) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json") 
+		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		data, err := json.Marshal(ret)
 		check(err)
@@ -142,6 +142,7 @@ func returnConfig(ret map[string]map[string]int) func(http.ResponseWriter, * htt
 		check(err)
 	}
 }
+
 //main: where the magic:the gathering happens
 func main() {
 	ret := make(map[string]map[string]int)
@@ -155,8 +156,8 @@ func main() {
 		cam := Mktrans(conf.Rovip, 8080, camnum, assPort)
 		submap := make(map[string]int)
 		submap["stream"] = assPort
-		submap["data"]	= -1
-		ret[fmt.Sprintf("camnum%v",camnum)] = submap
+		submap["data"] = -1
+		ret[fmt.Sprintf("camnum%v", camnum)] = submap
 		go http.ListenAndServe(numtoportstr(cam.serverport), http.HandlerFunc(cam.Transreq))
 		assPort += 1
 		camnum += 1
@@ -164,7 +165,7 @@ func main() {
 
 	submap := make(map[string]int)
 	submap["pakfront"] = conf.Socketio.Port_to_client
-	submap["rovdirect"]	= conf.Socketio.Port_to_rov
+	submap["rovdirect"] = conf.Socketio.Port_to_rov
 	ret["socketio"] = submap
 	numProc := conf.Cvhandler.Num_processes
 	go sockiopxy(conf.Rovip, conf.Socketio.Port_to_rov, numtoportstr(conf.Socketio.Port_to_client))
