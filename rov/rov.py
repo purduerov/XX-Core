@@ -2,6 +2,7 @@ import copy
 import os
 import traceback
 import datetime
+import json
 
 # this folder no longer exists 
 # nor were the files being used
@@ -38,7 +39,9 @@ class ROV(object):
 
         self._running = True
 
-        self.dearclient = {}
+        with open("packets.json","r") as fh:
+                self.dearclient = json.loads(json.load(fh))['dearclient']
+
         self.dearflask = {}
 
         self.debug = (os.environ.get("ROV_DEBUG") == "1")

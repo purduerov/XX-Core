@@ -393,6 +393,9 @@ def test(args):
     else:
         print_color("\nPassed all tests!", color="green")
 
+def updatepacket(args):
+    subprocess.call(["node", CORE_DIR + "/rov/JSToJSON.js", CORE_DIR + "/surface/frontend/src/", CORE_DIR + "/rov/"]) 
+    
 
 def usage(args=None):
     """ Prints the help and usage information
@@ -418,6 +421,8 @@ def usage(args=None):
     print "   files:    optional list of files to test"
     print "   --pep8:   Run pep8 test"
     print "   --pylint: Run pylint test"
+    print "scotty updaterovpacket"
+    print "    Updates the dearclient packet that the rov sends to the client"
     print ""
     print "scotty [-h] [--help]"
     print "   Display this help information"
@@ -434,6 +439,7 @@ def main():
         "run": run,
         "shell": shell,
         "test": test,
+        "updaterovpacket": updatepacket,
         "-h": usage,
         "--help": usage,
     }

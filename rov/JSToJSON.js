@@ -1,5 +1,7 @@
 const fs = require('fs');
-var packets = require('/home/zhukov/Projects/rov/XX-Core/frontend/src/packets.js')
+var srcdir = process.argv[2]
+var outdir = process.argv[3]
+var packets = require(srcdir + 'packets.js')
 
 var pak = {"dearflask": packets.dearflask,
 	   "dearclient":packets.dearclient};
@@ -10,7 +12,7 @@ var pak = {"dearflask": packets.dearflask,
  var jsonContent = JSON.stringify(jsonObj);
  console.log(jsonContent);
    
- fs.writeFile("packets.json", jsonContent, 'utf8', function (err) {
+ fs.writeFile(outdir + "packets.json", jsonContent, 'utf8', function (err) {
  if (err) {
    console.log("An error occured while writing JSON Object to File.");
    return console.log(err);
