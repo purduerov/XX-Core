@@ -39,7 +39,7 @@ def dearflask(indata):
         data['dearflask'] = indata
 
 @socketio.on('dearclient')
-def dearclient():
+def dearclient(*args):
     with lock:
         socketio.emit("dearclient", data['dearclient'], json=True)
 

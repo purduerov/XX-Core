@@ -83,7 +83,7 @@ class ROV(object):
 
         try:
             df = self.dearflask
-            print df, '\n', self.dearclient, '\n\n'
+            #print df, '\n', self.dearclient, '\n\n'
 
 
             """ Disabled until hardware is done and sw is tested

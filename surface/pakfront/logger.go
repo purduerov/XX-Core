@@ -12,7 +12,7 @@ type FileOpener struct {
 	flaskFile  *os.File
 }
 
-func packClient(data string, f FileOpener) { 							//logging the client messages in JSON format
+func packClient(data interface{}, f FileOpener) { 							//logging the client messages in JSON format
 	jsonpackage, _ := json.Marshal(data)								//converting to JSON format to make it standardized and easier to parse
 
 	if _, err := f.clientFile.Write([]byte(jsonpackage)); err != nil{	// writing the string to the file 
@@ -24,7 +24,7 @@ func packClient(data string, f FileOpener) { 							//logging the client message
 	}
 }
 
-func packFlask(data string, f FileOpener) { 								//logging the flask messages in JSON format
+func packFlask(data interface{}, f FileOpener) { 								//logging the flask messages in JSON format
 	jsonpackage, _ := json.Marshal(data)
 
 	if _, err := f.flaskFile.Write([]byte(jsonpackage)); err != nil { 		//writing the data
