@@ -47,7 +47,7 @@ class MS5837(object):
     _MS5837_CONVERT_D1_256   = 0x40
     _MS5837_CONVERT_D2_256   = 0x50
     
-    def __init__(self, model=MODEL_30BA, bus=1):
+    def __init__(self, model=MODEL_30BA, bus=1,PressDepthConv=0.01):
         self._model = model
         
         try:
@@ -63,6 +63,18 @@ class MS5837(object):
         self._D1 = 0
         self._D2 = 0
         
+	self._data = {
+		"pressure": 0,		# +/- 50 milibars
+		"temperature": 0	# +/- 1.5 celsius
+	}
+		
+	# for dynamicDepth pressure calibration
+	self.initPressure = 0
+	self.conv = PressDepthConv
+	self.update()
+	self.initPressure = self._data['pressure']
+		
+		
     def init(self):
         if self._bus is None:
             "No bus!"
@@ -144,7 +156,27 @@ class MS5837(object):
     # Depth relative to MSL pressure in given fluid density
     def depth(self):
         return (self.pressure(UNITS_Pa)-101300)/(self._fluidDensity*9.80665)
+
+	# Depth relative to surface pressure
+	@property
+	def data(self):
+		self._data['depth'] = self._data['pressure']*self.conv
+		return self._data
     
+	# update pressure and temperature
+	def update(self):
+		time.sleep(0.5)
+		if self.sensor.read():
+			# pressure in mBars
+			pressure = self.sensor.pressure() - self.initPressure
+			self._data['pressure'] = pressure
+
+			# temp in celsius
+			temperature = self.sensor.temperature()
+			self._data['temperature'] = temperature
+		else:
+			pass
+
     # Altitude relative to MSL pressure
     def altitude(self):
         return (1-pow((self.pressure()/1013.25),.190284))*145366.45*.3048        
@@ -230,4 +262,40 @@ class MS5837_30BA(MS5837):
 class MS5837_02BA(MS5837):
     def __init__(self, bus=1):
         MS5837.__init__(self, MODEL_02BA, bus)
+
+if __name__ == '__main__':
+    MS5837().main()
+    import ms5837
+    import time
+
+    def main(self):
+        sensor = ms5837.MS5837_30BA() # Default I2C bus is 1 (Raspberry Pi 3)
+
+        # We must initialize the sensor before reading it
+        if not sensor.init():
+                print "Sensor could not be initialized"
+                exit(1)
+
+        # We have to read values from sensor to update pressure and temperature
+        if not sensor.read():
+            print "Sensor read failed!"
+            exit(1)
+
+        #print("Pressure: %.2f mbar") % (sensor.pressure())
+
+        #print("Temperature: %.2f C") % (sensor.temperature(ms5837.UNITS_Centigrade))
+
+        #time.sleep(2)
+
+        print("Time \tPressure (mbar) \tTemperature (C)")
+
+        # Spew readings
+        while True:
+                if sensor.read():
+                    print("%s \t%0.1f \t%0.2f") % (time.strftime("%H:%M:%S", time.localtime()) + '.%d' % (time.time() % 1 * 1000),
+                        sensor.pressure(), # Default is mbar (no arguments)
+                        sensor.temperature()) # Default is degrees C (no arguments)
+                else:
+                        print "Sensor read failed!"
+                        exit(1)
         
