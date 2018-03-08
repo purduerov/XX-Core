@@ -47,7 +47,7 @@ class MS5837(object):
     _MS5837_CONVERT_D1_256   = 0x40
     _MS5837_CONVERT_D2_256   = 0x50
     
-    def __init__(self, model=MODEL_30BA, bus=1,PressDepthConv=0.01):
+    def __init__(self, model=MODEL_30BA, bus=1):
         self._model = model
         
         try:
@@ -63,18 +63,6 @@ class MS5837(object):
         self._D1 = 0
         self._D2 = 0
         
-	self._data = {
-		"pressure": 0,		# +/- 50 milibars
-		"temperature": 0	# +/- 1.5 celsius
-	}
-		
-	# for dynamicDepth pressure calibration
-	self.initPressure = 0
-	self.conv = PressDepthConv
-	self.update()
-	self.initPressure = self._data['pressure']
-		
-		
     def init(self):
         if self._bus is None:
             "No bus!"
@@ -100,6 +88,22 @@ class MS5837(object):
         
         return True
         
+        # for pressure calibration for depth
+        PressDepthConv=0.01    
+
+        self._data = {
+		"pressure": 0,		# +/- 50 milibars
+		"temperature": 0	# +/- 1.5 celsius
+	}
+		
+	# for dynamicDepth pressure calibration
+	self.initPressure = 0
+	self.conv = PressDepthConv
+	self.update()
+	self.initPressure = self._data['pressure']
+		
+
+
     def read(self, oversampling=OSR_8192):
         if self._bus is None:
             print "No bus!"
@@ -264,11 +268,11 @@ class MS5837_02BA(MS5837):
         MS5837.__init__(self, MODEL_02BA, bus)
 
 if __name__ == '__main__':
-    MS5837().main()
+    #MS5837().main()
     import ms5837
     import time
 
-    def main(self):
+    def main():
         sensor = ms5837.MS5837_30BA() # Default I2C bus is 1 (Raspberry Pi 3)
 
         # We must initialize the sensor before reading it
@@ -298,4 +302,5 @@ if __name__ == '__main__':
                 else:
                         print "Sensor read failed!"
                         exit(1)
-        
+       
+    main()
