@@ -50,6 +50,21 @@ module.exports = {
             pressure: 7,
             temperature: 4
         },
+        obs: {
+             tilt: {
+                x:0.0,
+                y:0.0,
+                z:0.0
+             },
+             seismograph_data: {
+                time: [0.0,0.1,0.2],
+                amplitude: [0.0,0.2,0.4]
+             }
+        },                
+        esc: {
+             currents: [0.1,0.2],
+             temperatures [0.0,0.1]
+        },
         thrusters: [.0, .0, .0, .0, .0, .0, .0, .0],
         cameras: {
             Cam_0: { 'port': '8080', status: "active" },
