@@ -1,15 +1,9 @@
-# Pakfront Proxy
-proxy that routes traffic between the frontend and ROV. Logs shit, passes image data to CV
+# Pakfront
+Proxy that routes traffic between the frontend and ROV. Logs shit, passes image data to CV
 
-## TODO
-- transparent handling of flask requests+responses
-- logging(and how we will log) functionallity for all processes
+##Pakfront and Running it: What does it do? How do you install it? Let's find out
+pakfront is written in Go, which is a compiled language, like C, but they build system is way less convoluted. For our purposes, the final product we are looking for is a binary named "panzerkanone" which can be run like any other executable(it also needs a config file, but that just sits in surface), and some python scripts that can be run as CV subprocesses. This all sits in the pakfront/bin/ directory, which one can run at his or her own leisure.
 
-## Setup
-run "npm install"
-config file rules
-Each process has an ID
-to_client_video port = 4xID + 1917 + 1
-to_client_data port  = 4xID + 1917 + 2
-to_cv_process port   = 4xID + 1917 + 3 
-to_cv_process_data   = 4xID + 1917 + 4
+### Installation
+
+
