@@ -15,7 +15,10 @@ import betterlayouts from './src/gamepad/betterlayouts.js';
 
 //var packets = require("./src/packets.js");
 let socketHost = `ws://localhost:5001`;
+<<<<<<< HEAD:frontend/index.jsx
+=======
 
+>>>>>>> 2d454df8bfabace6cdb6e86b280f14d1ac1ba8c9:surface/frontend/index.jsx
 let socket = io.connect(socketHost, {transports: ['websocket']});
 let {shell, app, ipcRenderer} = window.require('electron');
 
