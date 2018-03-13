@@ -1,9 +1,19 @@
 # Pakfront
 Proxy that routes traffic between the frontend and ROV. Logs shit, passes image data to CV
 
-##Pakfront and Running it: What does it do? How do you install it? Let's find out
-pakfront is written in Go, which is a compiled language, like C, but they build system is way less convoluted. For our purposes, the final product we are looking for is a binary named "panzerkanone" which can be run like any other executable(it also needs a config file, but that just sits in surface), and some python scripts that can be run as CV subprocesses. This all sits in the pakfront/bin/ directory, which one can run at his or her own leisure.
+Markup: ![picture alt](https://i.pinimg.com/736x/1a/e4/8f/1ae48fbbbe08af14ea305fe71fd4dae5--battle-of-monte-cassino-machine-guns.jpg)
+## Pakfront and Running it: What does it do? How do you install it? Let's find out
+pakfront is written in Go, which is a compiled language, like C, but they build system is way less convoluted. For our purposes, the final product we are looking for is a binary which can be run like any other executable(it also needs a config file, but that just sits in surface), and some python scripts that can be run as CV subprocesses. This all sits in the pakfront/bin/ directory, which one can run at his or her own leisure.
 
 ### Installation
+(To Be updated in proxy_install branch)
 
+### Launching
+Once everything has been installed, you can launch "panzerkanone", which is located in the pakfront bin. Some requirements to run it.
 
+Make sure you have a proxyconfig file in the directory you run in from, so in surface should be fine. 
+
+## Why is it named pakfront
+Because how else will we drive back the invader?
+
+https://en.wikipedia.org/wiki/Pakfront
