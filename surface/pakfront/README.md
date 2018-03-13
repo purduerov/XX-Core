@@ -3,7 +3,7 @@ Proxy that routes traffic between the frontend and ROV. Logs shit, passes image 
 
 ![picture alt](https://i.pinimg.com/736x/1a/e4/8f/1ae48fbbbe08af14ea305fe71fd4dae5--battle-of-monte-cassino-machine-guns.jpg)
 ## Pakfront and Running it: What does it do? How do you install it? Let's find out
-pakfront is written in Go, which is a compiled language, like C, but they build system is way less convoluted. For our purposes, the final product we are looking for is a binary which can be run like any other executable(it also needs a config file, but that just sits in surface), and some python scripts that can be run as CV subprocesses. This all sits in the pakfront/bin/ directory, which one can run at his or her own leisure.
+Pakfront is written in Go, which is a compiled language, like C, but they build system is way less convoluted. For our purposes, the final product we are looking for is a binary which can be run like any other executable(it also needs a config file, but that just sits in surface), and some python scripts that can be run as CV subprocesses. This all sits in the pakfront/bin/ directory, which one can run at his or her own leisure.
 
 ### Installation
 #### Ubuntu
@@ -17,7 +17,9 @@ Ask Charles to compile a binary for you
 ### Launching
 #### Ubuntu
 In the surface directory, run,
+
 `npm run proxyup`
+
 Note: This creates a file called pakfrontpid. Use this file to kill pakfront.
 
 #### Windows
