@@ -17,7 +17,7 @@ export default class ForceScale extends Component {
 
     rendData(val, inv, key) {
         //console.log(this.props.scales[key]);
-        let scalescpy = this.props.scales;      //props aren't 
+        let scalescpy = this.props.scales;      //props aren't
         scalescpy[key] = val;
         //scalescpy[key].invert = inv;
         this.props.rend(scalescpy);

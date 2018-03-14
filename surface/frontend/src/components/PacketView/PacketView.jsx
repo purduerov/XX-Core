@@ -19,6 +19,7 @@ export default class PacketView extends Component {
       return (
         <li key={'axis'+val} >
           {axis[index]}: {this.props.packet[index]}
+          {index != 5 && <hr className={styles.squashed}></hr>}
         </li>
       );
     });

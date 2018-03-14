@@ -8,7 +8,7 @@ let win
 
 function createWindow() {
     // Create the browser window.
-    win = new BrowserWindow({ width: 1600, height: 1200 })
+    win = new BrowserWindow({ width: 2000, height: 1200 })
 
     // and load the index.html of the app.
     win.loadURL(url.format({

@@ -60,10 +60,10 @@ module.exports = {
                 time: [0.0,0.1,0.2],
                 amplitude: [0.0,0.2,0.4]
              }
-        },                
+        },
         esc: {
              currents: [0.1,0.2],
-             temperatures [0.0,0.1]
+             temperatures: [0.0,0.1]
         },
         thrusters: [.0, .0, .0, .0, .0, .0, .0, .0],
         cameras: {

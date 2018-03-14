@@ -1,0 +1,16 @@
+.halfLeft {
+    width: calc(50% - 10px);
+    float: left;
+    box-sizing: border-box;
+}
+
+.halfRight {
+    width: calc(50% - 10px);
+    float: right;
+    box-sizing: border-box;
+}
+
+.squashed {
+    margin-top: 0;
+    margin-bottom: 0;
+}

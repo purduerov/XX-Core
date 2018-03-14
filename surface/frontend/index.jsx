@@ -2,6 +2,8 @@ import React from 'react';
 import {render} from 'react-dom';
 import styles from './index.css';
 import packet from './src/packets.js';
+import Seismograph from './src/components/Seismograph/Seismograph.jsx';
+import CVview from './src/components/CVview/CVview.jsx'
 import Card from './src/components/Card/Card.jsx';
 import Cam_view from './src/components/CamView/CamView.jsx';
 import ForceScales from './src/components/ForceScales/ForceScales.jsx'
@@ -109,6 +111,15 @@ class App extends React.Component {
                               ready={this.state.gp.ready}
                               axes={this.state.gp.axes}
                       />
+                    </Card>
+                    <Card title="Camera Vision Stats">
+                      <CVview tdist={[40, 41, 42, 43, 44]} desc={"Fancy and great"}></CVview>
+                    </Card>
+                    <Card title="Seismograph">
+                      <Seismograph
+                        amplitude={this.state.dearclient.obs.seismograph_data.amplitude}
+                        time={this.state.dearclient.obs.seismograph_data.time} >
+                      </Seismograph>
                     </Card>
                   </div>
               </div>
