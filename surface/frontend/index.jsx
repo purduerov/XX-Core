@@ -2,6 +2,7 @@ import React from 'react';
 import {render} from 'react-dom';
 import styles from './index.css';
 import packet from './src/packets.js';
+import ESCinfo from './src/components/ESCinfo/ESCinfo.jsx'
 import Seismograph from './src/components/Seismograph/Seismograph.jsx';
 import CVview from './src/components/CVview/CVview.jsx'
 import Card from './src/components/Card/Card.jsx';
@@ -95,7 +96,13 @@ class App extends React.Component {
                       />
                     </Card>
                     <Card>
-                    <PacketView packet={this.state.dearflask.thrusters.desired_thrust} />
+                      <PacketView packet={this.state.dearflask.thrusters.desired_thrust} />
+                    </Card>
+                    <Card>
+                      <Gpinfo buttons={this.state.gp.buttons}
+                              ready={this.state.gp.ready}
+                              axes={this.state.gp.axes}
+                      />
                     </Card>
                   </div>
                   <div className="data-column">
@@ -106,12 +113,6 @@ class App extends React.Component {
                     </Card>
                   </div>
                   <div className="data-column">
-                    <Card>
-                      <Gpinfo buttons={this.state.gp.buttons}
-                              ready={this.state.gp.ready}
-                              axes={this.state.gp.axes}
-                      />
-                    </Card>
                     <Card title="Camera Vision Stats">
                       <CVview tdist={[40, 41, 42, 43, 44]} desc={"Fancy and great"}></CVview>
                     </Card>
@@ -120,6 +121,12 @@ class App extends React.Component {
                         amplitude={this.state.dearclient.obs.seismograph_data.amplitude}
                         time={this.state.dearclient.obs.seismograph_data.time} >
                       </Seismograph>
+                    </Card>
+                    <Card title="ESC readings">
+                      <ESCinfo
+                        currents={this.state.dearclient.esc.currents}
+                        temp={this.state.dearclient.esc.temperatures}>
+                      </ESCinfo>
                     </Card>
                   </div>
               </div>
