@@ -27,7 +27,8 @@ module.exports = {
         leds: {
             bluetooth_led: false,
             camera_leds: false
-        }
+        },
+        last_update: ""
     },
     dearclient: {
         IMU: {
@@ -38,6 +39,7 @@ module.exports = {
             roll: 0,
             yaw: 0
         },
+        last_update: "",
         frozen: {
             x: false,
             y: false,
