@@ -105,7 +105,13 @@ def create_venv():
 
     if not os.path.isdir(venv_real_dir):
         print_color("\nCreating virtual env in %s..." % Config.get("venv"))
-        run_commands(["%s %s" % (str(Config.get("virtualenv")), str(venv_real_dir))])
+
+        # if scotty cannot find the virtual environment command at the specified path
+        # then just call the function in a hope that it is included in the path.
+        try:
+            run_commands(["%s %s" % (str(Config.get("virtualenv")), str(venv_real_dir))])
+        except:
+            run_commands(["%s %s" % (str("virtualenv"), str(venv_real_dir))])
     else:
         print_color("\nVirtual env in %s already exists" % Config.get("venv"))
 
@@ -294,6 +300,7 @@ def run(args):
 
     if '--rov' in args:
         print_color("Running ROV main loop:\n")
+        print("python %s" % get_file_path("rov/rov.py"))
         os.system("python %s" % get_file_path("rov/rov.py"))
     else:
         print_color("Running full ROV stack:\n")
