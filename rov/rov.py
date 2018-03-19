@@ -19,7 +19,7 @@ from hardware.motor_control import MotorControl
 # Class that controls the rov movement
 from movement import controller
 
-from sensors import Pressure, IMU
+from sensors import Pressure, IMU, OBS, ESC
 
 from camera import Cameras
 
@@ -66,6 +66,8 @@ class ROV(object):
         # self.IMU = IMU()
         # self.pressure = Pressure()
         #"""
+        self.obs = OBS()
+        self.esc = ESC()
 
     def update(self):
         with self._data_lock:
@@ -77,6 +79,8 @@ class ROV(object):
             # self.thruster_control.stop()
 
         try:
+            self.obs.update()
+            self.esc.update()
             df = self.dearflask
             print df
 
@@ -89,7 +93,8 @@ class ROV(object):
             print "Failed updating things"
             print "Exception: %s" % e
             print traceback.format_exc()
-
+        self.dearclient['obs'] = self.obs.data
+        self.dearclient['esc'] = self.esc.data
 
         # retrieve all sensor data
         # self.dearclient['sensor'] = sensorThings
