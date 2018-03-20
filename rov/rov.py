@@ -62,7 +62,7 @@ class ROV(object):
 
         self.controls = controller(self.motor_control)
 
-        self.IMU = IMU()
+        self.imu = IMU()
         self.pressure = Pressure()
 
     def update(self):
@@ -75,7 +75,7 @@ class ROV(object):
             # self.thruster_control.stop()
 
         try:
-	    self.IMU.update()
+	    self.imu.update()
 	    self.pressure.update()
             df = self.dearflask
             print df
@@ -86,7 +86,7 @@ class ROV(object):
             print traceback.format_exc()
 
 
-        self.dearclient['imu'] = self.IMU.data
+        self.dearclient['imu'] = self.imu.data
         self.dearclient['pressure'] = self.pressure.data
         self.last_update = time()
 
