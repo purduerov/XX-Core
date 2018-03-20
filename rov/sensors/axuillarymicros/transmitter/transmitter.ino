@@ -3,7 +3,7 @@
 
 #define RINP PA7
 #define FINP PB2
-#define PDEL 0.1
+#define PDEL 11
 void pulse(){
   
   //Idle
