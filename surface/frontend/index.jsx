@@ -204,6 +204,7 @@ class App extends React.Component {
         all                         //Linearizes changes that should go unseen as well
       );
     */
+      that.state.dearflask.last_update = that.state.dearclient.last_update
       socket.emit("dearflask", that.state.dearflask);
     }, 50);
   }
