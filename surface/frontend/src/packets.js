@@ -27,34 +27,53 @@ module.exports = {
         leds: {
             bluetooth_led: false,
             camera_leds: false
-        }
+        },
+        last_update: ""
     },
     dearclient: {
-	last_update: 0.0
-        imu: {
-		acceleration:{
-			y:0,
-			x:0,
-			z:0
-		},
-
-		gyro:{
-			y:0,
-			x:0,
-			z:0
-		},
-		euler:{
-			yaw:0,
-			roll:0,
-			pitch:0
-		},
-		temp:0,
-		linear-acceleration:{
-			y:0,
-			x:0,
-			z:0
-		}
+	      imu: {
+		        acceleration:{
+			          y:0,
+			          x:0,
+			          z:0
+		        },
+            gyro:{
+			          y:0,
+			          x:0,
+			          z:0
+		        },
+		        euler:{
+			          yaw:0,
+			          roll:0,
+			          pitch:0
+		        },
+		        temp:0,
+		        linear-acceleration:{
+			          y:0,
+			          x:0,
+			          z:0
+		        }
         },
+        pressure: {
+            pressure: 7,
+            temperature: 4
+        },
+        obs: {
+             tilt: {
+                x:0.0,
+                y:0.0,
+                z:0.0
+             },
+             seismograph_data: {
+                time: [0.0,0.1,0.2],
+                amplitude: [0.0,0.2,0.4]
+             }
+        },                
+        esc: {
+             currents: [0.1,0.2],
+             temperatures [0.0,0.1]
+        },
+        last_update: "",
         frozen: {
             x: false,
             y: false,
@@ -63,6 +82,6 @@ module.exports = {
             roll: false,
             yaw: false
         },
-        thrusters: [.0, .0, .0, .0, .0, .0, .0, .0],
+        thrusters: [.0, .0, .0, .0, .0, .0, .0, .0]
     }
 };

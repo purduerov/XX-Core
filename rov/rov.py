@@ -1,6 +1,8 @@
 import copy
 import os
 import traceback
+import datetime
+from json import loads, load
 
 # this folder no longer exists 
 # nor were the files being used
@@ -19,7 +21,7 @@ from hardware.motor_control import MotorControl
 # Class that controls the rov movement
 from movement import controller
 
-from sensors import Pressure, IMU
+from sensors import Pressure, IMU, OBS, ESC
 
 from camera import Cameras
 
@@ -37,7 +39,10 @@ class ROV(object):
 
         self._running = True
 
-        self.dearclient = {}
+        with open("packets.json","r") as fh:
+                self.dearclient = loads(load(fh))['dearclient']
+
+
         self.dearflask = {}
 
         self.debug = (os.environ.get("ROV_DEBUG") == "1")
@@ -64,6 +69,8 @@ class ROV(object):
 
         self.imu = IMU()
         self.pressure = Pressure()
+        self.obs = OBS()
+        self.esc = ESC()
 
     def update(self):
         with self._data_lock:
@@ -75,22 +82,30 @@ class ROV(object):
             # self.thruster_control.stop()
 
         try:
-	    self.imu.update()
-	    self.pressure.update()
+	          self.imu.update()
+	          self.pressure.update()
+            self.obs.update()
+            self.esc.update()
             df = self.dearflask
-            print df
+            #print df, '\n', self.dearclient, '\n\n'
 
         except Exception as e:
             print "Failed updating things"
             print "Exception: %s" % e
             print traceback.format_exc()
-
+        self.dearclient['obs'] = self.obs.data
+        self.dearclient['esc'] = self.esc.data
 
         self.dearclient['imu'] = self.imu.data
         self.dearclient['pressure'] = self.pressure.data
         self.last_update = time()
 
-        self.dearclient['last_update'] = self.last_update
+        now = datetime.datetime.now()
+        self.dearclient['last_update'] = "{day}_{hour}_{minu}_{sec}_{usec}".format(day=now.day,
+                                                                            hour=now.hour,
+                                                                            minu=now.minute,
+                                                                            sec=now.second,
+                                                                            usec=now.microsecond)
 
         with self._data_lock:
             self._data['dearclient'] = self.dearclient
