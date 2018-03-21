@@ -31,22 +31,28 @@ module.exports = {
         last_update: ""
     },
     dearclient: {
-        IMU: {
-            x: 0,
-            y: 0,
-            z: 0,
-            pitch: 0,
-            roll: 0,
-            yaw: 0
-        },
-        last_update: "",
-        frozen: {
-            x: false,
-            y: false,
-            z: false,
-            pitch: false,
-            roll: false,
-            yaw: false
+	      imu: {
+		        acceleration:{
+			          y:0,
+			          x:0,
+			          z:0
+		        },
+            gyro:{
+			          y:0,
+			          x:0,
+			          z:0
+		        },
+		        euler:{
+			          yaw:0,
+			          roll:0,
+			          pitch:0
+		        },
+		        temp:0,
+		        linear-acceleration:{
+			          y:0,
+			          x:0,
+			          z:0
+		        }
         },
         pressure: {
             pressure: 7,
@@ -67,15 +73,15 @@ module.exports = {
              currents: [0.1,0.2],
              temperatures [0.0,0.1]
         },
-        thrusters: [.0, .0, .0, .0, .0, .0, .0, .0],
-        cameras: {
-            Cam_0: { 'port': '8080', status: "active" },
-            Cam_1: { 'port': '8081', status: "inactive" },
-            Cam_2: { 'port': '8082', status: "inactive" },
-            Cam_3: { 'port': '8083', status: "inactive" },
-            Cam_4: { 'port': '8084', status: "inactive" },
-            Cam_5: { 'port': '8085', status: "inactive" }
+        last_update: "",
+        frozen: {
+            x: false,
+            y: false,
+            z: false,
+            pitch: false,
+            roll: false,
+            yaw: false
         },
-        cam_cur: 8080,
+        thrusters: [.0, .0, .0, .0, .0, .0, .0, .0]
     }
 };

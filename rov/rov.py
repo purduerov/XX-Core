@@ -67,10 +67,8 @@ class ROV(object):
 
         self.controls = controller(self.motor_control)
 
-        #""" Disabled until hardware is done and sw is tested
-        # self.IMU = IMU()
-        # self.pressure = Pressure()
-        #"""
+        self.imu = IMU()
+        self.pressure = Pressure()
         self.obs = OBS()
         self.esc = ESC()
 
@@ -84,16 +82,13 @@ class ROV(object):
             # self.thruster_control.stop()
 
         try:
+	          self.imu.update()
+	          self.pressure.update()
             self.obs.update()
             self.esc.update()
             df = self.dearflask
             #print df, '\n', self.dearclient, '\n\n'
 
-
-            """ Disabled until hardware is done and sw is tested
-            self.pressure.update()
-            self.IMU.update()
-            """
         except Exception as e:
             print "Failed updating things"
             print "Exception: %s" % e
@@ -101,9 +96,8 @@ class ROV(object):
         self.dearclient['obs'] = self.obs.data
         self.dearclient['esc'] = self.esc.data
 
-        # retrieve all sensor data
-        # self.dearclient['sensor'] = sensorThings
-
+        self.dearclient['imu'] = self.imu.data
+        self.dearclient['pressure'] = self.pressure.data
         self.last_update = time()
 
         now = datetime.datetime.now()
