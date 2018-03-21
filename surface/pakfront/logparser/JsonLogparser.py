@@ -2,14 +2,6 @@ import os
 import argparse
 import json
 
-# Time needs to be added
-# While testing for me log_num=0 had all the file contents, that is what I tested with
-# I did some cross tests and it seems to work
-# DeerClient has not been added yet but it will just be same as what we have right now, wasn't added because
-# I didn't have a sample at that time
-# I will keep on working on this and provide a complete parser asap
-# this works for deerflask and lays the outline of how I am approaching it for now
-
 
 def get_Directory():
 
@@ -40,29 +32,57 @@ def get_Directory():
 #         #print ("** Skipping item of type: {}".format(type(d_or_l)))
 #     return keys_list
 
-def print1dim(dic,key,label,starttime,endtime):
+def getTimeIndex(dic,from_t,to_t):
+
+    # gets the index of the from and to time from string to integers
+    i = 0
+    from_index = 0
+    to_index = len(dic)
+    while (i < len(dic)):
+        if (str(dic[i]["last_update"]) >= from_t):
+            if (i!=0):
+                from_index = i
+            else:
+                from_index = i
+            break
+
+        i = i + 1
+
+    i = 0
+    while (i < len(dic)):
+        if (str(dic[i]["last_update"]) >= to_t):
+            if (i != 0):
+                to_index = i
+            else:
+                to_index = i
+            break
+
+        i = i + 1
+    return from_index, to_index
+
+
+def print1dim( dic, key, label, starttime, endtime):
+    # helper function for non nested keys i.e. 1 dimensional array haha
     print("\n"+label)
 
     while (starttime < endtime):
-        print (dic[starttime][key])
+        print (dic[starttime]["last_update"]," : ",dic[starttime][key])
         starttime = starttime + 1
 
 
-def print2dim(dic,key,key2,label,starttime,endtime):
+def print2dim(dic, key, key2, label, starttime, endtime):
+    # helper function for nested keys i.e. 2 dimensional only
+    # add similar helper function for more nested keys if need be
     print("\n" + label)
 
     while (starttime < endtime):
-        print (dic[starttime][key][key2])
+        print (dic[starttime]["last_update"]," : ",dic[starttime][key][key2])
         starttime = starttime + 1
-
 
 
 if __name__ == "__main__":
 
-    #LOGDIR = "C:/Users/Mudabbir/Desktop/Logfolder/"
-
-
-    #if the enviroment variable for the directory path doesn't exist, print error
+    # if the enviroment variable for the directory path doesn't exist, print error
     try:
         LOG_DIR = "LOGDIR"
         env = os.environ[LOG_DIR]
@@ -70,6 +90,7 @@ if __name__ == "__main__":
         print ("error")
         exit(10)
 
+    # PATTERN = DD_HH_MIN_SEC_USEC
 
 
     # keys_list = []                                        //to get all the keys.. not useable right now
@@ -84,17 +105,17 @@ if __name__ == "__main__":
     # get_keys(data1,keys_list)
     # print (data1,'\n\n')
     # print (keys_list)
-    #print (data1)
 
 
-    #sets up the argument parser
+    # sets up the argument parser
+    # edit this to add more arguments or take out arguments
 
     parser = argparse.ArgumentParser()
     parser.add_argument("-r", action='store_true', help="Prints out all the runs")
     parser.add_argument("-run", type=int, help="Selects the run you want tot access")
     parser.add_argument("-t", action='store_true',help="Prints out the times for all the logs")
 
-    parser.add_argument("-df", action='store_true', help="Prints out logs for deerflask")
+    parser.add_argument("-df", action='store_true', help="Prints out logs for dearflask")
     parser.add_argument("-des", action='store_true', help="Prints out the logs for desired thrust")
     parser.add_argument("-dbt", action='store_true', help="Prints out the logs for disabled thrust")
     parser.add_argument("-trs", action='store_true', help="Prints out the logs for thruster scales")
@@ -108,19 +129,16 @@ if __name__ == "__main__":
     parser.add_argument("-cam", action='store_true', help="Prints all the cameras")
     parser.add_argument("-thruster" ,action='store_true', help="Prints out all the contents in the thrusters")
     parser.add_argument("-frt", action='store_true', help="Prints out the logs for frozen/frozen thrusters")
+    parser.add_argument("-logtime", action='store_true', help="Prints the times inside the selected log")
 
-
-    parser.add_argument("-dc", action='store_true', help="Prints out the logs for deerclient")
-    parser.add_argument("-IMU",action='store_true', help="Prints out the logs for deerflask")
+    parser.add_argument("-dc", action='store_true', help="Prints out the logs for dearclient")
+    parser.add_argument("-IMU",action='store_true', help="Prints out the logs for dearflask")
     parser.add_argument("-pres", action='store_true', help="Prints out contests for pressure")
     parser.add_argument("-camnum", type=int, help='Which camera do u want to print?')
 
-
-    parser.add_argument("-fr", type=int, help="the starting point for the logs")
-    parser.add_argument("-to", type=int, help="The ending point of the logs")
-
-
-
+    # PATTERN = DD_HH_MIN_SEC_USEC
+    parser.add_argument("-fr", type=str, help="the starting point for the logs")
+    parser.add_argument("-to", type=str, help="The ending point of the logs")
 
     args = parser.parse_args()
 
@@ -139,40 +157,44 @@ if __name__ == "__main__":
         exit(10)
 
 
-    # log_num = 0      #for now because first directory is the only one with data
+    # adding the directory path
     env += dir_list[log_num]
 
-    choice = 0      #because we only produced deerflask samples right now
+    choice = 0
     file_list = os.listdir(env)
-    if (args.dc):
+    if (args.dc): # if dearclient is chosen; else if defaults to dearflask , however no error happens by defaulting
         choice = 1
 
     env = [env + "/" + file_list[0], env + "/" + file_list[1]][choice == 0]  # setting the path to either dearflask or dearclient
-    #  print (env, "   ", log_num)
-
 
     data = []
-    i=0
-
     with open(env) as f:
         for line in f:
             data.append(json.loads(line))
-            data[i] = json.loads(data[i])
-            i=i+1
 
-    fromtime=0 #by default
-    totime=len(data)
+    # PATTERN = DD_HH_MIN_SEC_USEC
+    fromtime = data[0]["last_update"] #by default it goes from start to end
+    totime = data[len(data)-1]["last_update"]
 
-    if (args.fr!=None):       # we need to incorporate the time so this needs more work
-        fromtime = args.fr
+    if (args.fr != None):
+        fromtime = str(args.fr)
 
-    if (args.to!=None):
+    if (args.to != None):
         totime = args.to
 
 
-    #Printing all the arguments , whatever was asked for
+    # gets the index of the times from strings for easier access
+    fromtime, totime = getTimeIndex(data, fromtime, totime)
+    print ("Please use this format for time inputs: 00_00_00_00_000000")
+
+    # Printing all the arguments , whatever was asked for
+    check = 0
 
     if (args.df):
+        check =1
+        if (args.t):
+            print("Time Format: DD_HH_MIN_SEC_USEC \nstart time: ",data[0]["last_update"]+ '\n' + "end time: ",data[len(data)-1]["last_update"] )
+
         if (args.thruster):
             print1dim(data,'thrusters','Thrusters',fromtime,totime)
 
@@ -206,8 +228,10 @@ if __name__ == "__main__":
         if (args.cam):
             print1dim(data,'cameras','Camera',fromtime,totime)
 
-
     if (args.dc):
+        check =1
+        if (args.t):
+            print("Time Format: DD_HH_MIN_SEC_USEC \nstart time: ",data[0]["last_update"]+ '\n' + "end time: ",data[len(data)-1]["last_update"] )
 
         if (args.thruster):
             print1dim(data,'thrusters','Thrusters',fromtime,totime)
@@ -218,6 +242,8 @@ if __name__ == "__main__":
         if (args.pres):
             print1dim(data,'pressure','Pressure',fromtime,totime)
 
+        if (args.logtime):
+            print1dim(data,'cam_cur', 'Times',fromtime,totime)
 
         if (args.cam):
             if (args.camnum!=None):
@@ -231,3 +257,8 @@ if __name__ == "__main__":
 
             else :
                 print1dim(data,'cameras','Cameras',fromtime,totime)
+
+    # if neither were selected, tell user to select one or the other
+    if (check == 0):
+        print ("Please choose either dearclient or dearflask\nUser -dc or -df")
+        exit(0)
