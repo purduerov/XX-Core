@@ -393,7 +393,7 @@ def test(args):
     else:
         print_color("\nPassed all tests!", color="green")
 
-def updatepacket(args):
+def updatepacket():
     subprocess.call(["node", CORE_DIR + "/rov/JSToJSON.js", CORE_DIR + "/surface/frontend/src/", CORE_DIR + "/rov/"]) 
     
 

@@ -48,7 +48,7 @@ module.exports = {
 			          pitch:0
 		        },
 		        temp:0,
-		        linear-acceleration:{
+		        linear_acceleration:{
 			          y:0,
 			          x:0,
 			          z:0
@@ -71,7 +71,7 @@ module.exports = {
         },                
         esc: {
              currents: [0.1,0.2],
-             temperatures [0.0,0.1]
+             temperatures: [0.0,0.1]
         },
         last_update: "",
         frozen: {
