@@ -4,7 +4,7 @@ import traceback
 import datetime
 from json import loads, load
 
-# this folder no longer exists 
+# this folder no longer exists
 # nor were the files being used
 # from controls import *	#Tested
 
@@ -39,8 +39,8 @@ class ROV(object):
 
         self._running = True
 
-        with open("packets.json","r") as fh:
-                self.dearclient = loads(load(fh))['dearclient']
+        with open("rov/packets.json","r") as fh:
+            self.dearclient = loads(load(fh))['dearclient']
 
 
         self.dearflask = {}
@@ -82,8 +82,8 @@ class ROV(object):
             # self.thruster_control.stop()
 
         try:
-	          self.imu.update()
-	          self.pressure.update()
+            self.imu.update()
+            self.pressure.update()
             self.obs.update()
             self.esc.update()
             df = self.dearflask
