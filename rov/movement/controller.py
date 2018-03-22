@@ -3,9 +3,11 @@ from hardware.Thrusters_PWM_Control import Thrusters
 from mapper.Simple import Mapper
 
 class controller(object):
-    def __init__(self, motor_control):
+    def __init__(self, motor_control, dearflask, dearclient):
 
         self.motor_control = motor_control
+        self.df = dearflask
+        self.dc = dearclient
 
         self.thrusters = Thrusters(
             self.motor_control,
@@ -14,13 +16,13 @@ class controller(object):
 
         self.thrust_mapper = Mapper()
 
+        self.algorithm_handler = Master_Algorithm_Handler(self.df.thrusters.frozen, self.dc.
+
         self.__thruster_values = {}
 
     def update(self, user_input):
 
-        # TODO: Add master Control Handler
 
-        # TODO: Add thrust limiter
 
         # Thrust Mapper
         thruster_values = self.thrust_mapper.calculate(user_input)

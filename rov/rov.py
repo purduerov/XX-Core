@@ -33,7 +33,6 @@ class ROV(object):
 
         self._data = data
         self._new_data = False
-        self._last_packet = time() - 1
 
         self.last_update = time()
 
@@ -74,10 +73,10 @@ class ROV(object):
 
     def update(self):
         with self._data_lock:
-            self.dearflask = self._data['dearflask']
+            df = self.dearflask = self._data['dearflask']
 
-        # if time() - self._last_packet > 0.5:
-            # # print 'Data connection lost'
+        #if time() - self._last_packet > 0.5:
+            # print 'Data connection lost \n...Killing Thrusters'
             # self.motor_control.kill()
             # self.thruster_control.stop()
 
@@ -86,7 +85,7 @@ class ROV(object):
             self.pressure.update()
             self.obs.update()
             self.esc.update()
-            df = self.dearflask
+            self.controls.update()
             #print df, '\n', self.dearclient, '\n\n'
 
         except Exception as e:
