@@ -1,4 +1,7 @@
 import json
+import os
+import re
+from pprint import pprint as pp
 
 
 class Config(object):
@@ -16,3 +19,19 @@ class Config(object):
             return self.config[key]
         else:
             return None
+    def findVenv(self):
+        os.system("whereis virtualenv > foundit.txt")
+        with open('foundit.txt', 'r') as fp:
+            found = fp.read()
+        os.system("rm foundit.txt")
+        pp(found)
+        found = re.search(r"(?P<venvpath>/.*/virtualenv)[\n\s]", found)
+        if found:
+            return found.group('venvpath')
+        else:
+            return None
+
+
+if __name__ == "__main__":
+    c = Config('./')
+    c.findVenv()
