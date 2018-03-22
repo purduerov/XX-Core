@@ -151,6 +151,7 @@ class App extends React.Component {
   componentDidMount() {
     var that = this;
     window.react = this;
+    /*
     setInterval(function() {
       let all = that.state;                     //Edit copy, then update the state (one rerender initiated)
       all.dearclient.thrusters.forEach(function(key, i, arr) {    //for testing
@@ -164,6 +165,7 @@ class App extends React.Component {
         all
       );
     }, 3000);
+    */
 
     setInterval(function() {
       if(gp.ready === false) {
@@ -182,7 +184,7 @@ class App extends React.Component {
 
 
     // upon new data, save it locally
-    socket.on("dearclient", function(data) {    //Updates the data sent back from the server
+    socket.on("dearclient", (data) => {    //Updates the data sent back from the server
         that.setState({
           dearclient: data
         });
