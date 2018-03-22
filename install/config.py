@@ -1,7 +1,6 @@
 import json
 import os
 import re
-from pprint import pprint as pp
 
 
 class Config(object):
@@ -24,7 +23,6 @@ class Config(object):
         with open('foundit.txt', 'r') as fp:
             found = fp.read()
         os.system("rm foundit.txt")
-        pp(found)
         found = re.search(r"(?P<venvpath>/.*/virtualenv)[\n\s]", found)
         if found:
             return found.group('venvpath')
