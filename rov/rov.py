@@ -40,7 +40,7 @@ class ROV(object):
         self._running = True
 
         with open("rov/packets.json","r") as fh:
-            self.dearclient = loads(load(fh))['dearclient']
+            self.dearclient = load(fh)['dearclient']
 
 
         self.dearflask = {}
