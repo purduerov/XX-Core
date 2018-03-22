@@ -13,7 +13,7 @@ ROVIP="localhost"
 
 def get_image(camnum):
     port = MJPGPORT
-    imreq = subprocess.check_output(["./tcptostdin",str(MJPGPORT),str(camnum),ROVIP])
+    imreq = subprocess.check_output(["tcptostdin",str(MJPGPORT),str(camnum),ROVIP])
     raw = io.BytesIO(imreq)
     data = np.fromstring(raw.getvalue(), dtype=np.uint8)
     return cv2.imdecode(data, 1)
@@ -32,7 +32,7 @@ def pushframe(image,ID):
         postdata = cv2.imencode(".jpg", img)
         imdata = bytearray([b[0] for b in postdata[1]])
         lenbytes = bytearray.fromhex('{:08x}'.format(len(imdata)))
-        imreq = subprocess.Popen(["./stintotcp", str(port)], stdin=subprocess.PIPE)
+        imreq = subprocess.Popen(["stintotcp", str(port)], stdin=subprocess.PIPE)
         imreq.stdin.write(bytearray(8 - len(lenbytes)))
         imreq.stdin.write(lenbytes)
         imreq.stdin.write(imdata)
