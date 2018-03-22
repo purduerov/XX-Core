@@ -37,7 +37,7 @@ class IMU(object):
                 'y': self.accel_y,
                 'z': self.accel_z,
             },
-            'linear-acceleration': {
+            'linear_acceleration': {
                 'x': 0,
                 'y': 0,
                 'z': 0,

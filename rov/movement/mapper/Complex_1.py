@@ -23,15 +23,15 @@ class Complex():
     on the pwm vector. The thrust and power output of each thruster are in the arrays thrust and power, and the total
     power can be accessed with the variable final_power.
     """
-    # X9 Thruster locations and center of mass relative to an arbitrary(?) point converted from inches to meters
+    # XX Thruster locations and center of mass relative to an arbitrary(?) point converted from inches to meters
     # Each column is X, Y, Z: X is forward/back, Y is left/right, Z is up/down
-    X9_THRUSTERS = np.matrix([
+    XX_THRUSTERS = np.matrix([
         [6.7593, 6.7593, -6.7593, -6.7593, 7.6887, 7.6887, -7.6887, 17.6887],
 		[-6.625, 6.625, -6.625, 6.625, -3.75, 3.75, -3.75, 3.75],
         [-0.5809, -0.5809, -0.5809, -0.5809, 4.8840, 4.8840, 4.8840, 4.8840]
     ]) * 0.0254
 
-    X9_COM = np.matrix([
+    XX_COM = np.matrix([
         [0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0]
@@ -48,7 +48,7 @@ class Complex():
     ])
 
     def __init__(self):
-        self.thruster_layout = np.matrix(Complex.X9_THRUSTERS - Complex.X9_COM)
+        self.thruster_layout = np.matrix(Complex.XX_THRUSTERS - Complex.XX_COM)
         # this is the 6x8 matrix that specifies each thrusters contribution on X, Y, Z, Roll, Pitch, Yaw
         self.matrix = None
         # the pseudo inverse of self.matrix used to find the least square solution
@@ -91,7 +91,7 @@ class Complex():
             self.final_power = self._limit_power(initial_power)
             self.final_power, limitPower = self._calc_thrust_power(self.map)
             print('Power was limited, force vector changed!')
-        return self.map
+        return self.map.tolist()[0]
 
     def _generate_matrix(self):
         """

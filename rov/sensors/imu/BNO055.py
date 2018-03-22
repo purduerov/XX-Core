@@ -28,7 +28,7 @@ class IMU(object):
                 'y': 0, # +/- 5e-4 g
                 'z': 0, # +/- 5e-4 g
             },
-            'linear-acceleration': {
+            'linear_acceleration': {
                 'x': 0, # +/- 0.25 m/s^2
                 'y': 0, # +/- 0.25 m/s^2
                 'z': 0, # +/- 0.25 m/s^2
@@ -57,9 +57,9 @@ class IMU(object):
         self._data['acceleration']['z'] = acceleration[2]
 
         linear_accel = self._bno.read_linear_acceleration()
-        self._data['linear-acceleration']['x'] = linear_accel[0]
-        self._data['linear-acceleration']['y'] = linear_accel[1]
-        self._data['linear-acceleration']['z'] = linear_accel[2]
+        self._data['linear_acceleration']['x'] = linear_accel[0]
+        self._data['linear_acceleration']['y'] = linear_accel[1]
+        self._data['linear_acceleration']['z'] = linear_accel[2]
 
         temp = self._bno.read_temp()
         self._data['temp'] = temp

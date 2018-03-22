@@ -5,7 +5,8 @@
         "gcc",
         "python",
         "python-dev",
-        "python-pip"
+        "python-pip",
+        "python-tk"
     ],
     "aptget-hw": [
         "python-smbus",

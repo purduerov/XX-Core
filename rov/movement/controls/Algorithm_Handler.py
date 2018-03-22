@@ -129,7 +129,7 @@ if __name__ == "__main__":
             {
                 'imu' :
                 {
-                    'linear-acceleration' :
+                    'linear_acceleration' :
                     {
                         'x' : 1,
                         'y' : 1

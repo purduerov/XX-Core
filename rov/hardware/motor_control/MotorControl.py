@@ -44,9 +44,9 @@ class MotorControl(object):
         if is_pwm == False and (value < -1.0 or value > 1.0):
             raise Exception("Value %f is out of range" % value)
 
-        if not is_pwm
+        if not is_pwm:
             pwm_val = self._toPWM(value)
-        elif
+        else:
             pwm_val = value
 
         self.pwm.set_pwm(pin, 0, pwm_val)
@@ -76,3 +76,19 @@ class MotorControl(object):
 
         # Convert the 0-1 range into a value in the right range.
         return int(round(rightMin + (valueScaled * rightSpan)))
+
+
+if __name__ == "__main__":
+    from rov import init_hw_constants
+    c = MotorControl(ZERO_POWER, NEG_MAX_POWER, POS_MAX_POWER)
+
+    for i in range(0,16):
+        print ("starting %d" % i)
+        c.set(i, 1)
+        sleep(1000)
+        c.set(i, 0)
+
+    print ("done")
+
+
+
