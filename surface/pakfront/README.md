@@ -11,6 +11,10 @@ In the surface directory, run,
 `npm run proxy`
 Note: This modifies your .profile in order to add a gopath. If you like handling your own environments, configure your gopath yourself to your personal directory. If you don't know what I'm talking about, ignore this.
 
+If the cv processes throw you errors, try running,
+`source ~/.profile`
+To update your path
+
 #### Windows
 Ask Charles to compile a binary for you
 
