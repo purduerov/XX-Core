@@ -1,4 +1,5 @@
 #!/usr/bin/env  python
+# Return Structure {Tail: String}
 import subprocess
 import io
 import cv2
@@ -56,7 +57,7 @@ if __name__ == "__main__":
 
         cv2.drawContours(curimage, [np.array(shape)], 0, colors[index], 5)
         tailType = color_names[index+3] if len(shape) == 3 else color_names[index]
-        data = {"tailType": tailType}
+        data = {"Tail": tailType}
         # CV stuff goes here
         pushframe(curimage,2)
         pushdata(data,2)
