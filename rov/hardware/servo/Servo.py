@@ -3,7 +3,7 @@ import wiringpi
 class Servo(object):
     """ Look here for more of how this works:
         https://learn.adafruit.com/adafruits-raspberry-pi-lesson-8-using-a-servo-motor/software """
-    def __init__(self, pin=12):
+    def __init__(self, pin=26):
         self.pin = pin
 
         # sets up wiring pi gpio
@@ -24,10 +24,16 @@ class Servo(object):
         # PWM range
         wiringpi.pwmSetRange(2000)
 
-    def setAngle(self, angle):
+    def setAngle(self, rawangle):
         # map [-90, 90] to [50, 249]
         # mapping values are 0.5ms (50) to 2.5ms (250)
         # don't go all the way to 250, because the servo vibrates because it's just too far
+        if rawangle > 90:
+                angle = 90
+        elif rawangle < -90:
+                angle = -90
+        else:
+                angle = rawangle
         pulse = self.range_map(pulse, -90, 90, 50, 249)
 
         wiringpi.pwmWrite(self.pin, pulse)
