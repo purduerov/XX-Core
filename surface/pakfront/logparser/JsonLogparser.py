@@ -1,6 +1,9 @@
 import os
 import argparse
 import json
+import numpy as np
+import matplotlib.pyplot as pp
+from threading import Thread
 
 
 def get_Directory():
@@ -49,16 +52,48 @@ def getTimeIndex(dic,from_t,to_t):
         i = i + 1
 
     i = 0
-    while (i < len(dic)):
-        if (str(dic[i]["last_update"]) >= to_t):
-            if (i != 0):
-                to_index = i
-            else:
-                to_index = i
-            break
+    if (dic[len(dic)-1]["last_update"]==to_t):
+        to_t = len(dic)-1
+    else:
+        while (i < len(dic)):
+            if (str(dic[i]["last_update"]) >= to_t):
+                if (i != 0):
+                    to_index = i
+                else:
+                    to_index = i
+                break
 
-        i = i + 1
+            i = i + 1
     return from_index, to_index
+
+
+def printPlot(dic, key, key2, label, starttime, endtime,all,indexes):
+    array = []
+    while(starttime < endtime):
+        if (key2 == None):
+            array.append(dic[starttime][key])
+        else :
+            array.append(dic[starttime][key][key2])
+        starttime = starttime + 1
+    array = np.array(array)
+    array = array.T
+    if (all):
+        for i in range(len(array)):
+            pp.plot(array[i], label="Thruster " + str(i))
+    else:
+        for i in indexes:
+            try:
+                pp.plot(array[i],label="Thruster " + str(i))
+            except:
+                print ("\nUnable to Plot\nPlotting index out of range, Please use appropriate range")
+                exit(10)
+
+    pp.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3,
+               ncol=4, mode="expand", borderaxespad=0.)
+    pp.xlabel("Time")
+    pp.ylabel("Thruster power")
+    pp.title(label)
+    pp.show()
 
 
 def print1dim( dic, key, label, starttime, endtime):
@@ -82,7 +117,7 @@ def print2dim(dic, key, key2, label, starttime, endtime):
 
 if __name__ == "__main__":
 
-    # if the enviroment variable for the directory path doesn't exist, print error
+   # if the enviroment variable for the directory path doesn't exist, print error
     try:
         LOG_DIR = "LOGDIR"
         env = os.environ[LOG_DIR]
@@ -114,6 +149,7 @@ if __name__ == "__main__":
     parser.add_argument("-r", action='store_true', help="Prints out all the runs")
     parser.add_argument("-run", type=int, help="Selects the run you want tot access")
     parser.add_argument("-t", action='store_true',help="Prints out the times for all the logs")
+    parser.add_argument("-plot", type=str, help="Which one's do u want to plot? either enter \"1,2,3,4\" or \"all\"")
 
     parser.add_argument("-df", action='store_true', help="Prints out logs for dearflask")
     parser.add_argument("-des", action='store_true', help="Prints out the logs for desired thrust")
@@ -175,12 +211,31 @@ if __name__ == "__main__":
     # PATTERN = DD_HH_MIN_SEC_USEC
     fromtime = data[0]["last_update"] #by default it goes from start to end
     totime = data[len(data)-1]["last_update"]
+    #print (totime)
 
+    # to check if we need to print all plots or a few specific ones
+    printallplots = False
+    plotarray = []
     if (args.fr != None):
         fromtime = str(args.fr)
 
     if (args.to != None):
         totime = args.to
+
+    if (args.plot != None):
+        strin = args.plot
+        if (strin == "all"):
+            printallplots = True
+        else:
+            # parse the string to extract out the numbers and make a list
+            strin = strin.replace(" ","")
+            str1 = strin.split(',')
+            for i in str1:
+                try :
+                    plotarray.append(int(i))
+                except:
+                    print("Please input integers and in the following format < int1, int2, int3>");
+                    exit(10)
 
 
     # gets the index of the times from strings for easier access
@@ -190,6 +245,11 @@ if __name__ == "__main__":
     # Printing all the arguments , whatever was asked for
     check = 0
 
+    # calls to printPlot plots the graph
+    # works for
+    # DearFlask: Desired, Frozen, Disabled thrusters and thruster scales
+    # DearClient: Thrusters
+   
     if (args.df):
         check =1
         if (args.t):
@@ -200,15 +260,20 @@ if __name__ == "__main__":
 
         if (args.des):
             print2dim(data, 'thrusters','desired_thrust', 'Desired Thrusters', fromtime, totime)
+            printPlot(data, 'thrusters','desired_thrust', 'Desired Thrusters', fromtime, totime,printallplots,plotarray)
 
         if (args.dbt):
             print2dim(data, 'thrusters','disabled_thrusters', 'Disabled thrusters', fromtime, totime)
+            printPlot(data, 'thrusters','disabled_thrusters', 'Disabled thrusters', fromtime, totime,printallplots,plotarray)
+
 
         if (args.trs):
             print2dim(data, 'thrusters','thruster_scales', 'Thruster scales', fromtime, totime)
+            printPlot(data, 'thrusters','thruster_scales', 'Thruster scales', fromtime, totime,printallplots,plotarray)
 
         if (args.frt):
             print2dim(data, 'thrusters','frozen', 'Frozen', fromtime, totime)
+            printPlot(data, 'thrusters', 'frozen', 'Frozen', fromtime, totime, printallplots, plotarray)
 
         if (args.claw):
             print1dim(data,'claw','Claw',fromtime,totime)
@@ -235,12 +300,19 @@ if __name__ == "__main__":
 
         if (args.thruster):
             print1dim(data,'thrusters','Thrusters',fromtime,totime)
+            printPlot(data,'thrusters', None ,'Thrusters', fromtime, totime, printallplots, plotarray)
 
         if (args.IMU):
             print1dim(data,'IMU','IMU',fromtime,totime)
+            # printPlot(data,'IMU', None ,'IMU', fromtime, totime, printallplots, plotarray)
+            #  does not work because of nested keys
+
 
         if (args.pres):
             print1dim(data,'pressure','Pressure',fromtime,totime)
+            #printPlot(data,'pressure', None ,'Pressure', fromtime, totime, printallplots, plotarray)
+            #does not work because of nested keys
+
 
         if (args.logtime):
             print1dim(data,'cam_cur', 'Times',fromtime,totime)
@@ -260,5 +332,5 @@ if __name__ == "__main__":
 
     # if neither were selected, tell user to select one or the other
     if (check == 0):
-        print ("Please choose either dearclient or dearflask\nUser -dc or -df")
+        print ("Please choose either dearclient or dearflask\nUse -dc or -df")
         exit(0)
