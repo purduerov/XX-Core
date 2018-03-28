@@ -1,0 +1,3 @@
+recursive-include socketIO_client *
+include *.html *.js *.rst LICENSE
+global-exclude *.pyc
