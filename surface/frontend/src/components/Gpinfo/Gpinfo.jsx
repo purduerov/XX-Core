@@ -20,8 +20,6 @@ export default class Gpinfo extends Component {
                 <li>y: {this.props.buttons.y.curVal}</li>
                 <li>lb: {this.props.buttons.lb.curVal}</li>
                 <li>rb: {this.props.buttons.rb.curVal}</li>
-                <li>ltrigger: {this.props.buttons.ltrigger.curVal}</li>
-                <li>rtrigger: {this.props.buttons.rtrigger.curVal}</li>
                 <li>select: {this.props.buttons.select.curVal}</li>
                 <li>start: {this.props.buttons.start.curVal}</li>
                 <li>lpress: {this.props.buttons.lpress.curVal}</li>
@@ -38,6 +36,8 @@ export default class Gpinfo extends Component {
             <li>LstickYaxis: {this.props.axes.LstickYaxis.curVal}</li>
             <li>RstickXaxis: {this.props.axes.RstickXaxis.curVal}</li>
             <li>RstickYaxis: {this.props.axes.RstickYaxis.curVal}</li>
+            <li>Ltrigger: {this.props.axes.Ltrigger.curVal}</li>
+            <li>Rtrigger: {this.props.axes.Rtrigger.curVal}</li>
             </ul>
           </div>
         </div>

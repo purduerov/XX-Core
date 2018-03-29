@@ -13,7 +13,6 @@ import ThrusterInfo from './src/components/ThrusterInfo/ThrusterInfo.jsx';
 import ThrusterScales from './src/components/ThrusterScales/ThrusterScales.jsx';
 import Gpinfo from './src/components/Gpinfo/Gpinfo.jsx';
 import PacketView from './src/components/PacketView/PacketView.jsx';
-import gp from './src/gamepad/bettergamepad.js';
 import betterlayouts from './src/gamepad/betterlayouts.js';
 
 //var packets = require("./src/packets.js");
@@ -24,6 +23,7 @@ let {shell, app, ipcRenderer} = window.require('electron');
 
 let flaskcpy;
 let confcpy;
+let gp = require('./src/gamepad/bettergamepad.js');
 
 
 class App extends React.Component {
