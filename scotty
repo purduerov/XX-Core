@@ -98,7 +98,7 @@ def run_commands(commands, exit_on_error=True):
                 print_color("Stopping install.")
                 sys.exit()
             else:
-                return 1
+                return False
 
 
 def create_venv():
@@ -109,7 +109,7 @@ def create_venv():
 
     if not os.path.isdir(venv_real_dir):
         print_color("\nCreating virtual env in %s..." % Config.get("venv"))
-        if run_commands(["%s %s" % (str(Config.get("virtualenv")), str(venv_real_dir))], False):
+        if not run_commands(["%s %s" % (str(Config.get("virtualenv")), str(venv_real_dir))], False):
             print_color("\nDefault virtualenv path doesn't match, trying to find it manually...")
             venvpath = Config.findVenv()
             if venvpath:

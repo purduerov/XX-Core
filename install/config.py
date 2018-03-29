@@ -1,5 +1,5 @@
 import json
-import os
+import subprocess as sp
 import re
 
 
@@ -19,17 +19,10 @@ class Config(object):
         else:
             return None
     def findVenv(self):
-        os.system("whereis virtualenv > foundit.txt")
-        with open('foundit.txt', 'r') as fp:
-            found = fp.read()
-        os.system("rm foundit.txt")
+        paths = sp.Popen("whereis virtualenv", shell=True, stdout=sp.PIPE)
+        found = paths.stdout.read()
         found = re.search(r"(?P<venvpath>/.*/virtualenv)[\n\s]", found)
         if found:
             return found.group('venvpath')
         else:
             return None
-
-
-if __name__ == "__main__":
-    c = Config('./')
-    c.findVenv()
