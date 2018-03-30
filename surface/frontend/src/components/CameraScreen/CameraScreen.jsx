@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import Camera from 'react-camera';
-import styles from './Cam_View.css'
+import styles from './CameraScreen.css'
 
 class Square extends React.Component {
     render() {
@@ -77,7 +77,17 @@ export default class Camera_view extends Component {
                 query: "",
                 rovip:"raspberrypi.local",
                 startport:8080
-            }
+            },
+            /*
+              These are based off of the left and right values of the gamepad buttons
+              NOTE #1: they WILL be undefined until the user presses a button, make sure it doesn't crash
+              NOTE #2: go to index.jsx, line 86, to see how they're passed in -- you can test by passing undefined, 0, or 1 in
+                       as that'll be what the gamepad process passes in as well (1 being pressed, 0 being unpressed)
+              NOTE #meh: shouldn't be physically possible for them both to be pressed on our gamepads, but,
+                         maybe do nothing if they equal each other? (both 0's or both 1's)
+            */
+            camnext: props.next,
+            camprev: props.prev
         }
     }
 
