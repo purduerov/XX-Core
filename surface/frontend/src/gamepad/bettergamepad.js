@@ -5,6 +5,8 @@ var gp = {
   buttons:  {},
   axes:     {},
   prev_but: {},
+  up: 0,
+  down: 0,
   selID: 0,
   select: function(rate) {  //prints id of activated gamepad
     gp.selID = setInterval(gp.selectController, rate);
@@ -71,39 +73,39 @@ var gp = {
    var cur = navigator.getGamepads()[gp.gamepadIndex];
    //console.log(layouts[gp.layoutKey]+" "+gp.layoutKey);
    var lay = layouts[gp.layoutKey];
-   for(var index = 0; index < lay.buttons.length; index++)
+   for(var i = 0; i < lay.buttons.length; i++)
    {
-     var name = lay.buttons[index].name;
-     var buttn = lay.buttons[index]
+     var name = lay.buttons[i].name;
+     var buttn = lay.buttons[i]
      var val = cur[buttn.where][buttn.indx].value;
         //should adjust the intput to a 1-0 scale:
-     gp.buttons[name].curVal = (val - lay.buttons[index].notpressed)/(lay.buttons[index].pressed - lay.buttons[index].notpressed)
+     gp.buttons[name].curVal = (val - lay.buttons[i].notpressed)/(lay.buttons[i].pressed - lay.buttons[i].notpressed);
      gp.pressRelease(name);
 
-     if (bind.btn[name]) {
-       if (gp.but_func[name].pressed && gp.buttons[name].pressed) {    //runs bindfunc
-          gp.but_func[name].pressed();
-       }
-       if (gp.but_func[name].release && gp.buttons[name].released) {
-          gp.but_func[name].release();
-       }
-       if (gp.but_func[name].curVal) {
-         gp.but_func[name].curVal();
-       }
+     if (gp.but_func[name].pressed && gp.buttons[name].pressed) {    //runs bindfunc
+        gp.but_func[name].pressed();
+     }
+     if (gp.but_func[name].released && gp.buttons[name].released) {
+        gp.but_func[name].released();
+     }
+     if (gp.but_func[name].curVal) {
+       gp.but_func[name].curVal();
      }
    }
    for(var i = 0; i < lay.axes.length; i++)
    {
-     name = lay.axes[i].name;
+     var name = lay.axes[i].name;
+     var val = cur[lay.axes[i].where][lay.axes[i].indx];
      if (lay.axes[i].where == "buttons") {
        //console.log(cur[lay.axes[i].where][lay.axes[i].indx].value);
        //console.log(gp.adjust(i, val))
-     }
-     val = cur[lay.axes[i].where][lay.axes[i].indx].value;
-     if(.1 < Math.abs(gp.adjust(i, val))) {
-       gp.axes[lay.axes[i].name].curVal = gp.adjust(i, val);
+       gp.axes[name].curVal = (val.value - lay.axes[i].min)/(lay.axes[i].max - lay.axes[i].min);
      } else {
-       gp.axes[lay.axes[i].name].curVal = 0;
+       if(.15 < Math.abs(gp.adjust(i, val))) {
+         gp.axes[lay.axes[i].name].curVal = gp.adjust(i, val);
+       } else {
+         gp.axes[lay.axes[i].name].curVal = 0;
+       }
      }
      if (gp.ax_func[name].curVal) { //runs bindfunc
        gp.ax_func[name].curVal();
@@ -142,9 +144,6 @@ var gp = {
    //var cur = navigator.getGamepads()[gp.gamepadIndex];
    var lay = layouts[gp.layoutKey];
    let newVal = cur - gp.axes[lay.axes[index_2].name].constant;
-   console.log(cur)
-   console.log(gp.axes[lay.axes[index_2].name].constant)
-   console.log(newVal)
    if (newVal > 0) {
      newVal = (newVal / (1 - gp.axes[lay.axes[index_2].name].constant));
    }
@@ -159,8 +158,6 @@ var gp = {
  },
 
  axes_bind: function(piece, which, func) {
-   console.log(piece)
-   console.log(gp.ax_func[piece])
    gp.ax_func[piece][which] = func;
  }
 

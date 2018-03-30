@@ -24,14 +24,14 @@ axes template:
         // a:{
         //   value: {
         //     func: function() {
-        //       react.state.dearflask.thrusters.desired_thrust = gp.buttons.a.curVal
+        //       react.flaskcpy.thrusters.desired_thrust = gp.buttons.a.curVal
         //     }
         //   },
         // },
         // up: {
         //   pressed: {
         //     func: function() {
-        //       react.state.dearflask.thrusters.desired_thrust =
+        //       react.flaskcpy.thrusters.desired_thrust =
         //     }
         //
         //   },
@@ -51,13 +51,13 @@ var bind = {
       pressed: {
         func: function() {
           var stuff = react.state.config.thrust_scales;
-          react.state.dearflask.thrusters.desired_thrust[3] = -react.state.gp.buttons.lb.curVal * stuff.master * stuff.roll / 10000;
+          react.flaskcpy.thrusters.desired_thrust[3] = -react.gp.buttons.lb.curVal * stuff.master * stuff.roll / 10000;
         },
       },
       released: {
         func: function() {
-          if(react.state.dearflask.thrusters.desired_thrust[3] < 0) {
-            react.state.dearflask.thrusters.desired_thrust[3] = 0;
+          if(react.flaskcpy.thrusters.desired_thrust[3] < 0) {
+            react.flaskcpy.thrusters.desired_thrust[3] = 0;
           }
         },
       },
@@ -66,13 +66,13 @@ var bind = {
       pressed: {
         func: function() {
           var stuff = react.state.config.thrust_scales;
-          react.state.dearflask.thrusters.desired_thrust[3] = react.state.gp.buttons.rb.curVal * stuff.master * stuff.roll / 10000;
+          react.flaskcpy.thrusters.desired_thrust[3] = react.gp.buttons.rb.curVal * stuff.master * stuff.roll / 10000;
         },
       },
       released: {
         func: function() {
-          if(react.state.dearflask.thrusters.desired_thrust[3] > 0) {
-            react.state.dearflask.thrusters.desired_thrust[3] = 0;
+          if(react.flaskcpy.thrusters.desired_thrust[3] > 0) {
+            react.flaskcpy.thrusters.desired_thrust[3] = 0;
           }
         },
       },
@@ -85,7 +85,7 @@ var bind = {
       curVal: {
         func: function() {
           var stuff = react.state.config.thrust_scales;
-          react.state.dearflask.thrusters.desired_thrust[1] = react.state.gp.axes.LstickXaxis.curVal * stuff.master * stuff.velY / 10000;
+          react.flaskcpy.thrusters.desired_thrust[1] = react.gp.axes.LstickXaxis.curVal * stuff.master * stuff.velY / 10000;
         }
       }
     },
@@ -93,7 +93,7 @@ var bind = {
       curVal: {
         func: function() {
           var stuff = react.state.config.thrust_scales;
-          react.state.dearflask.thrusters.desired_thrust[0] = -react.state.gp.axes.LstickYaxis.curVal * stuff.master * stuff.velX / 10000;
+          react.flaskcpy.thrusters.desired_thrust[0] = -react.gp.axes.LstickYaxis.curVal * stuff.master * stuff.velX / 10000;
         }
       }
     },
@@ -101,7 +101,7 @@ var bind = {
       curVal: {
         func: function() {
           var stuff = react.state.config.thrust_scales;
-          react.state.dearflask.thrusters.desired_thrust[5] = react.state.gp.axes.RstickXaxis.curVal * stuff.master * stuff.yaw / 10000;
+          react.flaskcpy.thrusters.desired_thrust[5] = react.gp.axes.RstickXaxis.curVal * stuff.master * stuff.yaw / 10000;
         }
       }
     },
@@ -109,15 +109,34 @@ var bind = {
       curVal: {
         func: function() {
           var stuff = react.state.config.thrust_scales;
-          react.state.dearflask.thrusters.desired_thrust[4] = -react.state.gp.axes.RstickYaxis.curVal * stuff.master * stuff.pitch / 10000;
+          react.flaskcpy.thrusters.desired_thrust[4] = -react.gp.axes.RstickYaxis.curVal * stuff.master * stuff.pitch / 10000;
         }
       }
     },
+    /*
+      THESE ARE A DELICATE BALANCE
+      Only change the weird up/down referencing if you've REALLY thought through what you're doing
+      I spent too much time on this late at night when I would have rather been at the cactus.
+      Please don't make it for naught...
+      -- Ian
+
+      Allows for the last trigger pressed to take dominace over whether the ROV is going up, or down
+    */
     Ltrigger:{ //descend
       curVal: {
         func: function() {
           var stuff = react.state.config.thrust_scales;
-          react.state.dearflask.thrusters.desired_thrust[2] = -react.state.gp.axes.Ltrigger.curVal * stuff.master * stuff.velZ / 10000;
+          if(react.gp.axes.Ltrigger.curVal != 0) {
+            if(react.gp.up < 2) {
+              react.flaskcpy.thrusters.desired_thrust[2] = -react.gp.axes.Ltrigger.curVal * stuff.master * stuff.velZ / 10000;
+              react.gp.down = 1 + react.gp.up
+            }
+          } else {
+            react.gp.down = 0;
+          }
+          if(react.gp.down == react.gp.up) {
+            react.flaskcpy.thrusters.desired_thrust[2] = 0;
+          }
         }
       }
     },
@@ -125,7 +144,17 @@ var bind = {
       curVal: {
         func: function() {
           var stuff = react.state.config.thrust_scales;
-          react.state.dearflask.thrusters.desired_thrust[2] = react.state.gp.axes.Rtrigger.curVal * stuff.master * stuff.velZ / 10000;
+          if(react.gp.axes.Rtrigger.curVal != 0) {
+            if(react.gp.down < 2) {
+                react.flaskcpy.thrusters.desired_thrust[2] = react.gp.axes.Rtrigger.curVal * stuff.master * stuff.velZ / 10000;
+                react.gp.up = 1 + react.gp.down
+            }
+          } else {
+            react.gp.up = 0;
+          }
+          if(react.gp.down == react.gp.up) {
+            react.flaskcpy.thrusters.desired_thrust[2] = 0;
+          }
         }
       }
     },

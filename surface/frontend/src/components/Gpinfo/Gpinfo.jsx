@@ -40,6 +40,12 @@ export default class Gpinfo extends Component {
             <li>Rtrigger: {this.props.axes.Rtrigger.curVal}</li>
             </ul>
           </div>
+          <div>
+            <ul>
+            <li>upchk: {this.props.up}</li>
+            <li>dwnchk: {this.props.down}</li>
+            </ul>
+          </div>
         </div>
       )
     } else {

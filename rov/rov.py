@@ -39,7 +39,9 @@ class ROV(object):
         self._running = True
 
         with open("rov/packets.json","r") as fh:
-            self.dearclient = load(fh)['dearclient']
+            l = load(fh)
+            self.dearclient = l['dearclient']
+            self.dearflask = l['dearflask']
 
 
         self.dearflask = {}
@@ -64,7 +66,7 @@ class ROV(object):
             frequency=FREQUENCY
         )
 
-        self.controls = controller(self.motor_control)
+        self.controls = controller(self.motor_control, self.dearflask, self.dearclient)
 
         self.imu = IMU()
         self.pressure = Pressure()

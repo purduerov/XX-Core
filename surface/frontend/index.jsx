@@ -21,10 +21,6 @@ let socketHost = `ws://localhost:5001`;
 let socket = io.connect(socketHost, {transports: ['websocket']});
 let {shell, app, ipcRenderer} = window.require('electron');
 
-let flaskcpy;
-let confcpy;
-let gp = require('./src/gamepad/bettergamepad.js');
-
 
 class App extends React.Component {
   constructor(props) {
@@ -32,6 +28,7 @@ class App extends React.Component {
     this.state = require("./src/packets.js"); //= $.extend(true, {}, packets);
 
     this.state.gp = require ("./src/gamepad/bettergamepad.js");
+    this.gp = require('./src/gamepad/bettergamepad.js');
 
     this.state.config = {
             version: 1.1, //INCREMENT IF YOU CHANGE THIS DATA STRUCTURE!
@@ -70,8 +67,8 @@ class App extends React.Component {
         }
 
 
-    flaskcpy = this.state.dearflask;
-    confcpy = this.state.config;
+    this.flaskcpy = this.state.dearflask;
+    this.confcpy = this.state.config;
 
     this.changeDisabled = this.changeDisabled.bind(this);
     this.changeThrustScales = this.changeThrustScales.bind(this);
@@ -105,14 +102,16 @@ class App extends React.Component {
                         scales={this.state.config.thrust_scales}
                         />
                     </Card>
+                      <Card>
+                        <Gpinfo buttons={this.state.gp.buttons}
+                                ready={this.state.gp.ready}
+                                axes={this.state.gp.axes}
+                                up={this.state.gp.up}
+                                down={this.state.gp.down}
+                        />
+                      </Card>
                   </div>
                   <div className="data-column">
-                    <Card>
-                      <Gpinfo buttons={this.state.gp.buttons}
-                              ready={this.state.gp.ready}
-                              axes={this.state.gp.axes}
-                      />
-                    </Card>
                     <Card title="Seismograph">
                       <Seismograph
                         amplitude={this.state.dearclient.sensors.obs.seismograph_data.amplitude}
@@ -136,33 +135,33 @@ class App extends React.Component {
   }
 
   changeDisabled(dis) {
-    flaskcpy.thrusters.disabled_thrusters = dis;
+    this.flaskcpy.thrusters.disabled_thrusters = dis;
     /*
     let all = this.state;
-    flaskcpy.thrusters.disabled_thrusters.forEach(function(key, i) {
+    this.flaskcpy.thrusters.disabled_thrusters.forEach(function(key, i) {
       if(key == 1) {
         all.dearclient.thrusters[i] = 0;
       }
     });
     */
     this.setState({
-      dearflask: flaskcpy
+      dearflask: this.flaskcpy
     });
   }
 
   changeThrustScales(scales) {
-    confcpy.thruster_control = scales;
+    this.confcpy.thruster_control = scales;
 
     this.setState({
-      config: confcpy
+      config: this.confcpy
     });
   }
 
   changeForceScales(scales) {
-    confcpy.thrust_scales = scales;
+    this.confcpy.thrust_scales = scales;
 
     this.setState({
-      config: confcpy
+      config: this.confcpy
     });
   }
 
@@ -185,18 +184,18 @@ class App extends React.Component {
     }, 3000);
     */
 
-    setInterval(function() {
-      if(gp.ready === false) {
+    setInterval(() => {
+      if(this.gp.ready === false) {
 //        console.log("not yet");
-        gp.selectController();
+        this.gp.selectController();
       }
-      if(gp.ready === true) {
-        gp.update();
+      if(this.gp.ready === true) {
+        this.gp.update();
 //        console.log('success');
       }
 
       that.setState( {                           //Initiates rendering process
-        gp: gp }
+        gp: this.gp }
       );
     }, 100);
 
@@ -217,7 +216,7 @@ class App extends React.Component {
     setInterval(() => {             //Sends a message down to the server with updated surface info
     /*
       let all = that.state;         //Edit copy, then update the state (one rerender initiated)
-      all.dearflask = flaskcpy;
+      all.dearflask = this.flaskcpy;
       all.inv = invcpy;
 
       that.setState(                //Let this interrupt change the state, fast enough
