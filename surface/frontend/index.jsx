@@ -2,15 +2,17 @@ import React from 'react';
 import {render} from 'react-dom';
 import styles from './index.css';
 import packet from './src/packets.js';
+import CVview from './src/components/CVview/CVview.jsx'
+import ESCinfo from './src/components/ESCinfo/ESCinfo.jsx'
+import Seismograph from './src/components/Seismograph/Seismograph.jsx';
 import Card from './src/components/Card/Card.jsx';
-import Cam_view from './src/components/CamView/CamView.jsx';
+import CameraScreen from './src/components/CameraScreen/CameraScreen.jsx';
 import ForceScales from './src/components/ForceScales/ForceScales.jsx'
 import Titlebar from './src/components/Titlebar/Titlebar.jsx';
 import ThrusterInfo from './src/components/ThrusterInfo/ThrusterInfo.jsx';
 import ThrusterScales from './src/components/ThrusterScales/ThrusterScales.jsx';
 import Gpinfo from './src/components/Gpinfo/Gpinfo.jsx';
 import PacketView from './src/components/PacketView/PacketView.jsx';
-import gp from './src/gamepad/bettergamepad.js';
 import betterlayouts from './src/gamepad/betterlayouts.js';
 
 //var packets = require("./src/packets.js");
@@ -19,9 +21,6 @@ let socketHost = `ws://localhost:5001`;
 let socket = io.connect(socketHost, {transports: ['websocket']});
 let {shell, app, ipcRenderer} = window.require('electron');
 
-let flaskcpy;
-let confcpy;
-
 
 class App extends React.Component {
   constructor(props) {
@@ -29,6 +28,7 @@ class App extends React.Component {
     this.state = require("./src/packets.js"); //= $.extend(true, {}, packets);
 
     this.state.gp = require ("./src/gamepad/bettergamepad.js");
+    this.gp = require('./src/gamepad/bettergamepad.js');
 
     this.state.config = {
             version: 1.1, //INCREMENT IF YOU CHANGE THIS DATA STRUCTURE!
@@ -67,8 +67,8 @@ class App extends React.Component {
         }
 
 
-    flaskcpy = this.state.dearflask;
-    confcpy = this.state.config;
+    this.flaskcpy = this.state.dearflask;
+    this.confcpy = this.state.config;
 
     this.changeDisabled = this.changeDisabled.bind(this);
     this.changeThrustScales = this.changeThrustScales.bind(this);
@@ -83,7 +83,7 @@ class App extends React.Component {
           </div>
           <div className="main-container">
               <div className="camera-width full-height center">
-              <Camview></Camview>
+                <CameraScreen next={this.state.gp.buttons.left} prev={this.state.gp.buttons.right}></CameraScreen>
               </div>
               <div className="data-width full-height">
                   <div className="data-column">
@@ -94,7 +94,7 @@ class App extends React.Component {
                       />
                     </Card>
                     <Card>
-                    <PacketView packet={this.state.dearflask.thrusters.desired_thrust} />
+                      <PacketView packet={this.state.dearflask.thrusters.desired_thrust} />
                     </Card>
                   </div>
                   <div className="data-column">
@@ -103,13 +103,30 @@ class App extends React.Component {
                         scales={this.state.config.thrust_scales}
                         />
                     </Card>
+                      <Card>
+                        <Gpinfo buttons={this.state.gp.buttons}
+                                ready={this.state.gp.ready}
+                                axes={this.state.gp.axes}
+                                up={this.state.gp.up}
+                                down={this.state.gp.down}
+                        />
+                      </Card>
                   </div>
                   <div className="data-column">
-                    <Card>
-                      <Gpinfo buttons={this.state.gp.buttons}
-                              ready={this.state.gp.ready}
-                              axes={this.state.gp.axes}
-                      />
+                    <Card title="Seismograph">
+                      <Seismograph
+                        amplitude={this.state.dearclient.sensors.obs.seismograph_data.amplitude}
+                        time={this.state.dearclient.sensors.obs.seismograph_data.time} >
+                      </Seismograph>
+                    </Card>
+                    <Card title="ESC readings">
+                      <ESCinfo
+                        currents={this.state.dearclient.sensors.esc.currents}
+                        temp={this.state.dearclient.sensors.esc.temperatures}>
+                      </ESCinfo>
+                    </Card>
+                    <Card title="CV view window">
+                      <CVview desc={"We love Ben, yes we do"} tdist={[0.0, 0.1, 0.2, 0.4, 0.7, 0.8]} ></CVview>
                     </Card>
                   </div>
               </div>
@@ -119,39 +136,40 @@ class App extends React.Component {
   }
 
   changeDisabled(dis) {
-    flaskcpy.thrusters.disabled_thrusters = dis;
+    this.flaskcpy.thrusters.disabled_thrusters = dis;
     /*
     let all = this.state;
-    flaskcpy.thrusters.disabled_thrusters.forEach(function(key, i) {
+    this.flaskcpy.thrusters.disabled_thrusters.forEach(function(key, i) {
       if(key == 1) {
         all.dearclient.thrusters[i] = 0;
       }
     });
     */
     this.setState({
-      dearflask: flaskcpy
+      dearflask: this.flaskcpy
     });
   }
 
   changeThrustScales(scales) {
-    confcpy.thruster_control = scales;
+    this.confcpy.thruster_control = scales;
 
     this.setState({
-      config: confcpy
+      config: this.confcpy
     });
   }
 
   changeForceScales(scales) {
-    confcpy.thrust_scales = scales;
+    this.confcpy.thrust_scales = scales;
 
     this.setState({
-      config: confcpy
+      config: this.confcpy
     });
   }
 
   componentDidMount() {
     var that = this;
     window.react = this;
+    /*
     setInterval(function() {
       let all = that.state;                     //Edit copy, then update the state (one rerender initiated)
       all.dearclient.thrusters.forEach(function(key, i, arr) {    //for testing
@@ -165,25 +183,26 @@ class App extends React.Component {
         all
       );
     }, 3000);
+    */
 
-    setInterval(function() {
-      if(gp.ready === false) {
+    setInterval(() => {
+      if(this.gp.ready === false) {
 //        console.log("not yet");
-        gp.selectController();
+        this.gp.selectController();
       }
-      if(gp.ready === true) {
-        gp.update();
+      if(this.gp.ready === true) {
+        this.gp.update();
 //        console.log('success');
       }
 
       that.setState( {                           //Initiates rendering process
-        gp: gp }
+        gp: this.gp }
       );
     }, 100);
 
 
     // upon new data, save it locally
-    socket.on("dearclient", function(data) {    //Updates the data sent back from the server
+    socket.on("dearclient", (data) => {    //Updates the data sent back from the server
         that.setState({
           dearclient: data
         });
@@ -198,7 +217,7 @@ class App extends React.Component {
     setInterval(() => {             //Sends a message down to the server with updated surface info
     /*
       let all = that.state;         //Edit copy, then update the state (one rerender initiated)
-      all.dearflask = flaskcpy;
+      all.dearflask = this.flaskcpy;
       all.inv = invcpy;
 
       that.setState(                //Let this interrupt change the state, fast enough
