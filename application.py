@@ -1,5 +1,7 @@
 import multiprocessing
 import os
+from json import load, loads, dumps
+from pprint import pprint as pp
 
 from flask import Flask
 from flask_socketio import SocketIO
@@ -21,36 +23,11 @@ data = manager.dict()
 
 data["dearclient"] = {}
 
-data["dearflask"] = {
-    "thrusters": {
-        "desired_thrust": [0, 0, 0, 0, 0, 0],
-        "disabled_thrusters": [],
-        "thruster_scales": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
-    },
-    "valve_turner": {
-        "power": 0.0
-    },
-    "claw": {
-        "power": 0.0
-    },
-    "fountain_tool": {
-        "power": 0.0
-    },
-    "cameras": [
-        { "port": 8080, "status": 1 },
-        { "port": 8081, "status": 0 },
-        { "port": 8082, "status": 1 },
-        { "port": 8083, "status": 0 },
-        { "port": 8084, "status": 1 },
-        { "port": 8085, "status": 1 },
-    ]
-}
-"""
-try:
-    os.system("../runCams.sh > ../mjpeg_noise.txt")
-except Exception:
-    print "Run mjpeg streamer on your own please"
-"""
+with open("rov/packets.json","r") as fh:
+    l = load(fh)
+    data["dearflask"] = l["dearflask"]
+    data["dearclient"] = l["dearclient"]
+
 
 @socketio.on('connect')
 def on_connect():
@@ -66,7 +43,7 @@ def dearflask(indata):
         data['dearflask'] = indata
 
 @socketio.on('dearclient')
-def dearclient():
+def dearclient(*args):
     with lock:
         socketio.emit("dearclient", data['dearclient'], json=True)
 

@@ -9,6 +9,15 @@ __pycache__/
 # C extensions
 *.so
 
+surface/pakfront/bin/*
+surface/pakfront/src/*
+surface/pakfront/pkg/*
+surface/pakfrontpid
+surface/log.txt
+
+*.babelrc
+.vscode/
+
 # Distribution / packaging
 .Python
 env/
@@ -108,3 +117,6 @@ package-lock.json
 
 # mypy
 .mypy_cache/
+
+# jetbrains
+.idea/
