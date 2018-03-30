@@ -21,7 +21,7 @@ class Config(object):
     def findVenv(self):
         paths = sp.Popen("whereis virtualenv", shell=True, stdout=sp.PIPE)
         found = paths.stdout.read()
-        found = re.search(r"(?P<venvpath>/.*/virtualenv)[\n\s]", found)
+        found = re.search(r"(?P<venvpath>/.*?/virtualenv)[\n\s$]", found)
         if found:
             return found.group('venvpath')
         else:
