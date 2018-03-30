@@ -54,13 +54,22 @@ class CamSel extends React.Component {
     }
 }
 
-
+function getMoviesFromApiAsync(callback) {
+           return fetch('http://localhost:1905')
+           .then((response) => response.json())
+           .then((results)=>{
+                callback(results);
+            });
+    }
 export default class Camera_view extends Component {
 
     constructor(props) {
         super(props);
+    
         this.state = {
             pxybypass: false,
+            pakconf:{},
+            numcams:2,
             camscreens: [
                 0,
                 1
@@ -74,23 +83,28 @@ export default class Camera_view extends Component {
             ],
             stream : {
                 ip: "localhost",
-                query: "",
-                rovip:"raspberrypi.local",
-                startport:8080
+                query: "/?action=stream_",
+                rovip:"raspberrypi.local"
             },
-            /*
-              These are based off of the left and right values of the gamepad buttons
-              NOTE #1: they WILL be undefined until the user presses a button, make sure it doesn't crash
-              NOTE #2: go to index.jsx, line 86, to see how they're passed in -- you can test by passing undefined, 0, or 1 in
-                       as that'll be what the gamepad process passes in as well (1 being pressed, 0 being unpressed)
-              NOTE #meh: shouldn't be physically possible for them both to be pressed on our gamepads, but,
-                         maybe do nothing if they equal each other? (both 0's or both 1's)
-            */
             camnext: props.next,
-            camprev: props.prev
+            camprev: props.prev,
+            prevcamnext: 0,
+            prevcamprev: 0
         }
+        this.getconf()
     }
 
+    getconf(){
+           if(!this.state.pxybypass){
+                   return fetch('http://localhost:1905')
+                   .then((response) => response.json())
+                   .then((results)=>{
+                        this.setState({
+                            pakconf: results
+                        })
+                    });
+        }
+    }
     handleClick(screennum, camnum) {
         const camscreens = this.state.camscreens.slice();
         camscreens[screennum] = camnum;
@@ -108,13 +122,78 @@ export default class Camera_view extends Component {
             camnames: camnames
         })
     }
-
+    checkPrevPress(){
+        if (this.state.camnext === 1 && this.state.prevcamnext=== 0){
+                return true
+        }
+        this.state.prevcamnext = this.state.camnext;
+        return false
+    }
+    checkNextPress(){
+        if (this.state.camprev === 1 && this.state.prevcamprev=== 0){
+                return true
+        }
+        this.state.prevcamprev = this.state.camprev;
+        return false
+    }
     renderCamSel(screennum) {
         return <CamSel onNewName={(val) => this.camUpdate(screennum,val)}/>;
     }
 
     renderStream(strnum) {
-        let url = "http://" + this.state.stream.ip + ":" + (this.state.stream.startport + this.state.camscreens[strnum]);
+        if(this.checkPrevPress()){
+                const camscreens = this.state.camscreens.slice();
+                camscreens[strnum] = camscreens[strnum]-1;
+                if(camscreens[strnum] === -1){
+                        camscreens[strnum] = this.state.numcams;
+                } 
+                this.setState({
+                    camscreens: camscreens
+                })
+        }
+        if(this.checkNextPress()){
+                const camscreens = this.state.camscreens.slice();
+                camscreens[strnum] = (camscreens[strnum]+1)%this.state.numcams;
+                this.setState({
+                    camscreens: camscreens
+                })
+                
+        }
+        var camnum = this.state.camscreens[strnum];
+        if(camnum >= this.state.numcams){
+                camnum = 0;
+        } 
+        let port;
+        let query = '';
+        if(typeof this.state.pakconf.socketio !== 'undefined'){
+        switch(camnum) {
+                case 0:
+                        port = this.state.pakconf.camnum0.stream;
+                break;
+                case 1:
+                        port = this.state.pakconf.camnum1.stream;
+                break;
+                case 2:
+                        port = this.state.pakconf.camnum2.stream;
+                break;
+                case 3:
+                        port = this.state.pakconf.camnum3.stream;
+                break;
+                case 4:
+                        port = this.state.pakconf.camnum4.stream;
+                break;
+                default:
+                        port = this.state.pakconf.camnum0.stream;
+        }
+        }else{
+                port = 8000
+        }
+        
+        if(this.state.pxybypass){
+                port = 8080;
+                query = this.state.stream.query + strnum;
+        }
+        let url = "http://" + this.state.stream.ip + ":" + port + query;
         return <Stream cam={url}/>
     }
 
