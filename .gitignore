@@ -9,6 +9,9 @@ __pycache__/
 # C extensions
 *.so
 
+*.babelrc
+.vscode/
+
 # Distribution / packaging
 .Python
 env/
@@ -108,3 +111,6 @@ package-lock.json
 
 # mypy
 .mypy_cache/
+
+# jetbrains
+.idea/

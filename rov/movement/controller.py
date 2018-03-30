@@ -20,10 +20,10 @@ class controller(object):
 
         # TODO: Add master Control Handler
 
+        # TODO: Add thrust limiter
+
         # Thrust Mapper
         thruster_values = self.thrust_mapper.calculate(user_input)
-
-        # TODO: Add thrust limiter
 
         self.thrusters.set(thruster_values)
 
