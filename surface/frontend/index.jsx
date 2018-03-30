@@ -203,7 +203,7 @@ class App extends React.Component {
 
     // upon new data, save it locally
     socket.on("dearclient", (data) => {    //Updates the data sent back from the server
-        console.log(data)
+        //console.log(data)
         that.setState({
           dearclient: data
         });
@@ -226,7 +226,7 @@ class App extends React.Component {
       );
     */
       that.state.dearflask.last_update = that.state.dearclient.last_update
-        console.log(that.state.dearflask);
+      //console.log(that.state.dearflask);
       socket.emit("dearflask", that.state.dearflask);
     }, 50);
   }

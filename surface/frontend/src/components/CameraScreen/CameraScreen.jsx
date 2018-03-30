@@ -5,11 +5,9 @@ import styles from './CameraScreen.css'
 class Square extends React.Component {
     render() {
         return (
-            <div>
-                <button className={styles.butt} onClick={() => this.props.onClick()}>
-                    {this.props.value}
-                </button>
-            </div>
+              <button className={styles.butt} onClick={() => this.props.onClick()}>
+                  {this.props.value}
+              </button>
         );
     }
 }
@@ -17,7 +15,7 @@ class Square extends React.Component {
 class Stream extends React.Component {
     render() {
         return (
-            <img src={this.props.cam} height="350"></img>
+            <img src={this.props.cam} width="100%"></img>
         )
     }
 }
@@ -65,7 +63,7 @@ export default class Camera_view extends Component {
 
     constructor(props) {
         super(props);
-    
+
         this.state = {
             pxybypass: false,
             pakconf:{},
@@ -146,7 +144,7 @@ export default class Camera_view extends Component {
                 camscreens[strnum] = camscreens[strnum]-1;
                 if(camscreens[strnum] === -1){
                         camscreens[strnum] = this.state.numcams;
-                } 
+                }
                 this.setState({
                     camscreens: camscreens
                 })
@@ -157,12 +155,12 @@ export default class Camera_view extends Component {
                 this.setState({
                     camscreens: camscreens
                 })
-                
+
         }
         var camnum = this.state.camscreens[strnum];
         if(camnum >= this.state.numcams){
                 camnum = 0;
-        } 
+        }
         let port;
         let query = '';
         if(typeof this.state.pakconf.socketio !== 'undefined'){
@@ -188,7 +186,7 @@ export default class Camera_view extends Component {
         }else{
                 port = 8000
         }
-        
+
         if(this.state.pxybypass){
                 port = 8080;
                 query = this.state.stream.query + strnum;
@@ -206,32 +204,34 @@ export default class Camera_view extends Component {
         return (
             <div className={styles.container}>
                 <header className={styles.header}>
-                    <div>Screen1: {this.renderCamSel(0)}</div>
-                    <div>Screen2: {this.renderCamSel(1)}</div>
+                    <div className={styles.whiteText}>Screen1: {this.renderCamSel(0)}</div>
                 </header>
                 <div className={styles.contentBox}>
-                    <div className={styles.column1}>
-                        {this.renderSquare(0, 0)}
-                        {this.renderSquare(0, 1)}
-                        {this.renderSquare(0, 2)}
-                        {this.renderSquare(0, 3)}
-                        {this.renderSquare(0, 4)}
-                    </div>
                     <div className={styles.column2}>
                         {this.renderStream(0)}
                     </div>
+                        <div className={styles.column1}>
+                            {this.renderSquare(0, 0)}
+                            {this.renderSquare(0, 1)}
+                            {this.renderSquare(0, 2)}
+                            {this.renderSquare(0, 3)}
+                            {this.renderSquare(0, 4)}
+                        </div>
                 </div>
+                    <header className={styles.header}>
+                        <div className={styles.whiteText}>Screen2: {this.renderCamSel(1)}</div>
+                    </header>
                 <div className={styles.contentBox}>
-                    <div className={styles.column1}>
-                        {this.renderSquare(1, 0)}
-                        {this.renderSquare(1, 1)}
-                        {this.renderSquare(1, 2)}
-                        {this.renderSquare(1, 3)}
-                        {this.renderSquare(1, 4)}
-                    </div>
                     <div className={styles.column2}>
                         {this.renderStream(1)}
                     </div>
+                        <div className={styles.column1}>
+                            {this.renderSquare(1, 0)}
+                            {this.renderSquare(1, 1)}
+                            {this.renderSquare(1, 2)}
+                            {this.renderSquare(1, 3)}
+                            {this.renderSquare(1, 4)}
+                        </div>
                 </div>
             </div>
         );
