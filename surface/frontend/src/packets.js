@@ -17,7 +17,7 @@ module.exports = {
                 0, // pitch: nose up or down
                 0 // yaw:    left or right rotation
             ],
-            disabled_thrusters: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+            disabled_thrusters: [false, false, false, false, false, false, false, false],
             thruster_scales: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
         },
         claw: {
@@ -31,13 +31,14 @@ module.exports = {
         last_update: ""
     },
     dearclient: {
-	      imu: {
+        sensors: {
+	        imu: {
 		        acceleration:{
 			          y:0,
 			          x:0,
 			          z:0
 		        },
-            gyro:{
+                gyro:{
 			          y:0,
 			          x:0,
 			          z:0
@@ -53,35 +54,29 @@ module.exports = {
 			          x:0,
 			          z:0
 		        }
-        },
-        pressure: {
-            pressure: 7,
-            temperature: 4
-        },
-        obs: {
-             tilt: {
-                x:0.0,
-                y:0.0,
-                z:0.0
-             },
-             seismograph_data: {
-                time: [0.0,0.1,0.2],
-                amplitude: [0.0,0.2,0.4]
-             }
-        },                
-        esc: {
-             currents: [0.1,0.2],
-             temperatures: [0.0,0.1]
-        },
+            },
+            pressure: {
+                pressure: 7,
+                temperature: 4
+            },
+            obs: {
+                tilt: {
+                    x:0.0,
+                    y:0.0,
+                    z:0.0
+                },
+                seismograph_data: {
+                    time: [0.0,0.1,0.2],
+                    amplitude: [0.0,0.2,0.4]
+                }
+            },                
+            esc: {
+                currents: [0.1,0.2],
+                temperatures: [0.0,0.1]
+            },
+        }, 
         last_update: "",
-        frozen: {
-            x: false,
-            y: false,
-            z: false,
-            pitch: false,
-            roll: false,
-            yaw: false
-        },
+        frozen: [0, 0, 0, 0, 0, 0, 0, 0],
         thrusters: [.0, .0, .0, .0, .0, .0, .0, .0]
     }
 };
