@@ -12,6 +12,7 @@ import Gpinfo from './src/components/Gpinfo/Gpinfo.jsx';
 import PacketView from './src/components/PacketView/PacketView.jsx';
 import gp from './src/gamepad/bettergamepad.js';
 import betterlayouts from './src/gamepad/betterlayouts.js';
+import Spawn from './src/spawning/spawn.jsx';
 
 //var packets = require("./src/packets.js");
 let socketHost = `ws://localhost:5001`;
@@ -93,7 +94,7 @@ class App extends React.Component {
                       />
                     </Card>
                     <Card>
-                    <PacketView packet={this.state.dearflask.thrusters.desired_thrust} />
+                      <PacketView packet={this.state.dearflask.thrusters.desired_thrust} />
                     </Card>
                   </div>
                   <div className="data-column">
@@ -102,6 +103,11 @@ class App extends React.Component {
                         scales={this.state.config.thrust_scales}
                         />
                     </Card>
+                    <div className="button">
+                      <Card title="CV Spawning">
+                        <Spawn />
+                      </Card>
+                    </div>
                   </div>
                   <div className="data-column">
                     <Card>

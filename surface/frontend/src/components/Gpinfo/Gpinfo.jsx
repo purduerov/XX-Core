@@ -60,4 +60,5 @@ export default class Gpinfo extends Component {
       </div>
       );
   }
+
 }
