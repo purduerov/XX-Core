@@ -11,7 +11,7 @@
     "Number_of_images":50,
     "Size_of_image":150000,
     "Size_of_data":500,
-    "Num_processes":2,
+    "Num_processes":3,
     "Processes":[
       {
         "Name":"CVsimulate",
@@ -20,6 +20,10 @@
       {
         "Name":"cvTailClassify",
 	"ID":2
+      },
+      {
+        "Name":"cvDistanceMeasure",
+  "ID":3
       }
     ]
   }
