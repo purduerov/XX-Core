@@ -49,7 +49,7 @@ def pushdata(data, ID):
         d = dumps(da)
         data.extend(d)
         lenbytes = bytearray.fromhex('{:08x}'.format(len(data)))
-        imreq = subprocess.Popen(["./stintotcp", str(port)], stdin=subprocess.PIPE)
+        imreq = subprocess.Popen(["stintotcp", str(port)], stdin=subprocess.PIPE)
         imreq.stdin.write(bytearray(8 - len(lenbytes)))
         imreq.stdin.write(lenbytes)
         imreq.stdin.write(data)
