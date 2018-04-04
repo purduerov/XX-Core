@@ -6,7 +6,7 @@ import CVview from './src/components/CVview/CVview.jsx'
 import ESCinfo from './src/components/ESCinfo/ESCinfo.jsx'
 import Seismograph from './src/components/Seismograph/Seismograph.jsx';
 import Card from './src/components/Card/Card.jsx';
-import Cam_view from './src/components/CamView/CamView.jsx';
+import CameraScreen from './src/components/CameraScreen/CameraScreen.jsx';
 import ForceScales from './src/components/ForceScales/ForceScales.jsx'
 import Titlebar from './src/components/Titlebar/Titlebar.jsx';
 import ThrusterInfo from './src/components/ThrusterInfo/ThrusterInfo.jsx';
@@ -83,6 +83,7 @@ class App extends React.Component {
           </div>
           <div className="main-container">
               <div className="camera-width full-height center">
+                <CameraScreen next={this.state.gp.buttons.left} prev={this.state.gp.buttons.right}></CameraScreen>
               </div>
               <div className="data-width full-height">
                   <div className="data-column">
@@ -93,7 +94,7 @@ class App extends React.Component {
                       />
                     </Card>
                     <Card>
-                    <PacketView packet={this.state.dearflask.thrusters.desired_thrust} />
+                      <PacketView packet={this.state.dearflask.thrusters.desired_thrust} />
                     </Card>
                   </div>
                   <div className="data-column">
@@ -202,6 +203,7 @@ class App extends React.Component {
 
     // upon new data, save it locally
     socket.on("dearclient", (data) => {    //Updates the data sent back from the server
+        //console.log(data)
         that.setState({
           dearclient: data
         });
@@ -224,6 +226,7 @@ class App extends React.Component {
       );
     */
       that.state.dearflask.last_update = that.state.dearclient.last_update
+      //console.log(that.state.dearflask);
       socket.emit("dearflask", that.state.dearflask);
     }, 50);
   }

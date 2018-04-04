@@ -39,7 +39,7 @@ var gp = {
     var b = 10;  //random number of possible ids, not important
     Object.keys(layouts).forEach(function(key_gp, i_gp) {
       for(var a = 0; a < b; a++) {   //loops through ids of betterlayouts
-        if(layouts[key_gp].idMatch[a] == id) {    //For loop through idMatch rather than using just the first one
+        if(id.startsWith(layouts[key_gp].idMatch[a])) {    //For loop through idMatch rather than using just the first one
           b = a;
           clearInterval(gp.selID);
           gp.selID = -1;
