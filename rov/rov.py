@@ -25,6 +25,8 @@ from sensors import Pressure, IMU, OBS, ESC
 
 from camera import Cameras
 
+from tools import Claw
+
 
 class ROV(object):
 
@@ -63,8 +65,13 @@ class ROV(object):
             frequency=FREQUENCY
         )
 
+        # Thrusters
         self.controls = controller(self.motor_control, self.dearflask, self.dearclient)
 
+        # Tools
+        self.claw = Claw(self.motor_control, pin=CLAW_PIN)
+
+        # Sensors
         self.imu = IMU()
         self.pressure = Pressure()
         self.obs = OBS()
