@@ -42,12 +42,9 @@ axes template:
 
   */
 
-//import gp from './bettergamepad.js';
-//var packets = require('./src/packets.js')
-
 var bind = {
   btn:{
-    lb:{ //roll counterclockwise
+    left:{ //roll counterclockwise
       press: {
         func: function() {
           var stuff = react.state.config.thrust_scales;
@@ -62,7 +59,7 @@ var bind = {
         },
       },
     },
-    rb:{ //roll clockwise
+    right:{ //roll clockwise
       press: {
         func: function() {
           var stuff = react.state.config.thrust_scales;
