@@ -23,6 +23,9 @@ module.exports = {
         claw: {
             power: 0.0
         },
+        servo: {
+            angle: 0.0
+        },
         cameras: {},
         leds: {
             bluetooth_led: false,
