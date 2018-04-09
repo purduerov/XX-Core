@@ -1,4 +1,5 @@
 import wiringpi
+import time
 
 class Servo(object):
     """ Look here for more of how this works:
@@ -23,6 +24,7 @@ class Servo(object):
 
         # PWM range
         wiringpi.pwmSetRange(2000)
+        setAngle(0)
 
     def setAngle(self, rawangle):
         # map [-90, 90] to [50, 249]
@@ -37,6 +39,8 @@ class Servo(object):
         pulse = self.range_map(rawangle, -90, 90, 50, 240)
 
         wiringpi.pwmWrite(self.pin, pulse)
+        time.sleep(0.01)
+        wiringpi.pwmWrite(self.pin, 0)
 
     def range_map(self, value, leftMin, leftMax, rightMin, rightMax):
         # Figure out how 'wide' each range is
