@@ -40,7 +40,9 @@ class ROV(object):
         self._running = True
 
         with open("rov/packets.json","r") as fh:
-            self.dearclient = load(fh)['dearclient']
+            l = load(fh)
+            self.dearclient = l['dearclient']
+            self.dearflask = l['dearflask']
 
 
         self.dearflask = {}
@@ -66,7 +68,7 @@ class ROV(object):
         )
         self.maincam_servo = Servo()
 
-        self.controls = controller(self.motor_control)
+        self.controls = controller(self.motor_control, self.dearflask, self.dearclient)
 
         self.imu = IMU()
         self.pressure = Pressure()
@@ -105,11 +107,12 @@ class ROV(object):
         self.last_update = time()
 
         now = datetime.datetime.now()
-        self.dearclient['last_update'] = "{day}_{hour}_{minu}_{sec}_{usec}".format(day=now.day,
-                                                                            hour=now.hour,
-                                                                            minu=now.minute,
-                                                                            sec=now.second,
-                                                                            usec=now.microsecond)
+        self.dearclient['last_update'] = "{day}_{hour}_{minu}_{sec}_{usec}".format(day=str(now.day).zfill(2),
+                                                                            hour=str(now.hour).zfill(2),
+                                                                            minu=str(now.minute).zfill(2),
+                                                                            sec=str(now.second).zfill(2),
+                                                                            usec=str(now.microsecond).zfill(6))
+        print self.dearclient['last_update']
 
         with self._data_lock:
             self._data['dearclient'] = self.dearclient

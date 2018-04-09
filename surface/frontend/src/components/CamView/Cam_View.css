@@ -1,7 +1,14 @@
 .preview {
     position: 'relative';
 }
-
+.butt{
+    height:60px;
+    width:50px;
+}
+.header {
+    display: flex;
+    position: relative;
+}
 .captureContainer {
     display: flex;
     position: absolute;
@@ -23,4 +30,16 @@
 
 .captureImage {
     width: 100%;
+}
+
+.contentBox {
+    display: flex;
+    position: relative;
+
+}
+.column1 {
+    left: 0 ;
+}
+.column2 {
+    right: 0;
 }

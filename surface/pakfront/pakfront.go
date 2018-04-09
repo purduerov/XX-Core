@@ -34,6 +34,7 @@ type Cvhandler struct {
 }
 
 type config struct {
+        numcams        int
 	Rovip          string
 	TransPortStart int
 	GetInfo        int
