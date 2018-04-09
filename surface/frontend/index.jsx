@@ -2,6 +2,9 @@ import React from 'react';
 import {render} from 'react-dom';
 import styles from './index.css';
 import packet from './src/packets.js';
+import CVview from './src/components/CVview/CVview.jsx'
+import ESCinfo from './src/components/ESCinfo/ESCinfo.jsx'
+import Seismograph from './src/components/Seismograph/Seismograph.jsx';
 import Card from './src/components/Card/Card.jsx';
 import Cam_view from './src/components/CamView/CamView.jsx';
 import ForceScales from './src/components/ForceScales/ForceScales.jsx'
@@ -110,6 +113,21 @@ class App extends React.Component {
                               axes={this.state.gp.axes}
                       />
                     </Card>
+                    <Card title="Seismograph">
+                      <Seismograph
+                        amplitude={this.state.dearclient.sensors.obs.seismograph_data.amplitude}
+                        time={this.state.dearclient.sensors.obs.seismograph_data.time} >
+                      </Seismograph>
+                    </Card>
+                    <Card title="ESC readings">
+                      <ESCinfo
+                        currents={this.state.dearclient.sensors.esc.currents}
+                        temp={this.state.dearclient.sensors.esc.temperatures}>
+                      </ESCinfo>
+                    </Card>
+                    <Card title="CV view window">
+                      <CVview desc={"We love Ben, yes we do"} tdist={[0.0, 0.1, 0.2, 0.4, 0.7, 0.8]} ></CVview>
+                    </Card>
                   </div>
               </div>
           </div>
@@ -151,6 +169,7 @@ class App extends React.Component {
   componentDidMount() {
     var that = this;
     window.react = this;
+    /*
     setInterval(function() {
       let all = that.state;                     //Edit copy, then update the state (one rerender initiated)
       all.dearclient.thrusters.forEach(function(key, i, arr) {    //for testing
@@ -164,6 +183,7 @@ class App extends React.Component {
         all
       );
     }, 3000);
+    */
 
     setInterval(function() {
       if(gp.ready === false) {
@@ -182,7 +202,7 @@ class App extends React.Component {
 
 
     // upon new data, save it locally
-    socket.on("dearclient", function(data) {    //Updates the data sent back from the server
+    socket.on("dearclient", (data) => {    //Updates the data sent back from the server
         that.setState({
           dearclient: data
         });

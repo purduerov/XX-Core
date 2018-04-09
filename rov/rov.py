@@ -34,14 +34,13 @@ class ROV(object):
 
         self._data = data
         self._new_data = False
-        self._last_packet = time() - 1
 
         self.last_update = time()
 
         self._running = True
 
         with open("rov/packets.json","r") as fh:
-            self.dearclient = loads(load(fh))['dearclient']
+            self.dearclient = load(fh)['dearclient']
 
 
         self.dearflask = {}
@@ -76,10 +75,10 @@ class ROV(object):
 
     def update(self):
         with self._data_lock:
-            self.dearflask = self._data['dearflask']
+            df = self.dearflask = self._data['dearflask']
 
-        # if time() - self._last_packet > 0.5:
-            # # print 'Data connection lost'
+        #if time() - self._last_packet > 0.5:
+            # print 'Data connection lost \n...Killing Thrusters'
             # self.motor_control.kill()
             # self.thruster_control.stop()
 
@@ -89,10 +88,9 @@ class ROV(object):
             self.pressure.update()
             self.obs.update()
             self.esc.update()
-            
-            df = self.dearflask
             # Updating hardware
             self.maincam_servo.setAngle(df['maincam_angle'])
+            self.controls.update()
             #print df, '\n', self.dearclient, '\n\n'
 
         except Exception as e:
