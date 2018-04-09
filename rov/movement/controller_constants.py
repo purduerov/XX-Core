@@ -1,12 +1,12 @@
 # Thruster controller class initializations
-THRUST_0 = 7
+THRUST_0 = 1
 THRUST_1 = 4
-THRUST_2 = 6
-THRUST_3 = 5
-THRUST_4 = 10
-THRUST_5 = 0
-THRUST_6 = 11
-THRUST_7 = 1
+THRUST_2 = 12
+THRUST_3 = 2
+THRUST_4 = 11
+THRUST_5 = 5
+THRUST_6 = 13
+THRUST_7 = 3
 
 #VERTICAL = TODO define constants for the vertical, horizontal, left, and right thrusters
 

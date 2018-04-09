@@ -28,7 +28,7 @@ class Servo(object):
         # map [-90, 90] to [50, 249]
         # mapping values are 0.5ms (50) to 2.5ms (250)
         # don't go all the way to 250, because the servo vibrates because it's just too far
-        pulse = self.range_map(pulse, -90, 90, 50, 249)
+        pulse = self.range_map(angle, -90, 90, 50, 229)
 
         wiringpi.pwmWrite(self.pin, pulse)
 
@@ -42,3 +42,6 @@ class Servo(object):
 
         # Convert the 0-1 range into a value in the right range.
         return int(round(rightMin + (valueScaled * rightSpan)))
+if __name__ == "__main__":
+    s = Servo()
+    s.setAngle(-40)
