@@ -23,6 +23,15 @@ module.exports = {
         claw: {
             power: 0.0
         },
+        obs: {
+            direction: 0
+        },
+        magnet: {
+            on: false
+        },
+        transmitter: {
+            on: false
+        },
         cameras: {},
         leds: {
             bluetooth_led: false,

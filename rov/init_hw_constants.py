@@ -8,3 +8,4 @@ POWER_THRESH = 120 # Power threshold for each individual thruster in Watts
 # Tool Pin Placements
 CLAW_PIN = 15
 OBS_PIN = 14
+TRANSMITTER_PIN = 10
