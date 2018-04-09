@@ -1,29 +1,31 @@
 from controller_constants import *
 from hardware.Thrusters_PWM_Control import Thrusters
-from mapper.Simple import Mapper
+from mapper.Complex_1 import Complex
+# from mapper.Simple import Mapper
 
 class controller(object):
-    def __init__(self, motor_control):
+    def __init__(self, motor_control, dearflask, dearclient):
 
         self.motor_control = motor_control
+        self.df = dearflask
+        self.dc = dearclient
 
         self.thrusters = Thrusters(
             self.motor_control,
             LIST_OF_THRUSTER
         )
 
-        self.thrust_mapper = Mapper()
+        self.thrust_mapper = Complex()
+
+        self.algorithm_handler = Master_Algorithm_Handler(self.df["thrusters"]["frozen"], self.dc["sensors"])
 
         self.__thruster_values = {}
 
     def update(self, user_input):
 
-        # TODO: Add master Control Handler
+        self.algorithm_handler.master(self.df["thrusters"]["desired_thrust"], self.df["thrusters"]["disabled_thrusters"])
 
-        # TODO: Add thrust limiter
-
-        # Thrust Mapper
-        thruster_values = self.thrust_mapper.calculate(user_input)
+        thruster_values = self.thrust_mapper.calculate(self.df["thrusters"]["desired_thrust"], self.df["thrusters"]["disableD_thrusters"])
 
         self.thrusters.set(thruster_values)
 
