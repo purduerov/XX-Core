@@ -1,5 +1,5 @@
 class Leveler(object):
-    def __init__(self, motor_control, pin, power = 0.1):
+    def __init__(self, motor_control, pin, power = 0.07):
         self.pin = pin
         self.motor_control = motor_control
         self.power = power
