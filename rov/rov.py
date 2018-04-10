@@ -26,7 +26,7 @@ from sensors import Pressure, IMU, OBS, ESC
 
 from camera import Cameras
 
-from tools import Claw
+from tools import Claw, Leveler, Elecmagnet, Transmitter
 
 
 class ROV(object):
@@ -72,6 +72,9 @@ class ROV(object):
 
         # Tools
         self.claw = Claw(self.motor_control, pin=CLAW_PIN)
+        self.elecmagnet = Elecmagnet(self.motor_control,pin=ELECMAG_PIN)
+        self.leveler = Leveler(self.motor_control,pin=OBS_PIN)
+        self.transmitter = Transmitter(self.motor_control, pin=TRANSMITTER_PIN)
 
         # Sensors
         self.imu = IMU()
@@ -97,6 +100,10 @@ class ROV(object):
             self.esc.update()
             self.controls.update()
             #print df, '\n', self.dearclient, '\n\n'
+            self.claw.update(df['claw']['power'])
+            self.leveler.update(df['obs']['direction'])
+            self.elecmagnet.update(df['magnet']['on'])
+            self.transmitter.update(df['magnet']['on'])
 
         except Exception as e:
             print ("Failed updating things")
