@@ -27,7 +27,8 @@ from sensors import Pressure, IMU, OBS, ESC
 
 from camera import Cameras
 
-from tools import Claw
+from tools import Manipulator
+from tools import OBS_Tool
 
 
 class ROV(object):
@@ -73,7 +74,8 @@ class ROV(object):
         self.controls = controller(self.motor_control, self._data)
 
         # Tools
-        self.claw = Claw(self.motor_control, pin=CLAW_PIN)
+        self.manipulator = Manipulator(self.motor_control, pin=MANIPULATOR_PIN)
+	self.obs_tool = OBS_Tool(self.motor_control, pin=OBS_TOOL_PIN
 
         # Sensors
         self.imu = IMU()
@@ -101,6 +103,8 @@ class ROV(object):
             # Updating hardware
             self.maincam_servo.setAngle(df['maincam_angle'])
             self.controls.update()
+            self.obs_tool.update(self.dearflask['obs_tool'])
+            self.manipulator.update(self.dearflask['manipulator'])
             #print df, '\n', self.dearclient, '\n\n'
 
         except Exception as e:
@@ -113,6 +117,8 @@ class ROV(object):
         self.dearclient['imu'] = self.imu.data
         self.dearclient['pressure'] = self.pressure.data
         self.dearclient['thrusters'] = self.controls.data
+        self.dearclient['obs_tool'] = self.obs_tool.data
+        self.dearclient['manipulator'] = self.manipulator.data
         self.last_update = time()
 
         now = datetime.datetime.now()

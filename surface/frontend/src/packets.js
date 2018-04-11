@@ -20,9 +20,8 @@ module.exports = {
             disabled_thrusters: [false, false, false, false, false, false, false, false],
             thruster_scales: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
         },
-        claw: {
-            power: 0.0
-        },
+        claw: 0.0,
+        obs_tool: 0.0,
         cameras: {},
         leds: {
             bluetooth_led: false,
