@@ -8,6 +8,7 @@ enum34==1.1.6
 eventlet==0.21.0
 Flask==0.12
 Flask-SocketIO==2.8.2
+matplotlib
 greenlet==0.4.12
 isort==4.2.5
 itsdangerous==0.24

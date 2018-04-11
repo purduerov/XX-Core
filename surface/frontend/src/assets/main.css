@@ -66,11 +66,11 @@ h1 {
 }
 
 .camera-width {
-    width: 600px;
+    width: calc(100% - 880px);
 }
 
 .data-width {
-    width: calc(100% - 600px)
+    width: 880px;
 }
 
 input[type=range] {
