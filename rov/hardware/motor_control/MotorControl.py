@@ -1,5 +1,6 @@
 from Adafruit_PCA9685 import PCA9685
 from rov import init_hw_constants
+import sys
 
 """
 Using PCA9685 object:
@@ -50,7 +51,7 @@ class MotorControl(object):
         else:
             pwm_val = value
 
-        print (pwm_val)
+        #print (pwm_val)
         self.pwm.set_pwm(pin, 0, pwm_val)
 
         # Adds the new value of the pin to the map
@@ -81,18 +82,27 @@ class MotorControl(object):
 
 
 if __name__ == "__main__":
-    from rov import init_hw_constants
+#    from rov import init_hw_constants
     import time
+    import sys
     c = MotorControl(init_hw_constants.ZERO_POWER, init_hw_constants.NEG_MAX_POWER, init_hw_constants.POS_MAX_POWER)
 
+    if len(sys.argv) == 1:
+        for i in range(0,16):
+            print ("starting %d" % i)
+            c.set(i, 0.25)
+            time.sleep(3)
+        #for i in range(0,16):
+            print ("Stopping %d" % i)
+            c.set(i, 0)
 
-    for i in range(0,16):
-        print ("starting %d" % i)
-        c.set(i, 0.5)
-        time.sleep(1)
-        c.set(i, 0)
 
-    print ("done")
-
+        print ("done")
+    else:
+        i = int(sys.argv[1])
+        print ("running motor %d" % i) 
+        c.set(i, 0.25)
+        time.sleep(3)
+        c.set(i,0)
 
 

@@ -1,3 +1,4 @@
+from __future__ import print_function
 import copy
 import os
 import traceback
@@ -17,6 +18,7 @@ from init_hw_constants import *
 
 # Class that communicates to the i2c to pwm chip that controls the brushless motors
 from hardware.motor_control import MotorControl
+from hardware.servo import Servo
 
 # Class that controls the rov movement
 from movement import controller
@@ -34,16 +36,17 @@ class ROV(object):
         self._data_lock = lock
 
         self._data = data
-        self._new_data = False
+        self.dearflask = self._data['dearflask']
+        self.dearclient = self._data['dearclient']
 
         self.last_update = time()
 
         self._running = True
 
-        with open("rov/packets.json","r") as fh:
-            temp = load(fh)
-            self.dearclient = temp['dearclient']
-            self.dearflask = temp['dearflask']
+        #with open("rov/packets.json","r") as fh:
+        #    temp = load(fh)
+        #    self.dearclient = temp['dearclient']
+        #    self.dearflask = temp['dearflask']
 
         self.debug = (os.environ.get("ROV_DEBUG") == "1")
 
@@ -64,9 +67,10 @@ class ROV(object):
             pos_max_power=POS_MAX_POWER,
             frequency=FREQUENCY
         )
+        self.maincam_servo = Servo()
 
         # Thrusters
-        self.controls = controller(self.motor_control, self.dearflask, self.dearclient)
+        self.controls = controller(self.motor_control, self._data)
 
         # Tools
         self.claw = Claw(self.motor_control, pin=CLAW_PIN)
@@ -78,6 +82,8 @@ class ROV(object):
         self.esc = ESC()
 
     def update(self):
+        # TODO: Fix data locking?
+
         with self._data_lock:
             df = self.dearflask = self._data['dearflask']
 
@@ -87,22 +93,26 @@ class ROV(object):
             # self.thruster_control.stop()
 
         try:
+            # Updating Sensors
             self.imu.update()
             self.pressure.update()
             self.obs.update()
             self.esc.update()
+            # Updating hardware
+            self.maincam_servo.setAngle(df['maincam_angle'])
             self.controls.update()
             #print df, '\n', self.dearclient, '\n\n'
 
         except Exception as e:
-            print "Failed updating things"
-            print "Exception: %s" % e
-            print traceback.format_exc()
+            print ("Failed updating things")
+            print ("Exception: %s" % e)
+            print (traceback.format_exc())
         self.dearclient['obs'] = self.obs.data
         self.dearclient['esc'] = self.esc.data
 
         self.dearclient['imu'] = self.imu.data
         self.dearclient['pressure'] = self.pressure.data
+        self.dearclient['thrusters'] = self.controls.data
         self.last_update = time()
 
         now = datetime.datetime.now()
@@ -111,7 +121,11 @@ class ROV(object):
                                                                             minu=str(now.minute).zfill(2),
                                                                             sec=str(now.second).zfill(2),
                                                                             usec=str(now.microsecond).zfill(6))
-        print self.dearclient['last_update']
+        print (self.dearclient['last_update'])
+        print (self.dearflask['thrusters']['desired_thrust'])
+        for i in self.dearclient['thrusters']:
+            print ("%.3f " % i, end='')
+        print ('')
 
         with self._data_lock:
             self._data['dearclient'] = self.dearclient
@@ -126,5 +140,5 @@ def run(lock, data):
         try:
             rov.update()
         except Exception as e:
-            print "Exception: %s" % e
-            print traceback.format_exc()
+            print ("Exception: %s" % e)
+            print (traceback.format_exc())

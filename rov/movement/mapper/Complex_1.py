@@ -26,7 +26,7 @@ class Complex():
     # XX Thruster locations and center of mass relative to an arbitrary(?) point converted from inches to meters
     # Each column is X, Y, Z: X is forward/back, Y is left/right, Z is up/down
     XX_THRUSTERS = np.matrix([
-        [6.7593, 6.7593, -6.7593, -6.7593, 7.6887, 7.6887, -7.6887, 17.6887],
+        [6.7593, 6.7593, -6.7593, -6.7593, 7.6887, 7.6887, -7.6887, -7.6887],
 		[-6.625, 6.625, -6.625, 6.625, -3.75, 3.75, -3.75, 3.75],
         [-0.5809, -0.5809, -0.5809, -0.5809, 4.8840, 4.8840, 4.8840, 4.8840]
     ]) * 0.0254
@@ -76,6 +76,8 @@ class Complex():
         if disabled_thrusters != self.disabled:
             self.disabled = disabled_thrusters
             self._generate_matrix()
+
+        #print desired_thrust
 
         self.map = self.pseudo_inverse_matrix.dot(desired_thrust)
 
