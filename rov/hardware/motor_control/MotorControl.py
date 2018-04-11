@@ -82,21 +82,27 @@ class MotorControl(object):
 
 
 if __name__ == "__main__":
-    from rov import init_hw_constants
+#    from rov import init_hw_constants
     import time
+    import sys
     c = MotorControl(init_hw_constants.ZERO_POWER, init_hw_constants.NEG_MAX_POWER, init_hw_constants.POS_MAX_POWER)
 
+    if len(sys.argv) == 1:
+        for i in range(0,16):
+            print ("starting %d" % i)
+            c.set(i, 0.25)
+            time.sleep(3)
+        #for i in range(0,16):
+            print ("Stopping %d" % i)
+            c.set(i, 0)
 
-    for i in range(0,16):
-        print ("starting %d" % i)
+
+        print ("done")
+    else:
+        i = int(sys.argv[1])
+        print ("running motor %d" % i) 
         c.set(i, 0.25)
-    time.sleep(20)
-    for i in range(0,16):
-        print ("Stopping %d" % i)
-        c.set(i, 0)
-
-
-    print ("done")
-
+        time.sleep(3)
+        c.set(i,0)
 
 

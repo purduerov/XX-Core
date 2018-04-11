@@ -18,6 +18,7 @@ from init_hw_constants import *
 
 # Class that communicates to the i2c to pwm chip that controls the brushless motors
 from hardware.motor_control import MotorControl
+from hardware.servo import Servo
 
 # Class that controls the rov movement
 from movement import controller
@@ -66,6 +67,7 @@ class ROV(object):
             pos_max_power=POS_MAX_POWER,
             frequency=FREQUENCY
         )
+        self.maincam_servo = Servo()
 
         # Thrusters
         self.controls = controller(self.motor_control, self._data)
@@ -91,10 +93,13 @@ class ROV(object):
             # self.thruster_control.stop()
 
         try:
+            # Updating Sensors
             self.imu.update()
             self.pressure.update()
             self.obs.update()
             self.esc.update()
+            # Updating hardware
+            self.maincam_servo.setAngle(df['maincam_angle'])
             self.controls.update()
             #print df, '\n', self.dearclient, '\n\n'
 
