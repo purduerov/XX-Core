@@ -52,7 +52,10 @@ class MotorControl(object):
             pwm_val = value
 
         #print (pwm_val)
-        self.pwm.set_pwm(pin, 0, pwm_val)
+        if pin in init_hw_constants.REVERSE_POLARITY:
+            self.pwm.set_pwm(pin, 0, (2 * self.ZERO_POWER) - pwm_val)
+        else:
+            self.pwm.set_pwm(pin, 0, pwm_val)
 
         # Adds the new value of the pin to the map
         # self.__pin_values[pin] = value
@@ -91,7 +94,7 @@ if __name__ == "__main__":
         for i in range(0,16):
             print ("starting %d" % i)
             c.set(i, 0.25)
-            time.sleep(3)
+            time.sleep(10)
         #for i in range(0,16):
             print ("Stopping %d" % i)
             c.set(i, 0)

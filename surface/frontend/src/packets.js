@@ -20,7 +20,7 @@ module.exports = {
             disabled_thrusters: [false, false, false, false, false, false, false, false],
             thruster_scales: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
         },
-        claw: 0.0,
+        manipulator: 0.0,
         obs_tool: 0.0,
         cameras: {},
         leds: {
@@ -77,6 +77,8 @@ module.exports = {
         }, 
         last_update: "",
         frozen: [0, 0, 0, 0, 0, 0, 0, 0],
-        thrusters: [.0, .0, .0, .0, .0, .0, .0, .0]
+        thrusters: [.0, .0, .0, .0, .0, .0, .0, .0],
+        manipulator: 0.0,
+        obs_tool: 0.0
     }
 };
