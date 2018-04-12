@@ -81,7 +81,7 @@ class Complex():
 
         self.map = self.pseudo_inverse_matrix.dot(desired_thrust)
 
-        self._normalize()
+        self._normalize(desired_thrust)
         initial_power, limitPower = self._calc_thrust_power(self.map)
         #limit power if necessary:
         self.final_power = initial_power
@@ -109,13 +109,20 @@ class Complex():
         self.pseudo_inverse_matrix = linalg.pinv(self.matrix)
         return self.pseudo_inverse_matrix
 
-    def _normalize(self):
+    def _normalize(self, desired_thrust):
         """
         Normalize the values of the thrust map to be in the range [-1, 1] if necessary
         :return: None
         """
         max_val = np.amax(np.abs(self.map))
-        if max_val > 1:
+        
+        max_force = 0
+        for force in range(6):
+            if desired_thrust[force] == 1: 
+                max_force = 1
+                
+
+        if max_val > 1 or max_force == 1:
             self.map /= max_val
 
     def _limit_power(self, initialPower):
@@ -270,7 +277,7 @@ if __name__ == '__main__':
     print('\nPSEUDO-INVERSE MATRIX')
     pp.pprint(c.pseudo_inverse_matrix)
     print('\nRESULT 8D VECTOR')
-    pp.pprint(c.calculate(np.array([1, 0, 0, 0, -1, 0]), [0, 0, 1, 0, 0, 0, 0, 0], False))
+    pp.pprint(c.calculate(np.array([1, 0, 0, 0, 1, 0]), [0, 0, 1, 0, 0, 0, 0, 0], False))
     print('\nTHRUST')
     pp.pprint(c.thrust)
     print('POWER')
