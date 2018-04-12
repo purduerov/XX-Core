@@ -96,10 +96,12 @@ var gp = {
    {
      var name = lay.axes[i].name;
      var val = cur[lay.axes[i].where][lay.axes[i].indx];
-     if (lay.axes[i].where == "buttons") {
+     if (lay.axes[i].where == "buttons" || lay.axes[i].name.endsWith("trigger")) {
        //console.log(cur[lay.axes[i].where][lay.axes[i].indx].value);
        //console.log(gp.adjust(i, val))
-       gp.axes[name].curVal = (val.value - lay.axes[i].min)/(lay.axes[i].max - lay.axes[i].min);
+       // console.log(lay.axes[i].name)
+       // console.log("val: "+val.value+" min: "+lay.axes[i].min+" max: "+lay.axes[i].max)
+       gp.axes[name].curVal = (val - lay.axes[i].min)/(lay.axes[i].max - lay.axes[i].min);
      } else {
        if(.15 < Math.abs(gp.adjust(i, val))) {
          gp.axes[lay.axes[i].name].curVal = gp.adjust(i, val);
