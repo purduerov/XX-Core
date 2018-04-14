@@ -111,19 +111,14 @@ class Complex():
 
     def _normalize(self, desired_thrust):
         """
-        Normalize the values of the thrust map to be in the range [-1, 1] if necessary
+        Normalize the values of the thrust map to be in the range [-max input force, max input force]
         :return: None
         """
         max_val = np.amax(np.abs(self.map))
         
-        max_force = 0
-        for force in range(6):
-            if desired_thrust[force] == 1: 
-                max_force = 1
-                
+        max_force = np.amax(np.abs(desired_thrust))
 
-        if max_val > 1 or max_force == 1:
-            self.map /= max_val
+        self.map *= (max_force/max_val)
 
     def _limit_power(self, initialPower):
         """
@@ -277,7 +272,7 @@ if __name__ == '__main__':
     print('\nPSEUDO-INVERSE MATRIX')
     pp.pprint(c.pseudo_inverse_matrix)
     print('\nRESULT 8D VECTOR')
-    pp.pprint(c.calculate(np.array([1, 0, 0, 0, 1, 0]), [0, 0, 1, 0, 0, 0, 0, 0], False))
+    pp.pprint(c.calculate(np.array([1, 0, 0, 0, 0, 0]), [0, 0, 1, 0, 0, 0, 0, 0], False))
     print('\nTHRUST')
     pp.pprint(c.thrust)
     print('POWER')

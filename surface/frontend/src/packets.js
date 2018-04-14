@@ -38,7 +38,7 @@ module.exports = {
 			          x:0,
 			          z:0
 		        },
-                gyro:{
+            gyro:{
 			          y:0,
 			          x:0,
 			          z:0
@@ -69,12 +69,12 @@ module.exports = {
                     time: [0.0,0.1,0.2],
                     amplitude: [0.0,0.2,0.4]
                 }
-            },                
+            },
             esc: {
                 currents: [0.1,0.2],
                 temperatures: [0.0,0.1]
             },
-        }, 
+        },
         last_update: "",
         frozen: [0, 0, 0, 0, 0, 0, 0, 0],
         thrusters: [.0, .0, .0, .0, .0, .0, .0, .0],
