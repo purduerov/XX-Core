@@ -114,7 +114,7 @@ class MS5837(object):
         # We have to read values from sensor to update pressure and temperature
         if not sensor.read():
             data += "Sensor read failed!"
-           return data
+            return data
 
         data += "Time \tPressure (mbar) \tTemperature (C)\n"
 
