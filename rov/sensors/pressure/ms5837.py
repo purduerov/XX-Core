@@ -118,7 +118,7 @@ class MS5837(object):
 
         # print reading
         if sensor.read():
-            data += "%s \t%0.1f \t%0.2f") % (time.strftime("%H:%M:%S", time.localtime()) + '.%d' % (time.time() % 1 * 1000),
+            data += "%s \t%0.1f \t%0.2f" % (time.strftime("%H:%M:%S", time.localtime()) + '.%d' % (time.time() % 1 * 1000),
             sensor.pressure(), # Default is mbar (no arguments)
             sensor.temperature()) # Default is degrees C (no arguments)
             return data

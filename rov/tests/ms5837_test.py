@@ -1,6 +1,6 @@
 import pytest
 import time
-from rov.sensors.pressure import ms5837
+from rov.sensors.pressure.ms5837 import MS5837
 
 buffer = 0.005
 
@@ -10,6 +10,6 @@ def test_pressure_values():
         time.sleep(buffer)
         print(MS5837.getData)
         print("\n")
-    text = input("Is data correct (y/n)")
+    text = raw_input("Is data correct (y/n)\n")
     assert text == "y"
     
