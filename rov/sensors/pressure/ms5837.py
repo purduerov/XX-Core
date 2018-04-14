@@ -109,12 +109,12 @@ class MS5837(object):
         # We must initialize the sensor before reading it
         if not sensor.init():
             data += "Sensor could not be initialized"
-		    return data
+            return data
 
         # We have to read values from sensor to update pressure and temperature
         if not sensor.read():
             data += "Sensor read failed!"
-		    return data
+           return data
 
         data += "Time \tPressure (mbar) \tTemperature (C)\n"
 
@@ -123,10 +123,10 @@ class MS5837(object):
             data += "%s \t%0.1f \t%0.2f") % (time.strftime("%H:%M:%S", time.localtime()) + '.%d' % (time.time() % 1 * 1000),
             sensor.pressure(), # Default is mbar (no arguments)
             sensor.temperature()) # Default is degrees C (no arguments)
-		    return data
+            return data
         else:
             data += "Sensor read failed!"
-		    return data
+            return data
 
     def read(self, oversampling=OSR_8192):
         if self._bus is None:
