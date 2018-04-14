@@ -17,47 +17,68 @@ module.exports = {
                 0, // pitch: nose up or down
                 0 // yaw:    left or right rotation
             ],
-            disabled_thrusters: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+            disabled_thrusters: [false, false, false, false, false, false, false, false],
             thruster_scales: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
         },
-        claw: 0.0,
-        obs_leveler: 0.0,
+        manipulator: 0.0,
+        obs_tool: 0.0,
         cameras: {},
         leds: {
             bluetooth_led: false,
             camera_leds: false
-        }
+        },
+        maincam_angle: 0.0,
+        last_update: ""
     },
     dearclient: {
-        IMU: {
-            x: 0,
-            y: 0,
-            z: 0,
-            pitch: 0,
-            roll: 0,
-            yaw: 0
+        sensors: {
+	        imu: {
+		        acceleration:{
+			          y:0,
+			          x:0,
+			          z:0
+		        },
+            gyro:{
+			          y:0,
+			          x:0,
+			          z:0
+		        },
+		        euler:{
+			          yaw:0,
+			          roll:0,
+			          pitch:0
+		        },
+		        temp:0,
+		        linear_acceleration:{
+			          y:0,
+			          x:0,
+			          z:0
+		        }
+            },
+            pressure: {
+                pressure: 7,
+                temperature: 4
+            },
+            obs: {
+                tilt: {
+                    x:0.0,
+                    y:0.0,
+                    z:0.0
+                },
+                seismograph_data: {
+                    time: [0.0,0.1,0.2],
+                    amplitude: [0.0,0.2,0.4]
+                }
+            },
+            esc: {
+                currents: [0.1,0.2],
+                temperatures: [0.0,0.1]
+            },
         },
-        frozen: {
-            x: false,
-            y: false,
-            z: false,
-            pitch: false,
-            roll: false,
-            yaw: false
-        },
-        pressure: {
-            pressure: 7,
-            temperature: 4
-        },
+        last_update: "",
+        frozen: [0, 0, 0, 0, 0, 0, 0, 0],
         thrusters: [.0, .0, .0, .0, .0, .0, .0, .0],
-        cameras: {
-            Cam_0: { 'port': '8080', status: "active" },
-            Cam_1: { 'port': '8081', status: "inactive" },
-            Cam_2: { 'port': '8082', status: "inactive" },
-            Cam_3: { 'port': '8083', status: "inactive" },
-            Cam_4: { 'port': '8084', status: "inactive" },
-            Cam_5: { 'port': '8085', status: "inactive" }
-        },
-        cam_cur: 8080,
+        manipulator: 0.0,
+        obs_tool: 0.0
     }
 };

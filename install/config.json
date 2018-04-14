@@ -5,14 +5,16 @@
         "gcc",
         "python",
         "python-dev",
-        "python-pip"
+        "python-pip",
+        "python-tk"
     ],
     "aptget-hw": [
         "python-smbus",
         "libffi-dev",
         "i2c-tools",
         "wiringpi",
-        "python-numpy"
+        "python-numpy",
+	"python-matplotlib"
     ],
     "aptget-cam": [
         "libjpeg8-dev",
