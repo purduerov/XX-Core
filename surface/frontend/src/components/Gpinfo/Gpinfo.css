@@ -1,0 +1,26 @@
+
+h1 {
+    font-weight: 400;
+}
+
+.container{
+
+}
+
+.ButtonNames {
+
+}
+
+.NOTREADY{
+
+}
+
+.Gamepad {
+  border: 2px solid grey;
+}
+
+.AxisNames {
+  position: relative;
+  top: 0;
+  left: 0;
+}

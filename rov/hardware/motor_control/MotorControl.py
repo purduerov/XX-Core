@@ -37,14 +37,18 @@ class MotorControl(object):
         self.pwm.set_all_pwm(0, self.ZERO_POWER)
 
     # PUBLIC FUNCTION
-    def set(self, pin, value):
+    def set(self, pin, value, is_pwm=False):
         if pin < 0 or pin > 15:
             raise Exception("Pin %d does not exist" % pin)
 
-        if value < -1.0 or value > 1.0:
+        if is_pwm == False and (value < -1.0 or value > 1.0):
             raise Exception("Value %f is out of range" % value)
 
-        pwm_val = self._toPWM(value)
+        if not is_pwm
+            pwm_val = self._toPWM(value)
+        elif
+            pwm_val = value
+
         self.pwm.set_pwm(pin, 0, pwm_val)
 
         # Adds the new value of the pin to the map

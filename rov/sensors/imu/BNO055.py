@@ -1,4 +1,4 @@
-import Adafruit_BNO055
+from Adafruit_BNO055 import BNO055
 
 
 class IMU(object):
@@ -12,26 +12,28 @@ class IMU(object):
 
         self._data =  {
             'euler': {
-                'yaw':   0,
-                'roll':  0,
-                'pitch': 0,
+                # Resolution found from a forumn post
+                'yaw':   0,  # Rotation about z axis (vertical) +/- 0.01 degree
+                'roll':  0,  # Rotation about y axix (perpindicular to the pins IMU) +/- 0.01 degree
+                'pitch': 0,  # Rotation about x axis (parallel to the pins of IMU) +/- 0.01 degree
+
             },
             'gyro': {
-                'x': 0,
-                'y': 0,
-                'z': 0,
+                'x': 0, # 3e-2 degree/sec
+                'y': 0, # 3e-2 degree/sec
+                'z': 0, # 3e-2 degree/sec
             },
             'acceleration': {
-                'x': 0,
-                'y': 0,
-                'z': 0,
+                'x': 0, # +/- 5e-4 g
+                'y': 0, # +/- 5e-4 g
+                'z': 0, # +/- 5e-4 g
             },
             'linear-acceleration': {
-                'x': 0,
-                'y': 0,
-                'z': 0,
+                'x': 0, # +/- 0.25 m/s^2
+                'y': 0, # +/- 0.25 m/s^2
+                'z': 0, # +/- 0.25 m/s^2
             },
-            'temp': 0,
+            'temp': 0, # Good enough
         }
 
     @property
@@ -44,7 +46,7 @@ class IMU(object):
         self._data['euler']['roll']    = euler[1]
         self._data['euler']['pitch']   = euler[2]
 
-        gyro = self._bno.read_gyroscrope()
+	gyro = self._bno.read_gyroscope()
         self._data['gyro']['x'] = gyro[0]
         self._data['gyro']['y'] = gyro[1]
         self._data['gyro']['z'] = gyro[2]
