@@ -116,8 +116,6 @@ class MS5837(object):
             data += "Sensor read failed!"
             return data
 
-        data += "Time \tPressure (mbar) \tTemperature (C)\n"
-
         # print reading
         if sensor.read():
             data += "%s \t%0.1f \t%0.2f") % (time.strftime("%H:%M:%S", time.localtime()) + '.%d' % (time.time() % 1 * 1000),
