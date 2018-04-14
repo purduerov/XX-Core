@@ -1,4 +1,6 @@
 from Adafruit_PCA9685 import PCA9685
+from rov import init_hw_constants
+import sys
 
 """
 Using PCA9685 object:
@@ -25,7 +27,7 @@ Using PCA9685 object:
 
 class MotorControl(object):
 
-    def __init__(self, zero_power, neg_max_power, pos_max_power, frequency=50):
+    def __init__(self, zero_power, neg_max_power, pos_max_power, frequency=init_hw_constants.FREQUENCY):
         self.ZERO_POWER = zero_power
         self.NEG_MAX_POWER = neg_max_power
         self.POS_MAX_POWER = pos_max_power
@@ -44,15 +46,19 @@ class MotorControl(object):
         if is_pwm == False and (value < -1.0 or value > 1.0):
             raise Exception("Value %f is out of range" % value)
 
-        if not is_pwm
+        if not is_pwm:
             pwm_val = self._toPWM(value)
-        elif
+        else:
             pwm_val = value
 
-        self.pwm.set_pwm(pin, 0, pwm_val)
+        #print (pwm_val)
+        if pin in init_hw_constants.REVERSE_POLARITY:
+            self.pwm.set_pwm(pin, 0, (2 * self.ZERO_POWER) - pwm_val)
+        else:
+            self.pwm.set_pwm(pin, 0, pwm_val)
 
         # Adds the new value of the pin to the map
-        self.__pin_values[pin] = value
+        # self.__pin_values[pin] = value
 
     # PUBLIC FUNCTION
     def kill(self):
@@ -76,3 +82,30 @@ class MotorControl(object):
 
         # Convert the 0-1 range into a value in the right range.
         return int(round(rightMin + (valueScaled * rightSpan)))
+
+
+if __name__ == "__main__":
+#    from rov import init_hw_constants
+    import time
+    import sys
+    c = MotorControl(init_hw_constants.ZERO_POWER, init_hw_constants.NEG_MAX_POWER, init_hw_constants.POS_MAX_POWER)
+
+    if len(sys.argv) == 1:
+        for i in range(0,16):
+            print ("starting %d" % i)
+            c.set(i, 0.25)
+            time.sleep(10)
+        #for i in range(0,16):
+            print ("Stopping %d" % i)
+            c.set(i, 0)
+
+
+        print ("done")
+    else:
+        i = int(sys.argv[1])
+        print ("running motor %d" % i) 
+        c.set(i, 0.25)
+        time.sleep(3)
+        c.set(i,0)
+
+

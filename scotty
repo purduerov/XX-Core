@@ -224,6 +224,9 @@ def install(args):
         platform_specific_installs.append(
             "pip install numpy"
         )
+        platform_specific_installs.append(
+            "pip install matplotlib"
+        )
 
     run_commands(platform_specific_installs)
 

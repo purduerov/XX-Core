@@ -65,7 +65,7 @@ export default class Camera_view extends Component {
         super(props);
 
         this.state = {
-            pxybypass: false,
+            pxybypass: true,
             pakconf:{},
             numcams:2,
             camscreens: [
@@ -186,12 +186,15 @@ export default class Camera_view extends Component {
         }else{
                 port = 8000
         }
-
+	var IP
         if(this.state.pxybypass){
                 port = 8080;
                 query = this.state.stream.query + strnum;
-        }
-        let url = "http://" + this.state.stream.ip + ":" + port + query;
+		IP = this.state.stream.rovip
+        }else{
+		IP = this.state.stream.stream.ip
+	}
+        let url = "http://" + IP + ":" + port + query;
         return <Stream cam={url}/>
     }
 

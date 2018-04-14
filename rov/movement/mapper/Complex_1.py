@@ -23,15 +23,15 @@ class Complex():
     on the pwm vector. The thrust and power output of each thruster are in the arrays thrust and power, and the total
     power can be accessed with the variable final_power.
     """
-    # X9 Thruster locations and center of mass relative to an arbitrary(?) point converted from inches to meters
+    # XX Thruster locations and center of mass relative to an arbitrary(?) point converted from inches to meters
     # Each column is X, Y, Z: X is forward/back, Y is left/right, Z is up/down
-    X9_THRUSTERS = np.matrix([
-        [6.7593, 6.7593, -6.7593, -6.7593, 7.6887, 7.6887, -7.6887, 17.6887],
+    XX_THRUSTERS = np.matrix([
+        [6.7593, 6.7593, -6.7593, -6.7593, 7.6887, 7.6887, -7.6887, -7.6887],
 		[-6.625, 6.625, -6.625, 6.625, -3.75, 3.75, -3.75, 3.75],
         [-0.5809, -0.5809, -0.5809, -0.5809, 4.8840, 4.8840, 4.8840, 4.8840]
     ]) * 0.0254
 
-    X9_COM = np.matrix([
+    XX_COM = np.matrix([
         [0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0]
@@ -48,7 +48,7 @@ class Complex():
     ])
 
     def __init__(self):
-        self.thruster_layout = np.matrix(Complex.X9_THRUSTERS - Complex.X9_COM)
+        self.thruster_layout = np.matrix(Complex.XX_THRUSTERS - Complex.XX_COM)
         # this is the 6x8 matrix that specifies each thrusters contribution on X, Y, Z, Roll, Pitch, Yaw
         self.matrix = None
         # the pseudo inverse of self.matrix used to find the least square solution
@@ -77,9 +77,11 @@ class Complex():
             self.disabled = disabled_thrusters
             self._generate_matrix()
 
+        #print desired_thrust
+
         self.map = self.pseudo_inverse_matrix.dot(desired_thrust)
 
-        self._normalize()
+        self._normalize(desired_thrust)
         initial_power, limitPower = self._calc_thrust_power(self.map)
         #limit power if necessary:
         self.final_power = initial_power
@@ -91,7 +93,7 @@ class Complex():
             self.final_power = self._limit_power(initial_power)
             self.final_power, limitPower = self._calc_thrust_power(self.map)
             print('Power was limited, force vector changed!')
-        return self.map
+        return self.map.tolist()[0]
 
     def _generate_matrix(self):
         """
@@ -107,14 +109,16 @@ class Complex():
         self.pseudo_inverse_matrix = linalg.pinv(self.matrix)
         return self.pseudo_inverse_matrix
 
-    def _normalize(self):
+    def _normalize(self, desired_thrust):
         """
-        Normalize the values of the thrust map to be in the range [-1, 1] if necessary
+        Normalize the values of the thrust map to be in the range [-max input force, max input force]
         :return: None
         """
         max_val = np.amax(np.abs(self.map))
-        if max_val > 1:
-            self.map /= max_val
+        
+        max_force = np.amax(np.abs(desired_thrust))
+
+        self.map *= (max_force/max_val)
 
     def _limit_power(self, initialPower):
         """
@@ -268,7 +272,7 @@ if __name__ == '__main__':
     print('\nPSEUDO-INVERSE MATRIX')
     pp.pprint(c.pseudo_inverse_matrix)
     print('\nRESULT 8D VECTOR')
-    pp.pprint(c.calculate(np.array([1, 0, 1, 0, 1, 0]), [0, 0, 0, 0, 0, 0, 0, 0], False))
+    pp.pprint(c.calculate(np.array([1, 0, 0, 0, 0, 0]), [0, 0, 1, 0, 0, 0, 0, 0], False))
     print('\nTHRUST')
     pp.pprint(c.thrust)
     print('POWER')

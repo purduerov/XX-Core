@@ -20,14 +20,14 @@ module.exports = {
             disabled_thrusters: [false, false, false, false, false, false, false, false],
             thruster_scales: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
         },
-        claw: {
-            power: 0.0
-        },
+        manipulator: 0.0,
+        obs_tool: 0.0,
         cameras: {},
         leds: {
             bluetooth_led: false,
             camera_leds: false
         },
+        maincam_angle: 0.0,
         last_update: ""
     },
     dearclient: {
@@ -38,7 +38,7 @@ module.exports = {
 			          x:0,
 			          z:0
 		        },
-                gyro:{
+            gyro:{
 			          y:0,
 			          x:0,
 			          z:0
@@ -69,14 +69,16 @@ module.exports = {
                     time: [0.0,0.1,0.2],
                     amplitude: [0.0,0.2,0.4]
                 }
-            },                
+            },
             esc: {
                 currents: [0.1,0.2],
                 temperatures: [0.0,0.1]
             },
-        }, 
+        },
         last_update: "",
         frozen: [0, 0, 0, 0, 0, 0, 0, 0],
-        thrusters: [.0, .0, .0, .0, .0, .0, .0, .0]
+        thrusters: [.0, .0, .0, .0, .0, .0, .0, .0],
+        manipulator: 0.0,
+        obs_tool: 0.0
     }
 };

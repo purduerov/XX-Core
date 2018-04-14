@@ -1,14 +1,17 @@
+from __future__ import print_function
 from controller_constants import *
 from hardware.Thrusters_PWM_Control import Thrusters
 from mapper.Complex_1 import Complex
 # from mapper.Simple import Mapper
+from controls.Algorithm_Handler import Master_Algorithm_Handler
 
 class controller(object):
-    def __init__(self, motor_control, dearflask, dearclient):
+    def __init__(self, motor_control, data):
 
         self.motor_control = motor_control
-        self.df = dearflask
-        self.dc = dearclient
+        self._data = data
+        self.df = data['dearflask']
+        self.dc = data['dearclient']
 
         self.thrusters = Thrusters(
             self.motor_control,
@@ -17,17 +20,28 @@ class controller(object):
 
         self.thrust_mapper = Complex()
 
-        self.algorithm_handler = Master_Algorithm_Handler(self.df["thrusters"]["frozen"], self.dc["sensors"])
+        self.algorithm_handler = Master_Algorithm_Handler(self._data['dearflask']["thrusters"]["frozen"], self._data['dearclient']["sensors"])
 
-        self.__thruster_values = {}
+        self.__thruster_values = [0,0,0,0,0,0,0,0]
 
-    def update(self, user_input):
+    def update(self):
 
-        self.algorithm_handler.master(self.df["thrusters"]["desired_thrust"], self.df["thrusters"]["disabled_thrusters"])
+        self.algorithm_handler.master(self._data['dearflask']["thrusters"]["desired_thrust"], self._data['dearflask']["thrusters"]["disabled_thrusters"])
 
-        thruster_values = self.thrust_mapper.calculate(self.df["thrusters"]["desired_thrust"], self.df["thrusters"]["disableD_thrusters"])
+        thruster_values = self.thrust_mapper.calculate(self._data['dearflask']["thrusters"]["desired_thrust"], self._data['dearflask']["thrusters"]["disabled_thrusters"])
 
         self.thrusters.set(thruster_values)
+
+        self.__thruster_values = thruster_values
+
+        #print (self._data['dearflask']['thrusters']['desired_thrust'])
+        #for i in thruster_values:
+        #    print ("%.3f, " % i, end='')
+        #print ('')
+
+    @property
+    def data(self):
+        return self.__thruster_values
 
     def stop_thrusters(self):
         self.thrusters.stop()

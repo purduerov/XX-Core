@@ -14,7 +14,7 @@ def sensor_data():
             {
                 'imu' :
                 {
-                    'linear-acceleration' :
+                    'linear_acceleration' :
                     {
                         'x' : 1,
                         'y' : 1
@@ -49,7 +49,7 @@ def test_returns_empty_user_input_if_deactivated():
 def test_control_algorithm_correctly_gets_and_sets_pid_values():
     # initializes a control algorithm with the desired position of 2 for the y parameter
     y = HeightStabilizer(sensor_data())
-    # activates    
+    # activates
     time.sleep(buffer)
     y.activate()
     y.p = 0.5
