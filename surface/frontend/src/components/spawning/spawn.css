@@ -1,4 +1,4 @@
-.btn{
+.btn {
   margin: 10px 10px 10px 0;
   padding: 5px 22px;
   text-align: center;
@@ -18,10 +18,20 @@
   transform: translateY(4px);
 }
 
-.container{
+.container {
 
 }
 
-.butn{
+.butn {
 
+}
+
+.cvpod {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.cvpod > button {
+  width: 60px;
 }

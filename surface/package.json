@@ -5,7 +5,7 @@
   "main": "electron-setup.js",
   "repository": "https://github.com/purduerov/XX-Core",
   "scripts": {
-    "start": "electron .",
+    "start": "webpack -d && electron .",
     "proxy": "./pakfront/proxyinstall.sh",
     "proxyup": "./pakfront/proxyrun.sh",
     "dev": "webpack -d",
