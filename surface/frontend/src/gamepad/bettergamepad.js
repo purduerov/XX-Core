@@ -53,7 +53,6 @@ var gp = {
       }
     });
   },
-// update doesn't have a function call yet
 
  update: function() {
    var cur = navigator.getGamepads();
@@ -78,7 +77,7 @@ var gp = {
    for(var index_2 = 0; index_2 < layouts[gp.layoutKey].axes.length; index_2++)
    {
      name = layouts[gp.layoutKey].axes[index_2].name;
-     if(.1 < Math.abs(gp.adjust(index_2))) {
+     if(.15 < Math.abs(gp.adjust(index_2))) {
        gp.axes[layouts[gp.layoutKey].axes[index_2].name].curVal = gp.adjust(index_2);
      } else {
        gp.axes[layouts[gp.layoutKey].axes[index_2].name].curVal = 0;
@@ -90,13 +89,10 @@ var gp = {
  },
 
  pressRelease: function(but_name) {
-   //console.log(but_name);
    if(gp.prev_but[but_name] < gp.buttons[but_name].curVal) {
-     //console.log("pres");
      gp.buttons[but_name].pressed = 1;
      gp.buttons[but_name].released = 0;
    } else if (gp.prev_but[but_name] > gp.buttons[but_name].curVal) {
-     //console.log(" rel");
      gp.buttons[but_name].released = 1;
      gp.buttons[but_name].pressed = 0;
    } else {
@@ -130,9 +126,5 @@ var gp = {
    return(newVal);
  }
 
-//this.bindbtn = function() {    < if I want to go this route, but seems redundant
-// },
-
 }//end gp
-//gp.select(50);
 module.exports = gp;

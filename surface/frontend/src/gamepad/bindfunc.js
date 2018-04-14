@@ -104,6 +104,62 @@ var bind = {
         },
       },
     },
+    rb:{ //close claw
+      press: {
+        func: function() {
+          react.state.dearflask.claw = react.state.gp.buttons.rb.curVal * .3;
+        },
+      },
+      release: {
+        func: function() {
+          if(react.state.dearflask.claw > 0) {
+            react.state.dearflask.claw = 0;
+          }
+        },
+      },
+    },
+    lb:{ //open claw
+      press: {
+        func: function() {
+          react.state.dearflask.claw = react.state.gp.buttons.lb.curVal * .3 * -1;
+        },
+      },
+      release: {
+        func: function() {
+          if(react.state.dearflask.claw < 0) {
+            react.state.dearflask.claw = 0;
+          }
+        },
+      },
+    },
+    rpress: { //obs leveler power forwards
+      press: {
+        func: function() {
+          react.state.dearflask.obs_leveler = react.state.gp.buttons.rpress.curVal * .3;
+        },
+      },
+      release: {
+        func: function() {
+          if(react.state.dearflask.obs_leveler > 0) {
+            react.state.dearflask.obs_leveler = 0;
+          }
+        },
+      },
+    },
+    lpress: { // obs leveler power backwards
+      press: {
+        func: function() {
+          react.state.dearflask.obs_leveler = react.state.gp.buttons.lpress.curVal * -1 * .3;
+        },
+      },
+      release: {
+        func: function() {
+          if(react.state.dearflask.obs_leveler > 0) {
+            react.state.dearflask.obs_leveler = 0;
+          }
+        },
+      },
+    },
 
   }, //end btn
 

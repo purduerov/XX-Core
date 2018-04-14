@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import ThrusterCircle from '../ThrusterCircle/ThrusterCircle.jsx';
+import ToolCircle from '../ToolCircle/ToolCircle.jsx';
 import styles from "./ThrusterInfo.css";
 
 
@@ -37,6 +38,10 @@ export default class ThrusterInfo extends Component {
           <ThrusterCircle className={styles.topRight} indx={5} rend={this.rendDisabled} val={Math.round(this.props.thrusters[5]*100)} disable={this.state.disabled[5]}/>
           <ThrusterCircle className={styles.bottomLeft} indx={6} rend={this.rendDisabled} val={Math.round(this.props.thrusters[6]*100)} disable={this.state.disabled[6]}/>
           <ThrusterCircle className={styles.bottomRight} indx={7} rend={this.rendDisabled} val={Math.round(this.props.thrusters[7]*100)} disable={this.state.disabled[7]}/>
+        </div>
+        <div className={styles.tools}>
+          <ToolCircle className={styles.claw} indx={8} rend={this.rendDisabled} val={this.props.claw} />
+          <ToolCircle className={styles.obsLeveler} indx={9} rend={this.rendDisabled} val={this.props.obsLeveler} />
         </div>
       </div>
     );

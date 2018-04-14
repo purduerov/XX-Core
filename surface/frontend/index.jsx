@@ -4,7 +4,7 @@ import styles from './index.css';
 import packet from './src/packets.js';
 import Card from './src/components/Card/Card.jsx';
 import Cam_view from './src/components/CamView/CamView.jsx';
-import ForceScales from './src/components/ForceScales/ForceScales.jsx'
+import ForceScales from './src/components/ForceScales/ForceScales.jsx';
 import Titlebar from './src/components/Titlebar/Titlebar.jsx';
 import ThrusterInfo from './src/components/ThrusterInfo/ThrusterInfo.jsx';
 import ThrusterScales from './src/components/ThrusterScales/ThrusterScales.jsx';
@@ -90,6 +90,8 @@ class App extends React.Component {
                     <Card>
                       <ThrusterInfo thrusters={this.state.dearclient.thrusters}
                         disabled={this.state.dearflask.thrusters.disabled_thrusters}
+                        claw={this.state.dearflask.claw}
+                        obsLeveler={this.state.dearflask.obsLeveler}
                         rend={this.changeDisabled}
                       />
                     </Card>
