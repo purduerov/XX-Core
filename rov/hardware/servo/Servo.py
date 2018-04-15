@@ -24,7 +24,7 @@ class Servo(object):
 
         # PWM range
         wiringpi.pwmSetRange(2000)
-        setAngle(0)
+        self.setAngle(0)
 
     def setAngle(self, rawangle):
         # map [-90, 90] to [50, 249]
@@ -52,3 +52,6 @@ class Servo(object):
 
         # Convert the 0-1 range into a value in the right range.
         return int(round(rightMin + (valueScaled * rightSpan)))
+if __name__ == "__main__":
+    s = Servo()
+    s.setAngle(60)
