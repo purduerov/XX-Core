@@ -28,10 +28,10 @@ class Current(object):
         return self._data
 
     def update(self):
-        self.bus.write_byte(0xF0, 0x78)
+        self.bus.write_byte(0x43, 0x78)
         #time.sleep(.5)
         # Read 32 bytes of data
-        data = self.bus.read_i2c_block_data(0xF0, 0, 32)
+        data = self.bus.read_i2c_block_data(0x43, 0, 32)
         
         # Set thruster 1
         self._data['thruster1'] = data[0] * 256 + data[1]
