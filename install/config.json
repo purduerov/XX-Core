@@ -7,6 +7,9 @@
         "python-dev",
         "python-pip"
     ],
+    "modules": [
+	    "bcm2835-v4l2"
+    ],
     "aptget-hw": [
         "python-smbus",
         "libffi-dev",
