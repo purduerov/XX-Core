@@ -1,4 +1,6 @@
 import json
+import subprocess as sp
+import re
 
 
 class Config(object):
@@ -14,5 +16,13 @@ class Config(object):
         """
         if key in self.config:
             return self.config[key]
+        else:
+            return None
+    def findVenv(self):
+        paths = sp.Popen("whereis virtualenv", shell=True, stdout=sp.PIPE)
+        found = paths.stdout.read()
+        found = re.search(r"(?P<venvpath>/.*?/virtualenv)[\n\s$]", found)
+        if found:
+            return found.group('venvpath')
         else:
             return None

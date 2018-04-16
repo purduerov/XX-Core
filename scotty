@@ -86,15 +86,19 @@ def set_env(env="base"):
             os.environ[key] = val
 
 
-def run_commands(commands):
+def run_commands(commands, exit_on_error=True):
     """ Run a list of commands and print out what commands are being run when doing so
     """
 
     for com in commands:
         print_color("\nRunning: %s \n" % com, color="cyan")
         if os.system(com) != 0:
-            print_color("\nNon-zero error code running: %s\nStopping install." % com, color="red")
-            sys.exit()
+            print_color("\nNon-zero error code running: %s" % com, color="red")
+            if exit_on_error:
+                print_color("Stopping install.")
+                sys.exit()
+            else:
+                return False
 
 
 def create_venv():
@@ -105,7 +109,14 @@ def create_venv():
 
     if not os.path.isdir(venv_real_dir):
         print_color("\nCreating virtual env in %s..." % Config.get("venv"))
-        run_commands(["%s %s" % (str(Config.get("virtualenv")), str(venv_real_dir))])
+        if not run_commands(["%s %s" % (str(Config.get("virtualenv")), str(venv_real_dir))], False):
+            print_color("\nDefault virtualenv path doesn't match, trying to find it manually...")
+            venvpath = Config.findVenv()
+            if venvpath:
+                run_commands(["%s %s" % (str(venvpath), str(venv_real_dir))])
+            else:
+                print_color("\nDidn't find file, did virtualenv install correctly? :/")
+                raise e
     else:
         print_color("\nVirtual env in %s already exists" % Config.get("venv"))
 
@@ -394,8 +405,8 @@ def test(args):
         print_color("\nPassed all tests!", color="green")
 
 def updatepacket(args=None):
-    subprocess.call(["node", CORE_DIR + "/rov/JSToJSON.js", CORE_DIR + "/surface/frontend/src/", CORE_DIR + "/rov/"]) 
-    
+    subprocess.call(["node", CORE_DIR + "/rov/JSToJSON.js", CORE_DIR + "/surface/frontend/src/", CORE_DIR + "/rov/"])
+
 
 def usage(args=None):
     """ Prints the help and usage information
