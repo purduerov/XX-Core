@@ -86,15 +86,19 @@ def set_env(env="base"):
             os.environ[key] = val
 
 
-def run_commands(commands):
+def run_commands(commands, exit_on_error=True):
     """ Run a list of commands and print out what commands are being run when doing so
     """
 
     for com in commands:
         print_color("\nRunning: %s \n" % com, color="cyan")
         if os.system(com) != 0:
-            print_color("\nNon-zero error code running: %s\nStopping install." % com, color="red")
-            sys.exit()
+            print_color("\nNon-zero error code running: %s" % com, color="red")
+            if exit_on_error:
+                print_color("Stopping install.")
+                sys.exit()
+            else:
+                return False
 
 
 def create_venv():
@@ -105,7 +109,14 @@ def create_venv():
 
     if not os.path.isdir(venv_real_dir):
         print_color("\nCreating virtual env in %s..." % Config.get("venv"))
-        run_commands(["%s %s" % (str(Config.get("virtualenv")), str(venv_real_dir))])
+        if not run_commands(["%s %s" % (str(Config.get("virtualenv")), str(venv_real_dir))], False):
+            print_color("\nDefault virtualenv path doesn't match, trying to find it manually...")
+            venvpath = Config.findVenv()
+            if venvpath:
+                run_commands(["%s %s" % (str(venvpath), str(venv_real_dir))])
+            else:
+                print_color("\nDidn't find file, did virtualenv install correctly? :/")
+                raise e
     else:
         print_color("\nVirtual env in %s already exists" % Config.get("venv"))
 
@@ -233,6 +244,13 @@ def install(args):
                                                         dir=get_file_path(Config.get("venv")))
         run_commands([command])
 
+    # install modules
+    if is_ras_pi:
+        with open("/etc/modules","r") as fh:
+            installed = [mod for mod in fh.read().splitlines() if "#" not in mod]
+        for module in Config.get("modules"):
+            if module not in installed:
+                run_commands(["echo {} >> /etc/modules".format(module)])
 
     # install cameras
     if is_ras_pi or '--cam' in args:
@@ -252,14 +270,20 @@ def install(args):
 
     if is_ras_pi:
         i2c_enabled = os.system("i2cdetect -y 1 > /dev/null 2>&1")
+        raspicam_enabled = os.system("raspistill -o")
         if i2c_enabled != 0:
             print_color("\ni2c is not enabled. Will run raspi-config to enable the device.")
             print_color("Enable in Advanced Options > i2c")
+        if raspicam_enabled != 0:
+            print_color("\nThe camera is not enabled or not plugged in. Will run raspi-config to enable the device, or just plug it in.")
+            print_color("Enable in Interfaces > Cameras")
+
+        if raspicam_enabled != 0 or i2c_enabled != 0:
             print_color("\nEnter Y/y to continue and launch raspi-config or any other key to skip [y/N]:")
 
             if raw_input().lower() == 'y':
                 run_commands(["raspi-config"])
-                print_color("\nYou may have to reboot to fully enable i2c")
+                print_color("\nYou may have to reboot to fully enable i2c or the camera")
     updatepacket()
     print_color("\nFinished Install!\n", color="green")
 
@@ -394,8 +418,8 @@ def test(args):
         print_color("\nPassed all tests!", color="green")
 
 def updatepacket(args=None):
-    subprocess.call(["node", CORE_DIR + "/rov/JSToJSON.js", CORE_DIR + "/surface/frontend/src/", CORE_DIR + "/rov/"]) 
-    
+    subprocess.call(["node", CORE_DIR + "/rov/JSToJSON.js", CORE_DIR + "/surface/frontend/src/", CORE_DIR + "/rov/"])
+
 
 def usage(args=None):
     """ Prints the help and usage information
