@@ -115,9 +115,11 @@ class Complex():
         :return: None
         """
         max_val = np.amax(np.abs(self.map))
-        
-        max_force = np.amax(np.abs(desired_thrust))
+        if max_val == 0:
+             max_val = 1
 
+        max_force = np.amax(np.abs(desired_thrust))
+        
         self.map *= (max_force/max_val)
 
     def _limit_power(self, initialPower):
