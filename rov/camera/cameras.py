@@ -97,3 +97,10 @@ class Cameras(object):
 
 if __name__ == '__main__':
     cam = Cameras().start()
+    time.sleep(2)
+    print "Cameras Running"
+    print "To access Cameras go into your browser and go to"
+    print "<ip of rov>:{}/?action=stream_<camnumber>".format(cam.port)
+    raw_input("to kill cameras press enter")
+    cam.stop()
+
