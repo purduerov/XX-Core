@@ -272,7 +272,7 @@ if __name__ == '__main__':
     print('\nPSEUDO-INVERSE MATRIX')
     pp.pprint(c.pseudo_inverse_matrix)
     print('\nRESULT 8D VECTOR')
-    pp.pprint(c.calculate(np.array([1, 0, 0, 0, 0, 0]), [0, 0, 1, 0, 0, 0, 0, 0], False))
+    pp.pprint(c.calculate(np.array([0.4, 0, 0, 0, 0, 0]), [0, 0, 1, 0, 0, 0, 0, 0], False))
     print('\nTHRUST')
     pp.pprint(c.thrust)
     print('POWER')
