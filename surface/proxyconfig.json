@@ -1,12 +1,8 @@
 {
-  "Rovip":"10.42.0.136",
+  "Rovip":"10.42.0.177",
   "TransPortStart": 8000,
   "GetInfo":1905,
-<<<<<<< HEAD
-  "NumCams": 1,
-=======
   "NumCams": 2,
->>>>>>> development
   "Socketio":{
     "Port_to_rov":5000,
     "Port_to_client":5001
