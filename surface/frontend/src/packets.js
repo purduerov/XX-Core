@@ -28,6 +28,7 @@ module.exports = {
             bluetooth_led: false,
             camera_leds: false
         },
+        maincam_angle: 0.0,
         last_update: ""
     },
     dearclient: {
