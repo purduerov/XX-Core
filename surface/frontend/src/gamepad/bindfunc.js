@@ -75,61 +75,63 @@ var bind = {
       },
     },
     rb:{ //close? manipulator
-      press: {
+      pressed: {
         func: function() {
           var stuff = react.state.config.tool_scales.manipulator;
-          react.flaskcpy.dearflask.manipulator = react.gp.buttons.rb.curVal * stuff.master * stuff.open * stuff.invert;
+          //console.log(react.gp.buttons.rb.curVal+" "+stuff.master+" "+stuff.close+" "+stuff.invert+" "+react.flaskcpy)
+          react.flaskcpy.manipulator = react.gp.buttons.rb.curVal * stuff.master * stuff.open * stuff.invert;
         },
       },
-      release: {
+      released: {
         func: function() {
-          if(react.flaskcpy.dearflask.manipulator > 0) {
-            react.flaskcpy.dearflask.manipulator = 0;
+          if(react.flaskcpy.manipulator > 0) {
+            react.flaskcpy.manipulator = 0;
           }
         },
       },
     },
     lb:{ //open? manipulator
-      press: {
+      pressed: {
         func: function() {
           var stuff = react.state.config.tool_scales.manipulator;
-          react.flaskcpy.dearflask.manipulator = -react.gp.buttons.lb.curVal * stuff.master * stuff.close * stuff.invert;
+          //console.log(-react.gp.buttons.lb.curVal+" "+stuff.master+" "+stuff.close+" "+stuff.invert)
+          react.flaskcpy.manipulator = -react.gp.buttons.lb.curVal * stuff.master * stuff.close * stuff.invert;
         },
       },
-      release: {
+      released: {
         func: function() {
-          if(react.flaskcpy.dearflask.manipulator < 0) {
-            react.flaskcpy.dearflask.manipulator = 0;
+          if(react.flaskcpy.manipulator < 0) {
+            react.flaskcpy.manipulator = 0;
           }
         },
       },
     },
     rpress: { //obs leveler power forwards
-      press: {
+      pressed: {
         func: function() {
-          var stuff = react.state.config.tool_scales.
-          react.flaskcpy.dearflask.obs_tool = react.gp.buttons.rpress.curVal * stuff.power * stuff.invert;
+          var stuff = react.state.config.tool_scales.obs_tool;
+          react.flaskcpy.obs_tool = react.gp.buttons.rpress.curVal * stuff.power * stuff.invert;
         },
       },
-      release: {
+      released: {
         func: function() {
-          if(react.flaskcpy.dearflask.obs_tool > 0) {
-            react.flaskcpy.dearflask.obs_tool = 0;
+          if(react.flaskcpy.obs_tool > 0) {
+            react.flaskcpy.obs_tool = 0;
           }
         },
       },
     },
     lpress: { // obs leveler power backwards
-      press: {
+      pressed: {
         func: function() {
           var stuff = react.state.config.tool_scales.obs_tool;
-          react.flaskcpy.dearflask.obs_tool = -react.gp.buttons.lpress.curVal * stuff.power * stuff.invert;
+          react.flaskcpy.obs_tool = -react.gp.buttons.lpress.curVal * stuff.power * stuff.invert;
         },
       },
-      release: {
+      released: {
         func: function() {
-          if(react.flaskcpy.dearflask.obs_tool < 0) {
-            react.flaskcpy.dearflask.obs_tool = 0;
+          if(react.flaskcpy.obs_tool < 0) {
+            react.flaskcpy.obs_tool = 0;
           }
         },
       },
@@ -224,7 +226,7 @@ var bind = {
       if(btn_ax != "activate") {
         Object.keys(bind[btn_ax]).forEach(function(piece, j) { //goes through buttons or left and right axes
           Object.keys(bind[btn_ax][piece]).forEach(function(which, k) {  //goes through the individual functions
-            //console.log(btn_ax+"_bind: "+piece+", "+which);
+            console.log(btn_ax+"_bind: "+piece+", "+which);
             gp[btn_ax+"_bind"](piece, which, bind[btn_ax][piece][which].func);
           });
         });

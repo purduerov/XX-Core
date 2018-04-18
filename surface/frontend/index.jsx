@@ -12,6 +12,7 @@ import Titlebar from './src/components/Titlebar/Titlebar.jsx';
 import ThrusterInfo from './src/components/ThrusterInfo/ThrusterInfo.jsx';
 import ThrusterScales from './src/components/ThrusterScales/ThrusterScales.jsx';
 import Gpinfo from './src/components/Gpinfo/Gpinfo.jsx';
+import ToolView from './src/components/ToolView/ToolView.jsx';
 import PacketView from './src/components/PacketView/PacketView.jsx';
 import betterlayouts from './src/gamepad/betterlayouts.js';
 import Spawn from './src/components/spawning/spawn.jsx';
@@ -34,9 +35,9 @@ class App extends React.Component {
     this.state.config = {
             version: 1.1, //INCREMENT IF YOU CHANGE THIS DATA STRUCTURE!
             thrust_scales: {
-                master: 50, velX: 60, velY: 50,
-                velZ: 60, pitch: 35,
-                roll: 35, yaw: 25,
+                master: 50, velX: 100, velY: 100,
+                velZ: 100, pitch: 100,
+                roll: 100, yaw: 100,
             },
             thrust_invert: {
                 master: false, velX: false, velY: false,
@@ -51,13 +52,13 @@ class App extends React.Component {
             ],
             tool_scales: {
                 manipulator: {
-                    master: 50,
-                    open: 50,
-                    close: 50,
+                    master: .50,
+                    open: .50,
+                    close: .50,
                     invert: 1
                 },
                 obs_tool: {
-                    power: 30,
+                    power: .30,
                     invert: 1
                 }
             }
@@ -94,7 +95,11 @@ class App extends React.Component {
                     </Card>
                     <Card>
                       <PacketView packet={this.state.dearflask.thrusters.desired_thrust} />
-                      {console.log(this.state.dearflask.thrusters.desired_thrust[3])}
+                    </Card>
+                    <Card>
+                      <ToolView manipulator={this.state.dearflask.manipulator}
+                                obstool={this.state.dearflask.obs_tool}
+                      />
                     </Card>
                   </div>
                   <div className="data-column">
@@ -201,7 +206,8 @@ class App extends React.Component {
       }
 
       that.setState({                           //Initiates rendering process
-        gp: this.gp
+        gp: this.gp,
+        dearflask: this.flaskcpy
       });
     }, 100);
 
