@@ -14,10 +14,10 @@ import ThrusterScales from './src/components/ThrusterScales/ThrusterScales.jsx';
 import Gpinfo from './src/components/Gpinfo/Gpinfo.jsx';
 import PacketView from './src/components/PacketView/PacketView.jsx';
 import betterlayouts from './src/gamepad/betterlayouts.js';
-import Spawn from './src/spawning/spawn.jsx';
+import Spawn from './src/components/spawning/spawn.jsx';
 
 //var packets = require("./src/packets.js");
-let socketHost = `ws://raspberrypi.local:5000`;
+let socketHost = `ws://localhost:5001`;
 
 let socket = io.connect(socketHost, {transports: ['websocket']});
 let {shell, app, ipcRenderer} = window.require('electron');
@@ -200,9 +200,9 @@ class App extends React.Component {
 //        console.log('success');
       }
 
-      that.setState( {                           //Initiates rendering process
-        gp: this.gp }
-      );
+      that.setState({                           //Initiates rendering process
+        gp: this.gp
+      });
     }, 100);
 
 
