@@ -27,7 +27,7 @@ Using PCA9685 object:
 
 class MotorControl(object):
 
-    def __init__(self, zero_power, neg_max_power, pos_max_power, frequency=init_hw_constants.FREQUENCY):
+    def __init__(self, zero_power=init_hw_constants.ZERO_POWER, neg_max_power=init_hw_constants.NEG_MAX_POWER, pos_max_power=init_hw_constants.POS_MAX_POWER, frequency=init_hw_constants.FREQUENCY):
         self.ZERO_POWER = zero_power
         self.NEG_MAX_POWER = neg_max_power
         self.POS_MAX_POWER = pos_max_power
