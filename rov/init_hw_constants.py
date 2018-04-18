@@ -3,7 +3,7 @@ ZERO_POWER = 309  # Value to set thrusters to 0 power
 NEG_MAX_POWER = 226  # Value to set thrusters to max negative power
 POS_MAX_POWER = 391  # Value to set thrusters to max positive power
 FREQUENCY = 49.5  # Frequency at which the i2c to pwm will be updated
-POWER_THRESH = 132 # Power threshold for each individual thruster in Watts
+POWER_THRESH = 115 # Power threshold for each individual thruster in Watts
 
 # Tool Pin Placements
 MANIPULATOR_PIN = 15
