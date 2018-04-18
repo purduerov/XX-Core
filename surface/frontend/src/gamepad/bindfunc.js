@@ -74,10 +74,11 @@ var bind = {
         },
       },
     },
-    rb:{ //close manipulator
+    rb:{ //close? manipulator
       press: {
         func: function() {
-          react.state.dearflask.manipulator = react.state.gp.buttons.rb.curVal * .3;
+          var stuff = react.state.config.tool_scales.manipulator;
+          react.state.dearflask.manipulator = react.state.gp.buttons.rb.curVal * stuff.master * stuff.open * stuff.invert;
         },
       },
       release: {
@@ -88,10 +89,11 @@ var bind = {
         },
       },
     },
-    lb:{ //open manipulator
+    lb:{ //open? manipulator
       press: {
         func: function() {
-          react.state.dearflask.manipulator = react.state.gp.buttons.lb.curVal * .3 * -1;
+          var stuff = react.state.config.tool_scales.manipulator;
+          react.state.dearflask.manipulator = -react.state.gp.buttons.lb.curVal * stuff.master * stuff.close * stuff.invert;
         },
       },
       release: {
@@ -105,7 +107,8 @@ var bind = {
     rpress: { //obs leveler power forwards
       press: {
         func: function() {
-          react.state.dearflask.obs_tool = react.state.gp.buttons.rpress.curVal * .3;
+          var stuff = react.state.config.tool_scales.
+          react.state.dearflask.obs_tool = react.state.gp.buttons.rpress.curVal * stuff.power * stuff.invert;
         },
       },
       release: {
@@ -119,12 +122,13 @@ var bind = {
     lpress: { // obs leveler power backwards
       press: {
         func: function() {
-          react.state.dearflask.obs_tool = react.state.gp.buttons.lpress.curVal * -1 * .3;
+          var stuff = react.state.config.tool_scales.obs_tool;
+          react.state.dearflask.obs_tool = -react.state.gp.buttons.lpress.curVal * stuff.power * stuff.invert;
         },
       },
       release: {
         func: function() {
-          if(react.state.dearflask.obs_tool > 0) {
+          if(react.state.dearflask.obs_tool < 0) {
             react.state.dearflask.obs_tool = 0;
           }
         },
