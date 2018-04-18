@@ -78,7 +78,7 @@ var bind = {
       press: {
         func: function() {
           var stuff = react.state.config.tool_scales.manipulator;
-          react.flaskcpy.dearflask.manipulator = react.state.gp.buttons.rb.curVal * stuff.master * stuff.open * stuff.invert;
+          react.flaskcpy.dearflask.manipulator = react.gp.buttons.rb.curVal * stuff.master * stuff.open * stuff.invert;
         },
       },
       release: {
@@ -93,7 +93,7 @@ var bind = {
       press: {
         func: function() {
           var stuff = react.state.config.tool_scales.manipulator;
-          react.flaskcpy.dearflask.manipulator = -react.state.gp.buttons.lb.curVal * stuff.master * stuff.close * stuff.invert;
+          react.flaskcpy.dearflask.manipulator = -react.gp.buttons.lb.curVal * stuff.master * stuff.close * stuff.invert;
         },
       },
       release: {
@@ -108,7 +108,7 @@ var bind = {
       press: {
         func: function() {
           var stuff = react.state.config.tool_scales.
-          react.flaskcpy.dearflask.obs_tool = react.state.gp.buttons.rpress.curVal * stuff.power * stuff.invert;
+          react.flaskcpy.dearflask.obs_tool = react.gp.buttons.rpress.curVal * stuff.power * stuff.invert;
         },
       },
       release: {
@@ -123,7 +123,7 @@ var bind = {
       press: {
         func: function() {
           var stuff = react.state.config.tool_scales.obs_tool;
-          react.flaskcpy.dearflask.obs_tool = -react.state.gp.buttons.lpress.curVal * stuff.power * stuff.invert;
+          react.flaskcpy.dearflask.obs_tool = -react.gp.buttons.lpress.curVal * stuff.power * stuff.invert;
         },
       },
       release: {
