@@ -100,7 +100,9 @@ var gp = {
        //console.log(gp.adjust(i, val))
        // console.log(lay.axes[i].name)
        // console.log("val: "+val+" min: "+lay.axes[i].min+" max: "+lay.axes[i].max)
-       gp.axes[name].curVal = (val - lay.axes[i].min)/(lay.axes[i].max - lay.axes[i].min);
+       //if(name.endsWith("trigger"))
+          //console.log(val.value+" "+lay.axes[i].min+" "+lay.axes[i].max)
+       gp.axes[name].curVal = (val.value - lay.axes[i].min)/(lay.axes[i].max - lay.axes[i].min);
      } else {
        if(.15 < Math.abs(gp.adjust(i, val))) {
          gp.axes[lay.axes[i].name].curVal = gp.adjust(i, val);

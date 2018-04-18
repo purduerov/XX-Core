@@ -18,7 +18,7 @@ export default class PacketView extends Component {
         </li>
       );
     });
-    
+
   }
 
   render() {

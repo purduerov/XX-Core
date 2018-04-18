@@ -44,7 +44,7 @@ axes template:
 
 var bind = {
   btn:{
-    lb:{ //roll counterclockwise
+    left:{ //roll counterclockwise
       pressed: {
         func: function() {
           var stuff = react.state.config.thrust_scales;
@@ -59,7 +59,7 @@ var bind = {
         },
       },
     },
-    rb:{ //roll clockwise
+    right:{ //roll clockwise
       pressed: {
         func: function() {
           var stuff = react.state.config.thrust_scales;
@@ -181,7 +181,7 @@ var bind = {
           var stuff = react.state.config.thrust_scales;
           if(react.gp.axes.Ltrigger.curVal != 0) {
             if(react.gp.up < 2) {
-              console.log(react.gp.axes.Ltrigger.curVal+" "+stuff.master+" "+stuff.velZ);
+          //    console.log("Ltrigger: "+react.gp.axes.Ltrigger.curVal+" "+stuff.master+" "+stuff.velZ);
               react.flaskcpy.thrusters.desired_thrust[2] = -react.gp.axes.Ltrigger.curVal * stuff.master * stuff.velZ / 10000;
               react.gp.down = 1 + react.gp.up
             }

@@ -94,6 +94,7 @@ class App extends React.Component {
                     </Card>
                     <Card>
                       <PacketView packet={this.state.dearflask.thrusters.desired_thrust} />
+                      {console.log(this.state.dearflask.thrusters.desired_thrust[3])}
                     </Card>
                   </div>
                   <div className="data-column">
