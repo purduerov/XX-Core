@@ -78,8 +78,9 @@ var bind = {
       pressed: {
         func: function() {
           var stuff = react.state.config.tool_scales.manipulator;
-          //console.log(react.gp.buttons.rb.curVal+" "+stuff.master+" "+stuff.close+" "+stuff.invert+" "+react.flaskcpy)
-          react.flaskcpy.manipulator = react.gp.buttons.rb.curVal * stuff.master * stuff.open * stuff.invert;
+          console.log(react.gp.buttons.rb.curVal+" "+stuff.master+" "+stuff.close+" "+stuff.invert)
+          console.log(react.flaskcpy.manipulator)
+          react.flaskcpy.manipulator = react.gp.buttons.a.curVal * stuff.master * stuff.open * stuff.invert;
         },
       },
       released: {
@@ -94,8 +95,9 @@ var bind = {
       pressed: {
         func: function() {
           var stuff = react.state.config.tool_scales.manipulator;
-          //console.log(-react.gp.buttons.lb.curVal+" "+stuff.master+" "+stuff.close+" "+stuff.invert)
-          react.flaskcpy.manipulator = -react.gp.buttons.lb.curVal * stuff.master * stuff.close * stuff.invert;
+          console.log(-react.gp.buttons.lb.curVal+" "+stuff.master+" "+stuff.close+" "+stuff.invert)
+          console.log(react.flaskcpy.manipulator)
+          react.flaskcpy.manipulator = -react.gp.buttons.b.curVal * stuff.master * stuff.close * stuff.invert;
         },
       },
       released: {
@@ -109,8 +111,8 @@ var bind = {
     right: { //obs leveler power right increment
       pressed: {
         func: function() {
-          if(react.flaskcpy.obs_tool < 0) {
-            react.flaskcpy.obs_tool = 0;
+          if(react.flaskcpy.obs_tool < 0.0) {
+            react.flaskcpy.obs_tool = 0.0;
           } else {
             react.flaskcpy.obs_tool += .02;
           }
@@ -120,8 +122,8 @@ var bind = {
     left: { // obs leveler power left increment
       pressed: {
         func: function() {
-          if(react.flaskcpy.obs_tool > 0) {
-            react.flaskcpy.obs_tool = 0;
+          if(react.flaskcpy.obs_tool > 0.0) {
+            react.flaskcpy.obs_tool = 0.0;
           } else {
             react.flaskcpy.obs_tool -= .02;
           }
@@ -131,22 +133,14 @@ var bind = {
     up: { // rotate main camera up
       pressed: {
         func: function() {
-          if(react.flaskcpy.maincam_angle > 0) {
-            react.flaskcpy.maincam_angle = 0;
-          } else {
-            react.flaskcpy.maincam_angle += .05;
-          }
+          react.flaskcpy.maincam_angle += 2.5;
         },
       },
     },
     down: { // rotate main camera down
       pressed: {
         func: function() {
-          if(react.flaskcpy.maincam_angle > 0) {
-            react.flaskcpy.maincam_angle = 0;
-          } else {
-            react.flaskcpy.maincam_angle -= .05;
-          }
+          react.flaskcpy.maincam_angle -= 2.5;
         },
       },
     },

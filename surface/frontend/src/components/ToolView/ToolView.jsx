@@ -10,11 +10,11 @@ export default class ToolView extends Component {
   }
 
   rendTool() {
-    var axis = ['manipulator', 'obstool'];
+    var axis = ['manipulator', 'obs_tool', 'servo', 'transmitter', 'magnet'];
     return axis.map((val, index) => {
       return (
         <li key={'axis'+val} >
-          {val}: {this.props[val]}
+          {val}: {typeof this.props[val] == "boolean" ? (this.props[val]?1:0) : this.props[val].toFixed(2)}
         </li>
       );
     });

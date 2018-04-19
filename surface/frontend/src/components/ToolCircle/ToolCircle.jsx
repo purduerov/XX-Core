@@ -25,7 +25,7 @@ export default class ThrusterCircle extends Component {
         <div className={this.props.className}>
             <div className={"c100 "+"p"+this.props.val+" select thruster-off "+ //tools
               (this.props.val > 0? 'thruster-green' : this.props.val < 0? 'thruster-red' : 'thruster-grey') }>
-              <span>{this.props.val}%</span>
+              <span>{this.props.val.toFixed(2)}%</span>
               <div className="slice">
                 <div className="bar"></div>
                 <div className="fill"></div>

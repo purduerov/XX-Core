@@ -15,15 +15,15 @@ export default class Spawn extends Component {
     ipcRenderer.send('find-files');
 
     ipcRenderer.on('files-found', (event, args) => {
-      console.log(args);
+      //console.log(args);
       this.filenames = args;
       this.setState({filenames: this.filenames});
     });
 
     ipcRenderer.on("cv-spawned", (event, file) => {
       this.filenames[file.name].on = file.on;
-      console.log(file.extra);
-      console.log(this.filenames)
+      //console.log(file.extra);
+      //console.log(this.filenames)
 
       this.setState({filenames: this.filenames});
     });
@@ -32,7 +32,7 @@ export default class Spawn extends Component {
   }
 
   interactCV(val) {
-    console.log(val);
+    //console.log(val);
 
     ipcRenderer.send('cv-spawn', val);
   }

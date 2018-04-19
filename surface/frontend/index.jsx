@@ -98,7 +98,10 @@ class App extends React.Component {
                     </Card>
                     <Card>
                       <ToolView manipulator={this.state.dearflask.manipulator}
-                                obstool={this.state.dearflask.obs_tool}
+                                obs_tool={this.state.dearflask.obs_tool}
+                                servo={this.state.dearflask.maincam_angle}
+                                transmitter={this.state.dearflask.transmitter}
+                                magnet={this.state.dearflask.magnet}
                       />
                     </Card>
                   </div>

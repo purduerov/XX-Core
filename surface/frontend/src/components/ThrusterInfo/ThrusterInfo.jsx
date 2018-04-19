@@ -40,8 +40,8 @@ export default class ThrusterInfo extends Component {
           <ThrusterCircle className={styles.bottomRight} indx={7} rend={this.rendDisabled} val={Math.round(this.props.thrusters[7]*100)} disable={this.state.disabled[7]}/>
         </div>
         <div className={styles.tools}>
-          <ToolCircle className={styles.manipulator} indx={8} rend={this.rendDisabled} val={this.props.manipulator} />
-          <ToolCircle className={styles.obs_tool} indx={9} rend={this.rendDisabled} val={this.props.obs_tool} />
+          <ToolCircle className={styles.manipulator}  val={Math.abs(this.props.manipulator)} />
+          <ToolCircle className={styles.obs_tool}     val={Math.abs(this.props.obs_tool)} />
         </div>
       </div>
     );
