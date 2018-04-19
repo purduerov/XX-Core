@@ -14,6 +14,7 @@ surface/pakfront/src/*
 surface/pakfront/pkg/*
 surface/pakfrontpid
 surface/log.txt
+tcptostdin*
 
 *.babelrc
 .vscode/
