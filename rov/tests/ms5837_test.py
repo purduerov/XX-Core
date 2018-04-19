@@ -10,6 +10,6 @@ def test_pressure_values():
         time.sleep(buffer)
         print(MS5837.getData)
         print("\n")
-    text = raw_input("Is data correct (y/n)\n")
+    text = raw_input("Is data correct (y/n)?\n")
     assert text == "y"
     
