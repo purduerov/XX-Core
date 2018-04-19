@@ -57,7 +57,7 @@ class App extends React.Component {
                     close: .50,
                     invert: 1
                 },
-                obs_tool: {
+                obs_tool: {   //unused, we're stepping it up and then down manually
                     power: .30,
                     invert: 1
                 }

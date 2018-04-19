@@ -22,6 +22,8 @@ module.exports = {
         },
         manipulator: 0.0,
         obs_tool: 0.0,
+        magnet: false,
+        transmitter: false,
         cameras: {},
         leds: {
             bluetooth_led: false,

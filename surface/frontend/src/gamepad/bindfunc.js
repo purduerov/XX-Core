@@ -44,7 +44,7 @@ axes template:
 
 var bind = {
   btn:{
-    left:{ //roll counterclockwise
+    lb:{ //roll counterclockwise
       pressed: {
         func: function() {
           var stuff = react.state.config.thrust_scales;
@@ -59,7 +59,7 @@ var bind = {
         },
       },
     },
-    right:{ //roll clockwise
+    rb:{ //roll clockwise
       pressed: {
         func: function() {
           var stuff = react.state.config.thrust_scales;
@@ -74,7 +74,7 @@ var bind = {
         },
       },
     },
-    rb:{ //close? manipulator
+    a:{ //open manipulator
       pressed: {
         func: function() {
           var stuff = react.state.config.tool_scales.manipulator;
@@ -90,7 +90,7 @@ var bind = {
         },
       },
     },
-    lb:{ //open? manipulator
+    b:{ //close manipulator
       pressed: {
         func: function() {
           var stuff = react.state.config.tool_scales.manipulator;
@@ -106,36 +106,64 @@ var bind = {
         },
       },
     },
-    rpress: { //obs leveler power forwards
+    right: { //obs leveler power right increment
       pressed: {
-        func: function() {
-          var stuff = react.state.config.tool_scales.obs_tool;
-          react.flaskcpy.obs_tool = react.gp.buttons.rpress.curVal * stuff.power * stuff.invert;
-        },
-      },
-      released: {
-        func: function() {
-          if(react.flaskcpy.obs_tool > 0) {
-            react.flaskcpy.obs_tool = 0;
-          }
-        },
-      },
-    },
-    lpress: { // obs leveler power backwards
-      pressed: {
-        func: function() {
-          var stuff = react.state.config.tool_scales.obs_tool;
-          react.flaskcpy.obs_tool = -react.gp.buttons.lpress.curVal * stuff.power * stuff.invert;
-        },
-      },
-      released: {
         func: function() {
           if(react.flaskcpy.obs_tool < 0) {
             react.flaskcpy.obs_tool = 0;
+          } else {
+            react.flaskcpy.obs_tool += .02;
           }
         },
       },
     },
+    left: { // obs leveler power left increment
+      pressed: {
+        func: function() {
+          if(react.flaskcpy.obs_tool > 0) {
+            react.flaskcpy.obs_tool = 0;
+          } else {
+            react.flaskcpy.obs_tool -= .02;
+          }
+        },
+      },
+    },
+    up: { // rotate main camera up
+      pressed: {
+        func: function() {
+          if(react.flaskcpy.maincam_angle > 0) {
+            react.flaskcpy.maincam_angle = 0;
+          } else {
+            react.flaskcpy.maincam_angle += .05;
+          }
+        },
+      },
+    },
+    down: { // rotate main camera down
+      pressed: {
+        func: function() {
+          if(react.flaskcpy.maincam_angle > 0) {
+            react.flaskcpy.maincam_angle = 0;
+          } else {
+            react.flaskcpy.maincam_angle -= .05;
+          }
+        },
+      },
+    },
+    start: {    // Toggle electromagnet
+      pressed: {
+        func: function() {
+          react.flaskcpy.magnet = !react.flaskcpy.magnet;
+        }
+      }
+    },
+    select: {   // Toggle transmitter (audio tools)
+      pressed: {
+        func: function() {
+          react.flaskcpy.transmitter = !react.flaskcpy.transmitter;
+        }
+      }
+    }
 
   }, //end btn
 
