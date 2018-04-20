@@ -53,10 +53,10 @@ global.layouts = {
       {"indx": 9, "name": "lpress", "pressed": 1, "notpressed": 0, "where": "buttons"},
       {"indx": 10, "name": "rpress", "pressed": 1, "notpressed": 0, "where": "buttons"},
       //These will be buttons for gp, but are in axes for navigator.getGamepads()
-      {"indx": 6, "name": "up", "pressed": -1, "notpressed": 1, "where": "axes"},
-      {"indx": 6, "name": "down", "pressed": 1, "notpressed": -1, "where": "axes"},
-      {"indx": 7, "name": "left", "pressed": -1, "notpressed": 1, "where": "axes"},
-      {"indx": 7, "name": "right", "pressed": 1, "notpressed": -1, "where": "axes"}
+      {"indx": 7, "name": "up", "pressed": -1, "notpressed": 0, "where": "axes"},
+      {"indx": 7, "name": "down", "pressed": 1, "notpressed": 0, "where": "axes"},
+      {"indx": 6, "name": "left", "pressed": -1, "notpressed": 0, "where": "axes"},
+      {"indx": 6, "name": "right", "pressed": 1, "notpressed": 0, "where": "axes"}
     ],
     "axes": [
       {"indx": 0, "name": "LstickXaxis", "min": -1,"max": 1, "where": "axes", "constant": 0},

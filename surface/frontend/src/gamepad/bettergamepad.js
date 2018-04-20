@@ -76,8 +76,13 @@ var gp = {
    {
      var name = lay.buttons[i].name;
      var buttn = lay.buttons[i]
-     var val = cur[buttn.where][buttn.indx].value;
+     var val = cur[buttn.where][buttn.indx];
+     if (lay.buttons[i].where == "buttons") {
+       val = val.value;
+     }
+     val = val == lay.buttons[i].pressed? val : 0;
      //should adjust the intput to a 1-0 scale:
+     console.log(name+" "+val+" "+lay.buttons[i].notpressed+" "+lay.buttons[i].pressed)
      gp.buttons[name].curVal = (val - lay.buttons[i].notpressed)/(lay.buttons[i].pressed - lay.buttons[i].notpressed);
      gp.pressRelease(name);
 

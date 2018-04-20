@@ -33,7 +33,7 @@ class App extends React.Component {
     this.gp = require('./src/gamepad/bettergamepad.js');
 
     this.state.config = {
-            version: 1.1, //INCREMENT IF YOU CHANGE THIS DATA STRUCTURE!
+            version: 1, //INCREMENT IF YOU CHANGE THIS DATA STRUCTURE!
             thrust_scales: {
                 master: 50, velX: 100, velY: 100,
                 velZ: 100, pitch: 100,
@@ -88,8 +88,8 @@ class App extends React.Component {
                     <Card>
                       <ThrusterInfo thrusters={this.state.dearclient.thrusters}
                         disabled={this.state.dearflask.thrusters.disabled_thrusters}
-                        manipulator={this.state.dearflask.manipulator}
-                        obs_tool={this.state.dearflask.obs_tool}
+                        manipulator={this.state.dearflask.manipulator.power}
+                        obs_tool={this.state.dearflask.obs_tool.power}
                         rend={this.changeDisabled}
                       />
                     </Card>
