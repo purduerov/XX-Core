@@ -77,7 +77,7 @@ var gp = {
      var name = lay.buttons[i].name;
      var buttn = lay.buttons[i]
      var val = cur[buttn.where][buttn.indx].value;
-        //should adjust the intput to a 1-0 scale:
+     //should adjust the intput to a 1-0 scale:
      gp.buttons[name].curVal = (val - lay.buttons[i].notpressed)/(lay.buttons[i].pressed - lay.buttons[i].notpressed);
      gp.pressRelease(name);
 
@@ -95,14 +95,16 @@ var gp = {
    {
      var name = lay.axes[i].name;
      var val = cur[lay.axes[i].where][lay.axes[i].indx];
-     if (lay.axes[i].where == "buttons" || lay.axes[i].name.endsWith("trigger")) {
+     if (lay.axes[i].where == "buttons") {
+       val = val.value;
+     }
+     if(lay.axes[i].name.endsWith("trigger")) {
        //console.log(cur[lay.axes[i].where][lay.axes[i].indx].value);
        //console.log(gp.adjust(i, val))
-       // console.log(lay.axes[i].name)
+       //console.log(lay.axes[i].name)
        // console.log("val: "+val+" min: "+lay.axes[i].min+" max: "+lay.axes[i].max)
-       //if(name.endsWith("trigger"))
-          //console.log(val.value+" "+lay.axes[i].min+" "+lay.axes[i].max)
-       gp.axes[name].curVal = (val.value - lay.axes[i].min)/(lay.axes[i].max - lay.axes[i].min);
+       console.log(val+" "+lay.axes[i].min+" "+lay.axes[i].max)
+       gp.axes[name].curVal = (val - lay.axes[i].min)/(lay.axes[i].max - lay.axes[i].min);
      } else {
        if(.15 < Math.abs(gp.adjust(i, val))) {
          gp.axes[lay.axes[i].name].curVal = gp.adjust(i, val);

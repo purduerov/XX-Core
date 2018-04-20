@@ -20,7 +20,7 @@ module.exports = {
             disabled_thrusters: [false, false, false, false, false, false, false, false],
             thruster_scales: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
         },
-	    manipulator: { power: 0.0 },
+	      manipulator: { power: 0.0 },
         obs_tool: { power: 0.0 },
         magnet: false,
         transmitter: false,

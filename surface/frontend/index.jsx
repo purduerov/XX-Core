@@ -97,8 +97,8 @@ class App extends React.Component {
                       <PacketView packet={this.state.dearflask.thrusters.desired_thrust} />
                     </Card>
                     <Card>
-                      <ToolView manipulator={this.state.dearflask.manipulator}
-                                obs_tool={this.state.dearflask.obs_tool}
+                      <ToolView manipulator={this.state.dearflask.manipulator.power}
+                                obs_tool={this.state.dearflask.obs_tool.power}
                                 servo={this.state.dearflask.maincam_angle}
                                 transmitter={this.state.dearflask.transmitter}
                                 magnet={this.state.dearflask.magnet}

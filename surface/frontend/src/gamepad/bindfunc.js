@@ -79,14 +79,14 @@ var bind = {
         func: function() {
           var stuff = react.state.config.tool_scales.manipulator;
           console.log(react.gp.buttons.rb.curVal+" "+stuff.master+" "+stuff.close+" "+stuff.invert)
-          console.log(react.flaskcpy.manipulator)
-          react.flaskcpy.manipulator = react.gp.buttons.a.curVal * stuff.master * stuff.open * stuff.invert;
+          console.log(react.flaskcpy.manipulator.power)
+          react.flaskcpy.manipulator.power = react.gp.buttons.a.curVal * stuff.master * stuff.open * stuff.invert;
         },
       },
       released: {
         func: function() {
-          if(react.flaskcpy.manipulator > 0) {
-            react.flaskcpy.manipulator = 0;
+          if(react.flaskcpy.manipulator.power > 0) {
+            react.flaskcpy.manipulator.power = 0;
           }
         },
       },
@@ -96,14 +96,14 @@ var bind = {
         func: function() {
           var stuff = react.state.config.tool_scales.manipulator;
           console.log(-react.gp.buttons.lb.curVal+" "+stuff.master+" "+stuff.close+" "+stuff.invert)
-          console.log(react.flaskcpy.manipulator)
-          react.flaskcpy.manipulator = -react.gp.buttons.b.curVal * stuff.master * stuff.close * stuff.invert;
+          console.log(react.flaskcpy.manipulator.power)
+          react.flaskcpy.manipulator.power = -react.gp.buttons.b.curVal * stuff.master * stuff.close * stuff.invert;
         },
       },
       released: {
         func: function() {
-          if(react.flaskcpy.manipulator < 0) {
-            react.flaskcpy.manipulator = 0;
+          if(react.flaskcpy.manipulator.power < 0) {
+            react.flaskcpy.manipulator.power = 0;
           }
         },
       },
@@ -111,10 +111,10 @@ var bind = {
     right: { //obs leveler power right increment
       pressed: {
         func: function() {
-          if(react.flaskcpy.obs_tool < 0.0) {
-            react.flaskcpy.obs_tool = 0.0;
+          if(react.flaskcpy.obs_tool.power < 0.0) {
+            react.flaskcpy.obs_tool.power = 0.0;
           } else {
-            react.flaskcpy.obs_tool += .02;
+            react.flaskcpy.obs_tool.power += .02;
           }
         },
       },
@@ -122,10 +122,10 @@ var bind = {
     left: { // obs leveler power left increment
       pressed: {
         func: function() {
-          if(react.flaskcpy.obs_tool > 0.0) {
-            react.flaskcpy.obs_tool = 0.0;
+          if(react.flaskcpy.obs_tool.power > 0.0) {
+            react.flaskcpy.obs_tool.power = 0.0;
           } else {
-            react.flaskcpy.obs_tool -= .02;
+            react.flaskcpy.obs_tool.power -= .02;
           }
         },
       },
@@ -209,7 +209,7 @@ var bind = {
           var stuff = react.state.config.thrust_scales;
           if(react.gp.axes.Ltrigger.curVal != 0) {
             if(react.gp.up < 2) {
-          //    console.log("Ltrigger: "+react.gp.axes.Ltrigger.curVal+" "+stuff.master+" "+stuff.velZ);
+              console.log("Ltrigger: "+react.gp.axes.Ltrigger.curVal+" "+stuff.master+" "+stuff.velZ);
               react.flaskcpy.thrusters.desired_thrust[2] = -react.gp.axes.Ltrigger.curVal * stuff.master * stuff.velZ / 10000;
               react.gp.down = 1 + react.gp.up
             }
