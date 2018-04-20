@@ -36,7 +36,7 @@ class ROVControl(object):
         return self.dataup
 
     def getFlask(self,data):
-        self.socket.emit('dearflask',dumps(data))#,con.dataup,onresp)
+        self.socket.emit('dearflask',data)#,con.dataup,onresp)
 
 def getDefaultPackets(packetpath):
     if not os.path.exists(packetpath):
