@@ -73,15 +73,10 @@ class ROV(object):
         self.controls = controller(self.motor_control, self._data)
 
         # Tools
-<<<<<<< HEAD
         self.manipulator = Manipulator(self.motor_control, pin=MANIPULATOR_PIN)
         self.obs_tool = OBS_Tool(self.motor_control, pin=OBS_TOOL_PIN)
-=======
-        self.claw = Claw(self.motor_control, pin=CLAW_PIN)
         self.elecmagnet = Elecmagnet(self.motor_control,pin=ELECMAG_PIN)
-        self.leveler = Leveler(self.motor_control,pin=OBS_PIN)
         self.transmitter = Transmitter(self.motor_control, pin=TRANSMITTER_PIN)
->>>>>>> origin/toolintegration
 
         # Sensors
         self.imu = IMU()
@@ -109,13 +104,11 @@ class ROV(object):
             # Updating hardware
             self.maincam_servo.setAngle(df['maincam_angle'])
             self.controls.update()
-            #self.obs_tool.update(self.dearflask['obs_tool'])
-            #self.manipulator.update(self.dearflask['manipulator'])
+            self.obs_tool.update(self.dearflask['obs_tool'])
+            self.manipulator.update(self.dearflask['manipulator'])
             #print df, '\n', self.dearclient, '\n\n'
-            self.claw.update(df['claw']['power'])
-            self.leveler.update(df['obs']['direction'])
-            self.elecmagnet.update(df['magnet']['on'])
-            self.transmitter.update(df['magnet']['on'])
+            self.elecmagnet.update(df['magnet'])
+            self.transmitter.update(df['transmitter'])
 
         except Exception as e:
             print ("Failed updating things")
