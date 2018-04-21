@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import styles from "./Seismograph.css";
+import './GoogleChartLibrary.js';
 
+//google.charts.load('current', {'packages':['corechart']});
+//google.charts.setOnLoadCallback(drawChart);
 
 export default class Seismograph extends Component {
 
@@ -23,6 +26,13 @@ export default class Seismograph extends Component {
           </div>
         )
       });
+    }
+
+    chartStuff() {
+      return (
+        <div id="chart_div" style="width: 900px; height: 500px;"></div>
+
+      )
     }
 
     rendAmp() {
