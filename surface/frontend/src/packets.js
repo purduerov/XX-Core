@@ -17,6 +17,7 @@ module.exports = {
                 0, // pitch: nose up or down
                 0 // yaw:    left or right rotation
             ],
+            inv_thrusters: [1, 1, 1, 1, 1, 1, 1, 1],    // 1 for normal, -1 for inversion
             disabled_thrusters: [false, false, false, false, false, false, false, false],
             thruster_scales: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
         },

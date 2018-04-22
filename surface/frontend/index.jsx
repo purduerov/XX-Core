@@ -40,9 +40,9 @@ class App extends React.Component {
                 roll: 100, yaw: 100,
             },
             thrust_invert: {
-                master: false, velX: false, velY: false,
-                velZ: false, pitch: false,
-                roll: false, yaw: false,
+                master: 1, velX: 1, velY: 1,
+                velZ: 1, pitch: 1,
+                roll: 1, yaw: 1,
             },
             thruster_control: [   //invert is -1/1 for easy multiplication
                 {power: 100, invert: 1}, {power: 100, invert: 1},
@@ -71,6 +71,7 @@ class App extends React.Component {
     this.changeDisabled = this.changeDisabled.bind(this);
     this.changeThrustScales = this.changeThrustScales.bind(this);
     this.changeForceScales = this.changeForceScales.bind(this);
+    this.rendTools = this.rendTools.bind(this);
   }
 
   render () {
@@ -102,6 +103,8 @@ class App extends React.Component {
                                 servo={this.state.dearflask.maincam_angle}
                                 transmitter={this.state.dearflask.transmitter}
                                 magnet={this.state.dearflask.magnet}
+                                conf={this.state.config.tool_scales}
+                                rend={this.rendTools}
                       />
                     </Card>
                   </div>
@@ -109,6 +112,7 @@ class App extends React.Component {
                     <Card title="Directional Control">
                       <ForceScales rend={this.changeForceScales}
                         scales={this.state.config.thrust_scales}
+                        invert={this.state.config.thrust_invert}
                         />
                     </Card>
                     <div className="button">
@@ -141,6 +145,12 @@ class App extends React.Component {
                     <Card title="CV view window">
                       <CVview desc={"We love Ben, yes we do"} tdist={[0.0, 0.1, 0.2, 0.4, 0.7, 0.8]} ></CVview>
                     </Card>
+                    <Card title="Thruster Control">
+                    	<ThrusterScales rend={this.changeThrustScales}
+                    					scales={this.state.config.thruster_control}
+                    					/>
+                    </Card>
+
                   </div>
               </div>
           </div>
@@ -163,16 +173,31 @@ class App extends React.Component {
     });
   }
 
-  changeThrustScales(scales) {
-    this.confcpy.thruster_control = scales;
+  rendTools(cinvcpy) {
+    this.confcpy.tool_scales = cinvcpy;
 
     this.setState({
       config: this.confcpy
+    })
+  }
+
+  changeThrustScales(scales) {
+    this.confcpy.thruster_control = scales;
+
+    this.confcpy.thruster_control.forEach((val, i) => {
+      this.flaskcpy.thrusters.inv_thrusters[i] = val.invert;
+    });
+
+    this.setState({
+      config: this.confcpy,
+      dearflask: this.flaskcpy
     });
   }
 
-  changeForceScales(scales) {
+  changeForceScales(scales, inv) {
     this.confcpy.thrust_scales = scales;
+    this.confcpy.thrust_invert = inv;
+
 
     this.setState({
       config: this.confcpy

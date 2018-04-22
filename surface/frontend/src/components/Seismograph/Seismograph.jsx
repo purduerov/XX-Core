@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import styles from "./Seismograph.css";
-import './GoogleChartLibrary.js';
+//import './GoogleChartLibrary.js';
 
 //google.charts.load('current', {'packages':['corechart']});
 //google.charts.setOnLoadCallback(drawChart);
