@@ -95,8 +95,8 @@ var bind = {
       pressed: {
         func: function() {
           var stuff = react.state.config.tool_scales.manipulator;
-          console.log(-react.gp.buttons.lb.curVal+" "+stuff.master+" "+stuff.close+" "+stuff.invert)
-          console.log(react.flaskcpy.manipulator.power)
+          //console.log(-react.gp.buttons.lb.curVal+" "+stuff.master+" "+stuff.close+" "+stuff.invert)
+          //console.log(react.flaskcpy.manipulator.power)
           react.flaskcpy.manipulator.power = -react.gp.buttons.b.curVal * stuff.master * stuff.close * stuff.invert;
         },
       },
@@ -254,7 +254,7 @@ var bind = {
       if(btn_ax != "activate") {
         Object.keys(bind[btn_ax]).forEach(function(piece, j) { //goes through buttons or left and right axes
           Object.keys(bind[btn_ax][piece]).forEach(function(which, k) {  //goes through the individual functions
-            console.log(btn_ax+"_bind: "+piece+", "+which);
+            //console.log(btn_ax+"_bind: "+piece+", "+which);
             gp[btn_ax+"_bind"](piece, which, bind[btn_ax][piece][which].func);
           });
         });

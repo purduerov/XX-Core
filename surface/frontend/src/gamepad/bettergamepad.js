@@ -5,6 +5,7 @@ var gp = {
   buttons:  {},
   axes:     {},
   prev_but: {},
+  init_trigs: {}, //For the rock candycontroller's madness
   up: 0,
   down: 0,
   selID: 0,
@@ -45,13 +46,22 @@ var gp = {
           gp.selID = -1;
           Object.keys(layouts[key_gp]).forEach(function(gp_ax, i) {
             if(gp_ax != "idMatch") {
+              var cur = navigator.getGamepads()[key]
               for(var j = 0; j < layouts[key_gp][gp_ax].length; j++) {
                 if(gp_ax == 'buttons') {
+                  if(layouts[key_gp][gp_ax][j].name.endsWith("trigger")) { // #triggered
+                      //console.log(layouts[key_gp][gp_ax][j].name+" initializing at "+cur[layouts[key_gp][gp_ax][j].where][layouts[key_gp][gp_ax][j].indx].value);
+                      gp.init_trigs[layouts[key_gp][gp_ax][j].name] = cur.buttons[layouts[key_gp][gp_ax][j].indx].value;
+                  }
                   gp.buttons[layouts[key_gp][gp_ax][j].name] = {pressed: 0, released: 0, curVal: 0};
                   gp.but_func[layouts[key_gp][gp_ax][j].name] = {pressed: null, released: null, curVal: null};
                   gp.prev_but[layouts[key_gp].buttons[j].name] = 0;
                   //console.log(layouts[key_gp].buttons[j].name+": "+gp.buttons[layouts[key_gp].buttons[j].name]); //eventually remove
                 } else {
+                  if(layouts[key_gp][gp_ax][j].name.endsWith("trigger")) { // #triggered
+                      //console.log(layouts[key_gp][gp_ax][j].name+" initializing at "+cur[layouts[key_gp][gp_ax][j].where][layouts[key_gp][gp_ax][j].indx]);
+                      gp.init_trigs[layouts[key_gp][gp_ax][j].name] = cur.buttons[layouts[key_gp][gp_ax][j].indx];
+                  }
                   gp.axes[layouts[key_gp][gp_ax][j].name] = {changed: 0, curVal: 0, constant: 0, past: 0};
                   gp.ax_func[layouts[key_gp][gp_ax][j].name] = {curVal: null};
                 }
@@ -78,11 +88,17 @@ var gp = {
      var buttn = lay.buttons[i]
      var val = cur[buttn.where][buttn.indx];
      if (lay.buttons[i].where == "buttons") {
-       val = val.value;
+        val = val.value;
      }
      val = val == lay.buttons[i].pressed? val : 0;
+     if(name.endsWith("trigger") && val == gp.init_trigs[name]) {
+       //console.log(name+" is at "+val);
+       val = lay.buttons[i].notpressed;
+     } else {
+       gp.init_trigs[name] = 0;
+     }
      //should adjust the intput to a 1-0 scale:
-     console.log(name+" "+val+" "+lay.buttons[i].notpressed+" "+lay.buttons[i].pressed)
+     //console.log(name+" "+val+" "+lay.buttons[i].notpressed+" "+lay.buttons[i].pressed)
      gp.buttons[name].curVal = (val - lay.buttons[i].notpressed)/(lay.buttons[i].pressed - lay.buttons[i].notpressed);
      gp.pressRelease(name);
 
@@ -108,7 +124,13 @@ var gp = {
        //console.log(gp.adjust(i, val))
        //console.log(lay.axes[i].name)
        // console.log("val: "+val+" min: "+lay.axes[i].min+" max: "+lay.axes[i].max)
-       console.log(val+" "+lay.axes[i].min+" "+lay.axes[i].max)
+       //console.log(val+" "+lay.axes[i].min+" "+lay.axes[i].max)
+       //console.log(val+" vs "+gp.init_trigs[name]);
+       if(val == gp.init_trigs[name]) {
+         val = lay.axes[i].min;
+       } else {
+         gp.init_trigs[name] = 0;
+       }
        gp.axes[name].curVal = (val - lay.axes[i].min)/(lay.axes[i].max - lay.axes[i].min);
      } else {
        if(.15 < Math.abs(gp.adjust(i, val))) {
