@@ -51,7 +51,7 @@ var gp = {
                 if(gp_ax == 'buttons') {
                   if(layouts[key_gp][gp_ax][j].name.endsWith("trigger")) { // #triggered
                       //console.log(layouts[key_gp][gp_ax][j].name+" initializing at "+cur[layouts[key_gp][gp_ax][j].where][layouts[key_gp][gp_ax][j].indx].value);
-                      gp.init_trigs[layouts[key_gp][gp_ax][j].name] = cur.buttons[layouts[key_gp][gp_ax][j].indx].value;
+                      gp.init_trigs[layouts[key_gp][gp_ax][j].name] = cur[layouts[key_gp][gp_ax][j].where][layouts[key_gp][gp_ax][j].indx].value;
                   }
                   gp.buttons[layouts[key_gp][gp_ax][j].name] = {pressed: 0, released: 0, curVal: 0};
                   gp.but_func[layouts[key_gp][gp_ax][j].name] = {pressed: null, released: null, curVal: null};
@@ -60,7 +60,7 @@ var gp = {
                 } else {
                   if(layouts[key_gp][gp_ax][j].name.endsWith("trigger")) { // #triggered
                       //console.log(layouts[key_gp][gp_ax][j].name+" initializing at "+cur[layouts[key_gp][gp_ax][j].where][layouts[key_gp][gp_ax][j].indx]);
-                      gp.init_trigs[layouts[key_gp][gp_ax][j].name] = cur.buttons[layouts[key_gp][gp_ax][j].indx];
+                      gp.init_trigs[layouts[key_gp][gp_ax][j].name] = cur[layouts[key_gp][gp_ax][j].where][layouts[key_gp][gp_ax][j].indx];
                   }
                   gp.axes[layouts[key_gp][gp_ax][j].name] = {changed: 0, curVal: 0, constant: 0, past: 0};
                   gp.ax_func[layouts[key_gp][gp_ax][j].name] = {curVal: null};
@@ -95,7 +95,7 @@ var gp = {
        //console.log(name+" is at "+val);
        val = lay.buttons[i].notpressed;
      } else {
-       gp.init_trigs[name] = 0;
+       gp.init_trigs[name] = lay.buttons[i].notpressed;
      }
      //should adjust the intput to a 1-0 scale:
      //console.log(name+" "+val+" "+lay.buttons[i].notpressed+" "+lay.buttons[i].pressed)
@@ -129,7 +129,7 @@ var gp = {
        if(val == gp.init_trigs[name]) {
          val = lay.axes[i].min;
        } else {
-         gp.init_trigs[name] = 0;
+         gp.init_trigs[name] = lay.axes[i].min;
        }
        gp.axes[name].curVal = (val - lay.axes[i].min)/(lay.axes[i].max - lay.axes[i].min);
      } else {
