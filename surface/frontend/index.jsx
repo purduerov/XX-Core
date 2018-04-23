@@ -10,7 +10,7 @@ import CameraScreen from './src/components/CameraScreen/CameraScreen.jsx';
 import ForceScales from './src/components/ForceScales/ForceScales.jsx';
 import Titlebar from './src/components/Titlebar/Titlebar.jsx';
 import ThrusterInfo from './src/components/ThrusterInfo/ThrusterInfo.jsx';
-import ThrusterScales from './src/components/ThrusterScales/ThrusterScales.jsx';
+import ThrusterInverts from './src/components/ThrusterInverts/ThrusterInverts.jsx';
 import Gpinfo from './src/components/Gpinfo/Gpinfo.jsx';
 import ToolView from './src/components/ToolView/ToolView.jsx';
 import PacketView from './src/components/PacketView/PacketView.jsx';
@@ -146,7 +146,7 @@ class App extends React.Component {
                       <CVview desc={"We love Ben, yes we do"} tdist={[0.0, 0.1, 0.2, 0.4, 0.7, 0.8]} ></CVview>
                     </Card>
                     <Card title="Thruster Control">
-                    	<ThrusterScales rend={this.changeThrustScales}
+                    	<ThrusterInverts rend={this.changeThrustScales}
                     					scales={this.state.config.thruster_control}
                     					/>
                     </Card>
@@ -185,7 +185,7 @@ class App extends React.Component {
     this.confcpy.thruster_control = scales;
 
     this.confcpy.thruster_control.forEach((val, i) => {
-      this.flaskcpy.thrusters.inv_thrusters[i] = val.invert;
+      this.flaskcpy.thrusters.thruster_scales[i] = val.invert;
     });
 
     this.setState({

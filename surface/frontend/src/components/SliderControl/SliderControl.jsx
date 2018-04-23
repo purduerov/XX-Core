@@ -33,14 +33,16 @@ export default class SliderControl extends Component {
         <div className={styles.container}>
             <div className={styles.killPad}>
                 <p className={styles.fill}>{this.props.name}:</p>
-                <p className={styles.left}>{this.props.power}%</p>
+                {this.state.val != undefined &&
+                <p className={styles.left}>{this.props.power}%</p>}
                 {this.state.inv != undefined &&
                 <p className={styles.right}>
                     <input type="checkbox" defaultChecked={this.props.invert===-1} onClick={this.onChangeCheck} />
                     <label>Invert</label>
                 </p>}
             </div>
-            <input className="hugtop" type="range" min={this.props.min} max={this.props.max} value={this.state.val} onChange={this.onChangeVal} />
+            {this.state.val != undefined &&
+            <input className="hugtop" type="range" min={this.props.min} max={this.props.max} value={this.state.val} onChange={this.onChangeVal} />}
         </div>
         );
     }
