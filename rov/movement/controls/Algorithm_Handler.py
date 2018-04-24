@@ -2,6 +2,20 @@ from Position_Stabilizer import PositionStabilizer
 from Speed_Stabilizer import SpeedStabilizer
 from Height_Stabilizer import HeightStabilizer
 import matplotlib.pyplot as plt
+import threading
+
+import matplotlib
+matplotlib.use("TkAgg")
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.backends.backend_tkagg import NavigationToolbar2TkAgg
+from matplotlib.figure import Figure
+import matplotlib.animation as animation
+from matplotlib import style
+
+import Tkinter as tk
+LARGE_FONT = ("Verdana", 12)
+style.use("ggplot")
+# from Tkinter import ttk
 
 # Algorithm_Handler
 # -----------
@@ -26,7 +40,8 @@ import matplotlib.pyplot as plt
 
 class Master_Algorithm_Handler():
     # COMPARE THE ACTIVATION LOGIC
-    def __init__(self, activate, sensors): # refer to the XX-Core/frontend/src/packets.js
+    def __init__(self, activate, sensors, launch_visual = True): # refer to the XX-Core/frontend/src/packets.js
+        self._launch_visual = launch_visual
         self._dof_control = [0,0,0,0,0,0] # HOLDS THE OUTPUT FOR MOVEMENT
 
         self._dof_names = ['x', 'y', 'z', 'roll', 'pitch', 'yaw']
@@ -47,6 +62,17 @@ class Master_Algorithm_Handler():
                     self._freeze[i].activate()
                 elif activate[i] == 2:
                     self._movement[i].activate()
+
+        self.launch()
+        #if self._launch_visual:
+        #    t = threading.Thread(target=self.launch)
+        #    t.start()
+
+    def launch(self):
+        app = Visualization(self)
+        app.title("PID Visualization")
+        ani = animation.FuncAnimation(app.f, Visualization.animate, interval=1000)
+        app.mainloop()
 
     def set_max_speed(value):
         for alg in self._movement:
@@ -92,6 +118,17 @@ class Master_Algorithm_Handler():
 # -----------------------------------------------------
 
     # USES MATPLOTLIB TO GRAPH ALGORITHM DATA
+    def get_data(self, alg_type, index):
+        if alg_type == 1:
+            alg = self._freeze[index]
+        elif alg_type == 2:
+            alg = self._movement[index]
+        elif alg_type == 3:
+            alg = self._freeze_height
+
+        data = alg.get_data()
+
+    # USES MATPLOTLIB TO GRAPH ALGORITHM DATA
     def plot_data(self):
         count = 1
         for alg in self._freeze:
@@ -107,6 +144,7 @@ class Master_Algorithm_Handler():
                 plt.title('Movement: ' + self._dof_names[alg._dof])
                 plt.plot(alg.get_data()[0], alg.get_data()[1], 'r', alg.get_data()[0], alg.get_data()[2], 'b')
                 count += 1
+
         if self._freeze_height.has_data():
             plt.subplot(4, 4, count)
             plt.title('Height Control')
@@ -114,6 +152,8 @@ class Master_Algorithm_Handler():
 
         plt.show()
         plt.close()
+
+
 
     # ALLOWS TUNING OF THE PID VALUES WHEN TESTING
     # WILL PROBABLY NEED TO BE ABLE TO CHANGE EACH INDIVIDUAL DOF
@@ -123,6 +163,62 @@ class Master_Algorithm_Handler():
             self._freeze[i].p = p
             self._freeze[i].i = i
             self._freeze[i].d = d
+
+
+
+class Visualization(tk.Tk):
+    def __init__(self, mah, *args, **kwargs):
+        self.mah = mah
+        self.f = Figure(figsize=(5,5), dpi=100)
+        self.a = self.f.add_subplot(111)
+        self.a.plot([1,2,3,4,5],[1,3,5,6,8])
+        self.animate(1000)
+
+
+        tk.Tk.__init__(self, *args, **kwargs)
+        container = tk.Frame(self)
+        container.pack(side="top", fill="both", expand = True)
+        container.grid_rowconfigure(0, weight=1)
+        container.grid_columnconfigure(0, weight=1)
+
+        self.frames = {}
+        frame = StartPage(container, self, mah)
+        self.frames[StartPage] = frame
+        frame.grid(row=0, column=0, sticky="nsew")
+        self.show_frame(StartPage)
+
+
+    def show_frame(self, cont):
+        frame = self.frames[cont]
+        frame.tkraise()
+
+    def animate(self, i):
+        self.a.clear()
+        data = self.mah.get_data(1,2)
+        if data is None or len(data[0]) == 0:
+            self.a.plot([0],[0],[0],[0])
+        else:
+            self.a.plot(data[0], data[1], data[0], data[2])
+
+class StartPage(tk.Frame):
+
+    def __init__(self, parent, controller, mah):
+        self.mah = mah
+        tk.Frame.__init__(self, parent)
+        label = tk.Label(self, text="Start Page", font=LARGE_FONT)
+        label.pack(pady=10, padx=10)
+        button1 = tk.Button(self, text="P Value", command=lambda: controller.show_frame(StartPage))
+        button1.pack()
+
+        canvas = FigureCanvasTkAgg(controller.f, self)
+        canvas.show()
+        canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+
+        toolbar = NavigationToolbar2TkAgg(canvas, self)
+        toolbar.update()
+        canvas._tkcanvas.pack()
+
+
 
 if __name__ == "__main__":
     data = {'sensors':

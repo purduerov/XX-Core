@@ -93,7 +93,7 @@ def test_activate_and_deactivate_functionality():
     for i in range(6):
         time.sleep(buffer)
     
-    frozen = [2,1,2,1,2,1]
+    frozen = [2,1,1,1,2,1]
     user_input = [0.5, 0.1, 0.2, 0.3, 0.21, 0.14]
 
     for i in range(100):
@@ -113,7 +113,7 @@ def test_activate_and_deactivate_functionality():
         time.sleep(buffer)
         mah.master(user_input, frozen)[i]
     
-    frozen = [3,3,3,3,3,3]
+    frozen = [3,3,1,3,3,3]
     user_input = [0.5, 0.1, 0.2, 0.3, 0.21, 0.14]
 
     for i in range(100):
@@ -123,4 +123,3 @@ def test_activate_and_deactivate_functionality():
         time.sleep(buffer)
         mah.master(user_input, frozen)[i]   
     
-    mah.plot_data()
