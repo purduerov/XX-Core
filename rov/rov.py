@@ -96,6 +96,7 @@ class ROV(object):
             # self.thruster_control.stop()
 
         try:
+            print(self.dearflask)
             # Updating Sensors
             self.imu.update()
             self.pressure.update()
