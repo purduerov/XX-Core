@@ -12,6 +12,18 @@ var cvref = {};
 
 let win
 
+
+// ----------------------------------------------------------------------------------------
+// Importing this adds a right-click menu with 'Inspect Element' option [worth it]
+require('electron-context-menu')({
+    prepend: (params, browserWindow) => [{
+        label: 'Rainbow',
+        // Only show it when right-clicking images
+        visible: params.mediaType === 'image'
+    }]
+});
+// ----------------------------------------------------------------------------------------
+
 function createWindow() {
     // Create the browser window.
     win = new BrowserWindow({ width: 1600, height: 1200 })

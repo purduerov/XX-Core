@@ -8,7 +8,7 @@ let that;
     <SliderControl min='0' max='100' key={'thrust0'} indx={0} val={this.state.scales[0]} inv={this.state.inv[0]} rend={this.rendData.bind(this)} name={"Thruster 0"} />
 */
 
-export default class ThrusterScales extends Component {
+export default class ThrusterInverts extends Component {
 
     constructor(props) {
         super(props);

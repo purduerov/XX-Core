@@ -28,7 +28,7 @@ export default class ToolView extends Component {
     return axis.map((val, index) => {
       return (
         <li key={'axis'+val} >
-          <p>{val}: {typeof this.props[val] == "boolean" ? (this.props[val]?1:0) : this.props[val].toFixed(2)}
+          <p className={styles.lowMargin}>{val}: {typeof this.props[val] == "boolean" ? (this.props[val]?1:0) : this.props[val].toFixed(2)}
           {this.state.conf[val] != undefined &&
           <span className={styles.right}>
               <input type="checkbox" id={val} defaultChecked={this.props.conf[val].invert===-1} onClick={this.onChangeCheck} />

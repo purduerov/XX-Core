@@ -12,6 +12,7 @@ import Titlebar from './src/components/Titlebar/Titlebar.jsx';
 import ThrusterInfo from './src/components/ThrusterInfo/ThrusterInfo.jsx';
 import ThrusterInverts from './src/components/ThrusterInverts/ThrusterInverts.jsx';
 import Gpinfo from './src/components/Gpinfo/Gpinfo.jsx';
+import ShowObject from './src/components/ShowObject/ShowObject.jsx'
 import ToolView from './src/components/ToolView/ToolView.jsx';
 import PacketView from './src/components/PacketView/PacketView.jsx';
 import betterlayouts from './src/gamepad/betterlayouts.js';
@@ -94,18 +95,11 @@ class App extends React.Component {
                         rend={this.changeDisabled}
                       />
                     </Card>
-                    <Card>
-                      <PacketView packet={this.state.dearflask.thrusters.desired_thrust} />
+                    <Card title="CV Spawning">
+                      <Spawn />
                     </Card>
-                    <Card>
-                      <ToolView manipulator={this.state.dearflask.manipulator.power}
-                                obs_tool={this.state.dearflask.obs_tool.power}
-                                servo={this.state.dearflask.maincam_angle}
-                                transmitter={this.state.dearflask.transmitter}
-                                magnet={this.state.dearflask.magnet}
-                                conf={this.state.config.tool_scales}
-                                rend={this.rendTools}
-                      />
+                    <Card title="CV view window">
+                      <CVview desc={"We love Ben, yes we do"} tdist={[0.0, 0.1, 0.2, 0.4, 0.7, 0.8]} ></CVview>
                     </Card>
                   </div>
                   <div className="data-column">
@@ -115,17 +109,19 @@ class App extends React.Component {
                         invert={this.state.config.thrust_invert}
                         />
                     </Card>
-                    <div className="button">
-                      <Card title="CV Spawning">
-                        <Spawn />
-                      </Card>
-                    </div>
+                    <Card title="Thruster Control">
+                    	<ThrusterInverts rend={this.changeThrustScales}
+                    					scales={this.state.config.thruster_control}
+                    					/>
+                    </Card>
                     <Card>
-                      <Gpinfo buttons={this.state.gp.buttons}
-                              ready={this.state.gp.ready}
-                              axes={this.state.gp.axes}
-                              up={this.state.gp.up}
-                              down={this.state.gp.down}
+                      <ToolView manipulator={this.state.dearflask.manipulator.power}
+                                obs_tool={this.state.dearflask.obs_tool.power}
+                                servo={this.state.dearflask.maincam_angle}
+                                transmitter={this.state.dearflask.transmitter}
+                                magnet={this.state.dearflask.magnet}
+                                conf={this.state.config.tool_scales}
+                                rend={this.rendTools}
                       />
                     </Card>
                   </div>
@@ -142,13 +138,8 @@ class App extends React.Component {
                         temp={this.state.dearclient.sensors.esc.temperatures}>
                       </ESCinfo>
                     </Card>
-                    <Card title="CV view window">
-                      <CVview desc={"We love Ben, yes we do"} tdist={[0.0, 0.1, 0.2, 0.4, 0.7, 0.8]} ></CVview>
-                    </Card>
-                    <Card title="Thruster Control">
-                    	<ThrusterInverts rend={this.changeThrustScales}
-                    					scales={this.state.config.thruster_control}
-                    					/>
+                    <Card title="IMU">
+                      <ShowObject obj={this.state.dearclient.sensors.imu} />
                     </Card>
 
                   </div>

@@ -6,6 +6,10 @@
 
 }
 
+.lowMargin {
+  margin-bottom: 6px;
+}
+
 .right {
     float: right;
 }
