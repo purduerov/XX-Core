@@ -30,6 +30,10 @@ class controller(object):
 
         thruster_values = self.thrust_mapper.calculate(self._data['dearflask']["thrusters"]["desired_thrust"], self._data['dearflask']["thrusters"]["disabled_thrusters"])
 
+        # Account for dynamically inverted thrusters:
+        for i in range(0,15):
+            thruster_values[i] *= self._data['dearflask']['thrusters']['inverted_thrusters']
+
         self.thrusters.set(thruster_values)
 
         self.__thruster_values = thruster_values

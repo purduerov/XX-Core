@@ -11,7 +11,7 @@ class OBS_Tool(object):
 
     def update(self, data):
         self._data = data
-        self.motor_control.set(self.pin, self._data["power"])
+        self.motor_control.set(self.pin, self._data['power'])
 
     @property
     def data(self):

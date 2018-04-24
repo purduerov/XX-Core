@@ -94,18 +94,22 @@ if __name__ == "__main__":
         for i in range(0,16):
             print ("starting %d" % i)
             c.set(i, 0.25)
-            time.sleep(10)
+            time.sleep(0.5)
         #for i in range(0,16):
             print ("Stopping %d" % i)
             c.set(i, 0)
 
-
         print ("done")
-    else:
-        i = int(sys.argv[1])
-        print ("running motor %d" % i) 
-        c.set(i, 0.25)
-        time.sleep(3)
-        c.set(i,0)
+    #else:
+    #    i = int(sys.argv[1])
+    #    print ("running motor %d" % i) 
+    #    c.set(i, 0.25)
+    #    time.sleep(3)
+    #    c.set(i,0)
 
+    print ("starting electromagnet")
+
+    c.pwm.set_pwm(6, 0, int(sys.argv[1]))
+
+    time.sleep(5)
 

@@ -54,4 +54,5 @@ class Servo(object):
         return int(round(rightMin + (valueScaled * rightSpan)))
 if __name__ == "__main__":
     s = Servo()
-    s.setAngle(-40)
+    while True:
+        s.setAngle(-40)
