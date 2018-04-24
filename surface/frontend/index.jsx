@@ -192,7 +192,6 @@ class App extends React.Component {
       } else {
         console.log("Thruster inversion value is 0... why???");
       }
-        console.log(i+"@"+val.invert+": "+this.flaskcpy.thrusters.inverted_thrusters[i]);
     });
 
     this.setState({
