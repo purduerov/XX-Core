@@ -185,7 +185,14 @@ class App extends React.Component {
     this.confcpy.thruster_control = scales;
 
     this.confcpy.thruster_control.forEach((val, i) => {
-      this.flaskcpy.thrusters.thruster_scales[i] = val.invert;
+      if(val.invert < 0) {
+          this.flaskcpy.thrusters.inverted_thrusters[i] = -Math.abs(this.flaskcpy.thrusters.inverted_thrusters[i]);
+      } else if (val.invert > 0) {
+          this.flaskcpy.thrusters.inverted_thrusters[i] = Math.abs(this.flaskcpy.thrusters.inverted_thrusters[i]);
+      } else {
+        console.log("Thruster inversion value is 0... why???");
+      }
+        console.log(i+"@"+val.invert+": "+this.flaskcpy.thrusters.inverted_thrusters[i]);
     });
 
     this.setState({
