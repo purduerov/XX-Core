@@ -12,6 +12,8 @@ export default class ShowObject extends Component {
     constructor(props) {
         super(props);
 
+        this.state = {obj: props.obj};
+
         this.rendObj = this.rendObj.bind(this);
 
         that = this;
@@ -38,7 +40,7 @@ export default class ShowObject extends Component {
                       <span>{val}</span>
                       <hr className={styles.squashed}/>
                       <ul className={styles.offLeft}>
-                        {this.rendChild(this.props.obj[val])}
+                        {this.rendChild(this.props.obj[val], val)}
                       </ul>
                     </div>
                     <hr/>
@@ -51,7 +53,7 @@ export default class ShowObject extends Component {
                   <div key={val} className={styles[val]}>
                     <div className={styles.openCenter}>
                       <ul>
-                        {this.rendChild(obj)}
+                        {this.rendChild(obj, val)}
                       </ul>
                     </div>
                     <hr/>

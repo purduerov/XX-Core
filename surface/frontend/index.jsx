@@ -67,6 +67,7 @@ class App extends React.Component {
 
 
     this.flaskcpy = this.state.dearflask;
+    this.clientcpy = this.state.dearclient;
     this.confcpy = this.state.config;
 
     this.changeDisabled = this.changeDisabled.bind(this);
@@ -140,6 +141,9 @@ class App extends React.Component {
                     </Card>
                     <Card title="IMU">
                       <ShowObject obj={this.state.dearclient.sensors.imu} />
+                    </Card>
+                    <Card title="Pressure">
+                      <ShowObject obj={this.state.dearclient.sensors.pressure} />
                     </Card>
 
                   </div>
@@ -239,9 +243,14 @@ class App extends React.Component {
 
     // upon new data, save it locally
     socket.on("dearclient", (data) => {    //Updates the data sent back from the server
+        this.flaskcpy.last_update = data.last_update;
+        console.log(this.clientcpy);
+        console.log(data);
+        this.clientcpy = data;
         //console.log(data)
-        that.setState({
-          dearclient: data
+        this.setState({
+          dearclient: this.clientcpy,
+          dearflask: this.flaskcpy
         });
     });
 
@@ -252,16 +261,6 @@ class App extends React.Component {
 
     // send new data
     setInterval(() => {             //Sends a message down to the server with updated surface info
-    /*
-      let all = that.state;         //Edit copy, then update the state (one rerender initiated)
-      all.dearflask = this.flaskcpy;
-      all.inv = invcpy;
-
-      that.setState(                //Let this interrupt change the state, fast enough
-        all                         //Linearizes changes that should go unseen as well
-      );
-    */
-      that.state.dearflask.last_update = that.state.dearclient.last_update
       //console.log(that.state.dearflask);
       socket.emit("dearflask", that.state.dearflask);
     }, 50);
