@@ -11,6 +11,7 @@ from matplotlib.backends.backend_tkagg import NavigationToolbar2TkAgg
 from matplotlib.figure import Figure
 import matplotlib.animation as animation
 from matplotlib import style
+import thread
 
 import Tkinter as tk
 LARGE_FONT = ("Verdana", 12)
@@ -63,16 +64,21 @@ class Master_Algorithm_Handler():
                 elif activate[i] == 2:
                     self._movement[i].activate()
 
-        self.launch()
-        #if self._launch_visual:
-        #    t = threading.Thread(target=self.launch)
-        #    t.start()
+        if self._launch_visual:
+            #self.launch()
+            #thread.start_new_thread( self.launch, () )
+            t = threading.Thread(target=self.launch)
+            t.start()
+
+    def update():
+        self.app.update()
 
     def launch(self):
-        app = Visualization(self)
-        app.title("PID Visualization")
-        ani = animation.FuncAnimation(app.f, Visualization.animate, interval=1000)
-        app.mainloop()
+        self.app = Visualization(self)
+        self.app.title("PID Visualization")
+        ani = animation.FuncAnimation(self.app.f, self.app.animate, interval=3000)
+        #ani = animation.FuncAnimation(self.app.f, self.app.animate, interval=1000)
+        self.app.mainloop()
 
     def set_max_speed(value):
         for alg in self._movement:
@@ -111,6 +117,7 @@ class Master_Algorithm_Handler():
                 self._dof_control[i] = -1
 
         self._prev_activate = activate
+        self.app.update()
         return self._dof_control # RETURNS THE UPDATED VALUES
 
 # -----------------------------------------------------
@@ -127,6 +134,7 @@ class Master_Algorithm_Handler():
             alg = self._freeze_height
 
         data = alg.get_data()
+        return data
 
     # USES MATPLOTLIB TO GRAPH ALGORITHM DATA
     def plot_data(self):
@@ -170,9 +178,12 @@ class Visualization(tk.Tk):
     def __init__(self, mah, *args, **kwargs):
         self.mah = mah
         self.f = Figure(figsize=(5,5), dpi=100)
-        self.a = self.f.add_subplot(111)
-        self.a.plot([1,2,3,4,5],[1,3,5,6,8])
-        self.animate(1000)
+
+        self.a = []
+        for count in range(1,14):
+            self.a.append(self.f.add_subplot(13,1,count))
+
+        #self.update()
 
 
         tk.Tk.__init__(self, *args, **kwargs)
@@ -192,13 +203,38 @@ class Visualization(tk.Tk):
         frame = self.frames[cont]
         frame.tkraise()
 
-    def animate(self, i):
-        self.a.clear()
-        data = self.mah.get_data(1,2)
+    def update(self):
+        count = 0
+        for x in range(6):
+            data = self.mah.get_data(1,x)
+            self.a[count].clear()
+            if data is None or len(data[0]) == 0:
+                self.a[count].plot([0],[0],[0],[0])
+            else:
+                self.a[count].plot(data[0], data[1], data[0], data[2])
+
+            count = count + 1
+
+        for x in range(6):
+            data = self.mah.get_data(2,x)
+            self.a[count].clear()
+            if data is None or len(data[0]) == 0:
+                self.a[count].plot([0, 1, 2, 3],[0, 1, 2, 3],[0, 1, 2, 3],[0, 1, 4, 9])
+            else:
+                self.a[count].plot(data[0], data[1], data[0], data[2])
+
+            count = count + 1
+
+
+        data = self.mah.get_data(3,0)
+        self.a[count].clear()
         if data is None or len(data[0]) == 0:
-            self.a.plot([0],[0],[0],[0])
+            self.a[count].plot([0, 1, 2, 3],[0, 1, 2, 3],[0, 1, 2, 3],[0, 1, 4, 9])
         else:
-            self.a.plot(data[0], data[1], data[0], data[2])
+            self.a[count].plot(data[0], data[1], data[0], data[2])
+
+    def animate(self, i):
+        self.update()
 
 class StartPage(tk.Frame):
 
@@ -207,7 +243,7 @@ class StartPage(tk.Frame):
         tk.Frame.__init__(self, parent)
         label = tk.Label(self, text="Start Page", font=LARGE_FONT)
         label.pack(pady=10, padx=10)
-        button1 = tk.Button(self, text="P Value", command=lambda: controller.show_frame(StartPage))
+        button1 = tk.Button(self, text="PID Value", command=lambda: controller.show_frame(StartPage))
         button1.pack()
 
         canvas = FigureCanvasTkAgg(controller.f, self)
@@ -217,8 +253,6 @@ class StartPage(tk.Frame):
         toolbar = NavigationToolbar2TkAgg(canvas, self)
         toolbar.update()
         canvas._tkcanvas.pack()
-
-
 
 if __name__ == "__main__":
     data = {'sensors':

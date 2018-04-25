@@ -7,7 +7,7 @@ import time
 from rov.movement.controls.Algorithm_Handler import Master_Algorithm_Handler
 from random import *
 
-buffer = 0.005
+buffer = 0.01
 # last time
 lt = time.time()
 
@@ -80,6 +80,9 @@ def test_activate_and_deactivate_functionality():
     frozen = [1,2,1,2,1,2]
     user_input = [0,0,0,0,0,0]
     mah = Master_Algorithm_Handler(frozen, sensor_data())
+    time.sleep(10)
+
+
     for i in range(100):
         time.sleep(buffer)
         update_data(mah.master(user_input, frozen), data, lt)
@@ -102,6 +105,7 @@ def test_activate_and_deactivate_functionality():
     for i in range(6):
         time.sleep(buffer)
         mah.master(user_input, frozen)[i]
+    mah.update()
  
     frozen = [1,2,1,2,1,2]
     user_input = [0.5, 0.1, 0.2, 0.3, 0.21, 0.14]
