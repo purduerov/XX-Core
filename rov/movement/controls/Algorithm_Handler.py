@@ -1,21 +1,11 @@
 from Position_Stabilizer import PositionStabilizer
 from Speed_Stabilizer import SpeedStabilizer
 from Height_Stabilizer import HeightStabilizer
+from Visualization import Visualization
 import matplotlib.pyplot as plt
 import threading
-
-import matplotlib
-matplotlib.use("TkAgg")
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from matplotlib.backends.backend_tkagg import NavigationToolbar2TkAgg
-from matplotlib.figure import Figure
 import matplotlib.animation as animation
-from matplotlib import style
-import thread
 
-import Tkinter as tk
-LARGE_FONT = ("Verdana", 12)
-style.use("ggplot")
 # from Tkinter import ttk
 
 # Algorithm_Handler
@@ -166,92 +156,61 @@ class Master_Algorithm_Handler():
     # ALLOWS TUNING OF THE PID VALUES WHEN TESTING
     # WILL PROBABLY NEED TO BE ABLE TO CHANGE EACH INDIVIDUAL DOF
     # BUT THIS WILL DO FOR NOW AND WILL BE QUICK TO CHANGE
-    def tune(self, p, i, d):
-        for i in range(6):
-            self._freeze[i].p = p
-            self._freeze[i].i = i
-            self._freeze[i].d = d
+    def tune(self, alg, pid, value):
+        x = ( alg / 6 ) + 1
+        y = alg - (6 * x)
 
+        if x == 1:
+            if pid == 0:
+                self._freeze[y].p = value
+            if pid == 1:
+                self._freeze[y].i = value
+            if pid == 2:
+                self._freeze[y].d = value
 
+        if x == 2:
+            if pid == 0:
+                self._movement[y].p = value
+            if pid == 1:
+                self._movement[y].i = value
+            if pid == 2:
+                self._movement[y].d = value
 
-class Visualization(tk.Tk):
-    def __init__(self, mah, *args, **kwargs):
-        self.mah = mah
-        self.f = Figure(figsize=(5,5), dpi=100)
-        self.graph = 0
+        if x == 3:
+            if pid == 0:
+                self._freeze_height.p = value
+            if pid == 1:
+                self._freeze_height.i = value
+            if pid == 2:
+                self._freeze_height.d = value
 
-        self.a = self.f.add_subplot(1,1,1)
+    def getPid(self, pid):
+        x = ( alg / 6 ) + 1
+        y = alg - (6 * x)
 
-        #self.update()
+        if x == 1:
+            if pid == 0:
+                return self._freeze[y].p
+            if pid == 1:
+                return self._freeze[y].i
+            if pid == 2:
+                return self._freeze[y].d
 
+        if x == 2:
+            if pid == 0:
+                return self._movement[y].p
+            if pid == 1:
+                return self._movement[y].i
+            if pid == 2:
+                return self._movement[y].d
 
-        tk.Tk.__init__(self, *args, **kwargs)
-        container = tk.Frame(self)
-        container.pack(side="top", fill="both", expand = True)
-        container.grid_rowconfigure(0, weight=1)
-        container.grid_columnconfigure(0, weight=1)
-
-        self.frames = {}
-        frame = StartPage(container, self, mah)
-        self.frames[StartPage] = frame
-        frame.grid(row=0, column=0, sticky="nsew")
-        self.show_frame(StartPage, -1)
-
-
-    def show_frame(self, cont, graph):
-        self.graph = graph
-        frame = self.frames[cont]
-        frame.tkraise()
-
-    def update(self):
-        if (self.graph != -1):
-            x = ( self.graph / 6 ) + 1
-            y = self.graph - (6 * x)
-            data = self.mah.get_data(x,y)
-            self.a.clear()
-            if data is None or len(data[0]) == 0:
-                self.a.plot([0,1],[0,1],[0,1],[0,0])
-            else:
-                self.a.plot(data[0], data[1], data[0], data[2])
-
-
-    def animate(self, i):
-        self.update()
-
-class StartPage(tk.Frame):
-
-    def __init__(self, parent, controller, mah):
-        self.mah = mah
-        tk.Frame.__init__(self, parent)
-        label = tk.Label(self, text="Start Page", font=LARGE_FONT)
-        label.pack(pady=10, padx=10)
-        button1 = tk.Button(self, text="Tune Pid", command=lambda: controller.show_frame(TunePage, 0))
-        button1.pack()
-
-        canvas = FigureCanvasTkAgg(controller.f, self)
-        canvas.show()
-        canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)
-
-        toolbar = NavigationToolbar2TkAgg(canvas, self)
-        toolbar.update()
-        canvas._tkcanvas.pack()
-
-class TunePage(tk.Frame):
-    def __init__(self, parent, controller, mah):
-        self.mah = mah
-        tk.Frame.__init__(self, parent)
-        label = tk.Label(self, text="Tune Page", font=LARGE_FONT)
-        label.pack(pady=10, padx=10)
-        button1 = tk.Button(self, text="Start Page", command=lambda: controller.show_frame(StartPage, -1))
-        button1.pack()
-
-        canvas = FigureCanvasTkAgg(controller.f, self)
-        canvas.show()
-        canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)
-
-        toolbar = NavigationToolbar2TkAgg(canvas, self)
-        toolbar.update()
-        canvas._tkcanvas.pack()
+        if x == 3:
+            if pid == 0:
+                return self._freeze_height.p
+            if pid == 1:
+                return self._freeze_height.i
+            if pid == 2:
+                return self._freeze_height.d
 
 
 if __name__ == "__main__":

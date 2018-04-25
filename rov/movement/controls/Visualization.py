@@ -1,3 +1,15 @@
+import matplotlib
+matplotlib.use("TkAgg")
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.backends.backend_tkagg import NavigationToolbar2TkAgg
+from matplotlib.figure import Figure
+import matplotlib.animation as animation
+from matplotlib import style
+
+import Tkinter as tk
+LARGE_FONT = ("Verdana", 12)
+style.use("ggplot")
+
 class Visualization(tk.Tk):
     def __init__(self, mah, *args, **kwargs):
         self.mah = mah
@@ -37,7 +49,6 @@ class Visualization(tk.Tk):
                 self.a.plot([0,1],[0,1],[0,1],[0,0])
             else:
                 self.a.plot(data[0], data[1], data[0], data[2])
-
 
     def animate(self, i):
         self.update()
