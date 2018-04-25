@@ -76,7 +76,8 @@ class Master_Algorithm_Handler():
     def launch(self):
         self.app = Visualization(self)
         self.app.title("PID Visualization")
-        ani = animation.FuncAnimation(self.app.f, self.app.animate, interval=3000)
+        ani = animation.FuncAnimation(self.app.f, self.app.animate, interval=500)
+
         #ani = animation.FuncAnimation(self.app.f, self.app.animate, interval=1000)
         self.app.mainloop()
 
@@ -117,7 +118,6 @@ class Master_Algorithm_Handler():
                 self._dof_control[i] = -1
 
         self._prev_activate = activate
-        self.app.update()
         return self._dof_control # RETURNS THE UPDATED VALUES
 
 # -----------------------------------------------------
@@ -178,10 +178,9 @@ class Visualization(tk.Tk):
     def __init__(self, mah, *args, **kwargs):
         self.mah = mah
         self.f = Figure(figsize=(5,5), dpi=100)
+        self.graph = 0
 
-        self.a = []
-        for count in range(1,14):
-            self.a.append(self.f.add_subplot(13,1,count))
+        self.a = self.f.add_subplot(1,1,1)
 
         #self.update()
 
@@ -196,42 +195,25 @@ class Visualization(tk.Tk):
         frame = StartPage(container, self, mah)
         self.frames[StartPage] = frame
         frame.grid(row=0, column=0, sticky="nsew")
-        self.show_frame(StartPage)
+        self.show_frame(StartPage, -1)
 
 
-    def show_frame(self, cont):
+    def show_frame(self, cont, graph):
+        self.graph = graph
         frame = self.frames[cont]
         frame.tkraise()
 
     def update(self):
-        count = 0
-        for x in range(6):
-            data = self.mah.get_data(1,x)
-            self.a[count].clear()
+        if (self.graph != -1):
+            x = ( self.graph / 6 ) + 1
+            y = self.graph - (6 * x)
+            data = self.mah.get_data(x,y)
+            self.a.clear()
             if data is None or len(data[0]) == 0:
-                self.a[count].plot([0],[0],[0],[0])
+                self.a.plot([0,1],[0,1],[0,1],[0,0])
             else:
-                self.a[count].plot(data[0], data[1], data[0], data[2])
+                self.a.plot(data[0], data[1], data[0], data[2])
 
-            count = count + 1
-
-        for x in range(6):
-            data = self.mah.get_data(2,x)
-            self.a[count].clear()
-            if data is None or len(data[0]) == 0:
-                self.a[count].plot([0, 1, 2, 3],[0, 1, 2, 3],[0, 1, 2, 3],[0, 1, 4, 9])
-            else:
-                self.a[count].plot(data[0], data[1], data[0], data[2])
-
-            count = count + 1
-
-
-        data = self.mah.get_data(3,0)
-        self.a[count].clear()
-        if data is None or len(data[0]) == 0:
-            self.a[count].plot([0, 1, 2, 3],[0, 1, 2, 3],[0, 1, 2, 3],[0, 1, 4, 9])
-        else:
-            self.a[count].plot(data[0], data[1], data[0], data[2])
 
     def animate(self, i):
         self.update()
@@ -243,7 +225,7 @@ class StartPage(tk.Frame):
         tk.Frame.__init__(self, parent)
         label = tk.Label(self, text="Start Page", font=LARGE_FONT)
         label.pack(pady=10, padx=10)
-        button1 = tk.Button(self, text="PID Value", command=lambda: controller.show_frame(StartPage))
+        button1 = tk.Button(self, text="Tune Pid", command=lambda: controller.show_frame(TunePage, 0))
         button1.pack()
 
         canvas = FigureCanvasTkAgg(controller.f, self)
@@ -253,6 +235,24 @@ class StartPage(tk.Frame):
         toolbar = NavigationToolbar2TkAgg(canvas, self)
         toolbar.update()
         canvas._tkcanvas.pack()
+
+class TunePage(tk.Frame):
+    def __init__(self, parent, controller, mah):
+        self.mah = mah
+        tk.Frame.__init__(self, parent)
+        label = tk.Label(self, text="Tune Page", font=LARGE_FONT)
+        label.pack(pady=10, padx=10)
+        button1 = tk.Button(self, text="Start Page", command=lambda: controller.show_frame(StartPage, -1))
+        button1.pack()
+
+        canvas = FigureCanvasTkAgg(controller.f, self)
+        canvas.show()
+        canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+
+        toolbar = NavigationToolbar2TkAgg(canvas, self)
+        toolbar.update()
+        canvas._tkcanvas.pack()
+
 
 if __name__ == "__main__":
     data = {'sensors':

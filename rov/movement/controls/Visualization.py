@@ -1,159 +1,78 @@
-import tkinter as tk
-from tkinter.filedialog import askopenfilename
-from tkinter import *
-import pandas as pd
-import subprocess
-import webbrowser
-import sys
+class Visualization(tk.Tk):
+    def __init__(self, mah, *args, **kwargs):
+        self.mah = mah
+        self.f = Figure(figsize=(5,5), dpi=100)
+        self.graph = 0
 
-from Algorithm_Handler import Master_Algorithm_Handler
+        self.a = self.f.add_subplot(1,1,1)
 
-
-def create_window():
-    window = tk.Tk()
-
-def generate_data():
-    from random import *
-    
-    buffer = 0.005
-    # last time
-    lt = time.time()
-    
-    data = {'sensors':
-            {
-                'imu' :
-                {
-                    'linear-acceleration' :
-                    {
-                        'x' : 1,
-                        'y' : 1
-                        },
-                    'euler' :
-                    {
-                        'roll': 1,
-                        'pitch': 1,
-                        'yaw': 1
-                    }
-                },
-                'pressure' :
-                {
-                    'pressure': 1
-                }
-            }
-        }
-    
-    def rand():
-        return (random() / 5.0) + 0.9
-    
-    def rand2():
-        return random() * 0.001 - 0.0005
-    
-    def update_data(user_input, data, lt):
-        dt = time.time() - lt
-        lt = time.time()
-        data['sensors']['imu']['linear-acceleration']['x'] += user_input[0] * dt * rand() + rand2()
-        data['sensors']['imu']['linear-acceleration']['y'] += user_input[1] * dt * rand() + rand2()
-        data['sensors']['pressure']['pressure'] += user_input[2] * dt * rand() + rand2()
-        data['sensors']['imu']['euler']['roll'] += user_input[3] * dt * rand() + rand2()
-        data['sensors']['imu']['euler']['pitch'] += user_input[4] * dt * rand() + rand2()
-        data['sensors']['imu']['euler']['yaw'] += user_input[5] * dt * rand() + rand2()
-        if data['sensors']['imu']['euler']['roll'] > 360:
-            data['sensors']['imu']['euler']['roll'] -= 360
-        elif data['sensors']['imu']['euler']['roll'] < 0:
-            data['sensors']['imu']['euler']['roll'] += 360
-    
-    def position(data):
-        position = [0,0,0,0,0,0]
-        
-        position[0] = data['sensors']['imu']['linear-acceleration']['x']
-        position[1] = data['sensors']['imu']['linear-acceleration']['y']
-        position[2] = data['sensors']['pressure']['pressure']
-        position[3] = data['sensors']['imu']['euler']['roll']
-        position[4] = data['sensors']['imu']['euler']['pitch']
-        position[5] = data['sensors']['imu']['euler']['yaw']
-    
-        return position
-    
-    def sensor_data():
-        return data['sensors']
-    
-    # initializes a control algorithm with the desired position of 4 for the z parameter
-    assert 0 == 0
-    
-    # initializes a control algorithm with the desired position of 4 for the z parameter
-    frozen = [1,2,1,2,1,2]
-    user_input = [0,0,0,0,0,0]
-    mah = Master_Algorithm_Handler(frozen, sensor_data())
-    for i in range(100):
-        time.sleep(buffer)
-        update_data(mah.master(user_input, frozen), data, lt)
-    time.sleep(buffer)
-    
-    user_input = [0.5, 0.1, 0.2, 0.3, 0.4, 0.5]
-    mah = Master_Algorithm_Handler(frozen, sensor_data())
-    for i in range(100):
-        time.sleep(buffer)
-        update_data(mah.master(user_input, frozen), data, lt)
-    for i in range(6):
-        time.sleep(buffer)
-    
-    frozen = [2,1,2,1,2,1]
-    user_input = [0.5, 0.1, 0.2, 0.3, 0.21, 0.14]
-    
-    for i in range(100):
-        time.sleep(buffer)
-        update_data(mah.master(user_input, frozen), data, lt)
-    for i in range(6):
-        time.sleep(buffer)
-        mah.master(user_input, frozen)[i]
-    
-    frozen = [1,2,1,2,1,2]
-    user_input = [0.5, 0.1, 0.2, 0.3, 0.21, 0.14]
-    
-    for i in range(100):
-        time.sleep(buffer)
-        update_data(mah.master(user_input, frozen), data, lt)
-    for i in range(6):
-        time.sleep(buffer)
-        mah.master(user_input, frozen)[i]
-    
-    frozen = [3,3,3,3,3,3]
-    user_input = [0.5, 0.1, 0.2, 0.3, 0.21, 0.14]
-    
-    for i in range(100):
-        time.sleep(buffer)
-        update_data(mah.master(user_input, frozen), data, lt)
-    for i in range(6):
-        time.sleep(buffer)
-        mah.master(user_input, frozen)[i]   
-    
-
-root = tk.Tk()
-tk.Label(root, text='File Path').grid(row=0, column=0)
-v = tk.StringVar()
-entry = tk.Entry(root, textvariable=v).grid(row=0, column=1)
+        #self.update()
 
 
+        tk.Tk.__init__(self, *args, **kwargs)
+        container = tk.Frame(self)
+        container.pack(side="top", fill="both", expand = True)
+        container.grid_rowconfigure(0, weight=1)
+        container.grid_columnconfigure(0, weight=1)
 
-tk.Button(root, text='Browse Data Set',command=mah.plot_data).grid(row=1, column=0)
-tk.Button(root, text='Close',command=root.destroy).grid(row=1, column=1)
-
-tk.Button(root, text='Graph 1', command=graph_1).grid(row=3, column=0) # Call the graph_1 function
-tk.Button(root, text='Graph 2', command=doNothing).grid(row=3, column=1)
-tk.Button(root, text='Graph 3', command=doNothing).grid(row=3, column=2)
-tk.Button(root, text='Graph 4', command=doNothing).grid(row=3, column=3)
+        self.frames = {}
+        frame = StartPage(container, self, mah)
+        self.frames[StartPage] = frame
+        frame.grid(row=0, column=0, sticky="nsew")
+        self.show_frame(StartPage, -1)
 
 
-menu =  Menu(root)
-root.config(menu=menu)
-subMenu = Menu(menu)
-menu.add_cascade(label="File",menu=subMenu)
-subMenu.add_command(label="New", command=create_window)
-subMenu.add_command(label="Open", command=doNothing)
-subMenu.add_command(label="Restart", command=doNothing)
-subMenu.add_command(label="Exit", command=doNothing)
-editMenu = Menu(menu)
-menu.add_cascade(label = "Help", menu=editMenu)
-editMenu.add_command(label="Help", command=doNothing)
+    def show_frame(self, cont, graph):
+        self.graph = graph
+        frame = self.frames[cont]
+        frame.tkraise()
 
-root.mainloop()
+    def update(self):
+        if (self.graph != -1):
+            x = ( self.graph / 6 ) + 1
+            y = self.graph - (6 * x)
+            data = self.mah.get_data(x,y)
+            self.a.clear()
+            if data is None or len(data[0]) == 0:
+                self.a.plot([0,1],[0,1],[0,1],[0,0])
+            else:
+                self.a.plot(data[0], data[1], data[0], data[2])
+
+
+    def animate(self, i):
+        self.update()
+
+class StartPage(tk.Frame):
+
+    def __init__(self, parent, controller, mah):
+        self.mah = mah
+        tk.Frame.__init__(self, parent)
+        label = tk.Label(self, text="Start Page", font=LARGE_FONT)
+        label.pack(pady=10, padx=10)
+        button1 = tk.Button(self, text="Tune Pid", command=lambda: controller.show_frame(TunePage, 0))
+        button1.pack()
+
+        canvas = FigureCanvasTkAgg(controller.f, self)
+        canvas.show()
+        canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+
+        toolbar = NavigationToolbar2TkAgg(canvas, self)
+        toolbar.update()
+        canvas._tkcanvas.pack()
+
+class TunePage(tk.Frame):
+    def __init__(self, parent, controller, mah):
+        self.mah = mah
+        tk.Frame.__init__(self, parent)
+        label = tk.Label(self, text="Tune Page", font=LARGE_FONT)
+        label.pack(pady=10, padx=10)
+        button1 = tk.Button(self, text="Start Page", command=lambda: controller.show_frame(StartPage, -1))
+        button1.pack()
+
+        canvas = FigureCanvasTkAgg(controller.f, self)
+        canvas.show()
+        canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+
+        toolbar = NavigationToolbar2TkAgg(canvas, self)
+        toolbar.update()
+        canvas._tkcanvas.pack()
