@@ -31,7 +31,7 @@ class Cameras(object):
             # variable to change the port
             x = 1 
             for dev in devs:
-                tempin = 'input_uvc.so -f {framerate} -r {resolution} -d {device}'.format(framerate=self.framerate, resolution=self.resolution, device=dev)
+                tempin = 'input_uvc.so -r {resolution} -d {device}'.format( resolution=self.resolution, device=dev)
                 try:
                     output = 'output_http.so -p {port} {web}'.format(
                         port=port+x,
@@ -52,7 +52,7 @@ class Cameras(object):
         
         self.brightness = brightness
         self.contrast = contrast
-        self.input = ['input_uvc.so -f {framerate} -r {resolution} -d {device}'.format(framerate=self.framerate, resolution=self.resolution, device=d) for d in self.devices]
+        self.input = ['input_uvc.so -r {resolution} -d {device}'.format( resolution=self.resolution, device=d) for d in self.devices]
         self.status = 'killed'
 
     def start(self):
@@ -97,3 +97,10 @@ class Cameras(object):
 
 if __name__ == '__main__':
     cam = Cameras().start()
+    time.sleep(2)
+    print "Cameras Running"
+    print "To access Cameras go into your browser and go to"
+    print "<ip of rov>:{}/?action=stream_<camnumber>".format(cam.port)
+    raw_input("to kill cameras press enter")
+    cam.stop()
+

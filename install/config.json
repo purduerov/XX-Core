@@ -5,14 +5,19 @@
         "gcc",
         "python",
         "python-dev",
-        "python-pip"
+        "python-pip",
+        "python-tk"
+    ],
+    "modules": [
+	    "bcm2835-v4l2"
     ],
     "aptget-hw": [
         "python-smbus",
         "libffi-dev",
         "i2c-tools",
         "wiringpi",
-        "python-numpy"
+        "python-numpy",
+	"python-matplotlib"
     ],
     "aptget-cam": [
         "libjpeg8-dev",

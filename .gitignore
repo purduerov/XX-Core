@@ -9,6 +9,13 @@ __pycache__/
 # C extensions
 *.so
 
+surface/pakfront/bin/*
+surface/pakfront/src/*
+surface/pakfront/pkg/*
+surface/pakfrontpid
+surface/log.txt
+tcptostdin*
+
 *.babelrc
 .vscode/
 

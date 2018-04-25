@@ -17,10 +17,12 @@ export default class ForceScale extends Component {
 
     rendData(val, inv, key) {
         //console.log(this.props.scales[key]);
-        let scalescpy = this.props.scales;      //props aren't 
+        var scalescpy = this.props.scales;      //props aren't
+        var invcpy = this.props.invert;
         scalescpy[key] = val;
+        invcpy[key] = inv;
         //scalescpy[key].invert = inv;
-        this.props.rend(scalescpy);
+        this.props.rend(scalescpy, invcpy);
     }
 
     rendLeftScales() {
@@ -30,6 +32,7 @@ export default class ForceScale extends Component {
                     <SliderControl min="0" max="100" indx={ val }
                         power={ this.props.scales[val] } rend={ this.rendData }
                         name={ 'Force '+val.slice(-1) } key={ 'force'+val }
+                        invert={this.props.invert[val]}
                     />
                 );
             }
@@ -43,6 +46,7 @@ export default class ForceScale extends Component {
                     <SliderControl min="0" max="100" indx={ val }
                         power={ this.props.scales[val] } rend={ this.rendData }
                         name={ 'Force '+val } key={ 'force'+val }
+                        invert={this.props.invert[val]}
                     />
                 );
             }
@@ -53,7 +57,7 @@ export default class ForceScale extends Component {
         return (
             <div className={ styles.container } >
                 <div className={ styles.fullAll } >
-                    <SliderControl min="0" max="100" key={ 'force master' } indx={ 'master' } power={ this.props.scales['master'] } rend={ this.rendData } name={ 'Force master' } />
+                    <SliderControl min="0" max="100" key={ 'force master' } indx={ 'master' } power={ this.props.scales['master'] } rend={ this.rendData } name={ 'Force master' } invert={this.props.invert.master}/>
                     <div className={ styles.halfLeft } > { this.rendLeftScales() } </div>
                     <div className={ styles.halfRight } > { this.rendRightScales() } </div>
                 </div>

@@ -28,15 +28,15 @@ class Master_Algorithm_Handler():
     # COMPARE THE ACTIVATION LOGIC
     def __init__(self, activate, sensors): # refer to the XX-Core/frontend/src/packets.js
         self._dof_control = [0,0,0,0,0,0] # HOLDS THE OUTPUT FOR MOVEMENT
-        self._dof_names = ['x', 'y', 'z', 'roll', 'pitch', 'yaw'] 
+        self._dof_names = ['x', 'y', 'z', 'roll', 'pitch', 'yaw']
         self._freeze = [] # CONTAINS THE POSITION STABILIZERS
-        self._movement = [] # CONTAINS THE MOVEMENT STABILIZERS 
+        self._movement = [] # CONTAINS THE MOVEMENT STABILIZERS
         self._freeze_height = HeightStabilizer(sensors)
         self._prev_activate = activate # USED TO SEE IF FREEZE IS TOGGLED
-        
+
         for i in range(6):
             # ACTIVATES IF IT SHOULD BE USED
-            self._freeze.append(PositionStabilizer(i, sensors)) 
+            self._freeze.append(PositionStabilizer(i, sensors))
             self._movement.append(SpeedStabilizer(i, sensors))
             # ACTIVATES IT IF IT SHOULD BE USED
             if activate[i]:
@@ -53,7 +53,7 @@ class Master_Algorithm_Handler():
 
     def master(self, desired_thrust_in, activate): # "MAIN" CONTROL HANDLER
         for i in range(6):
-            # CHECK IF FROZEN WAS TOGGLED TO TOGGLE CONTROLS  
+            # CHECK IF FROZEN WAS TOGGLED TO TOGGLE CONTROLS
             if ((activate[i] == 2) != (self._prev_activate[i] == 2)):
                 self._movement[i].toggle()
             if ((activate[i] == 1) != (self._prev_activate[i] == 1)):
@@ -89,7 +89,7 @@ class Master_Algorithm_Handler():
 # -----------------------------------------------------
 #                   GRAPHS DATA
 # -----------------------------------------------------
-   
+
     # USES MATPLOTLIB TO GRAPH ALGORITHM DATA
     def plot_data(self):
         count = 1
@@ -106,7 +106,7 @@ class Master_Algorithm_Handler():
                 plt.title('Movement: ' + self._dof_names[alg._dof])
                 plt.plot(alg.get_data()[0], alg.get_data()[1], 'r', alg.get_data()[0], alg.get_data()[2], 'b')
                 count += 1
-        
+
         if self._freeze_height.has_data():
             plt.subplot(4, 4, count)
             plt.title('Height Control')
@@ -129,7 +129,7 @@ if __name__ == "__main__":
             {
                 'imu' :
                 {
-                    'linear-acceleration' :
+                    'linear_acceleration' :
                     {
                         'x' : 1,
                         'y' : 1
@@ -149,5 +149,5 @@ if __name__ == "__main__":
         }
 
     master = Master_Algorithm_Handler([0,0,0,0,0,0], data['sensors'])
-    master.master([0,0,0,0,0,0], [True,True,True,True,True,True])
+    master.master([1,0,0,0,0,0], [0,0,0,0,0,0])
     print(data)
