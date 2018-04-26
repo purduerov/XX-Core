@@ -63,7 +63,7 @@ class HeightStabilizer(Algorithm):
             x = -1 * pitch * value
             y = roll * value
             c = 1 - math.pow(roll, 2) - math.pow(pitch, 2)
-            
+
             if c < 0:
                 c = 0
 
@@ -78,6 +78,7 @@ class HeightStabilizer(Algorithm):
             if self._count == 0:
                 self._graph_data[0].append(0)
                 self._has_data = True
+                
             else:
                 self._graph_data[0].append(self._graph_data[0][self._count - 1] + delta_time)
             self._graph_data[1].append(self._current_position(self._dof))

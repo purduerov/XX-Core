@@ -128,6 +128,19 @@ class Master_Algorithm_Handler():
         data = alg.get_data()
         return data
 
+    def clear_data(self, alg):
+        x = ( alg / 6 ) + 1
+        y = alg - (6 * x) + 6
+
+        if x == 1:
+            self._freeze[y].clear_data()
+            
+        if x == 2:
+            self._movement[y].clear_data()
+
+        if x == 3:
+            self._freeze_height.clear_data()
+
     # USES MATPLOTLIB TO GRAPH ALGORITHM DATA
     def plot_data(self):
         count = 1

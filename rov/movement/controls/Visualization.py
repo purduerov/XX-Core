@@ -141,7 +141,7 @@ class TunePage(tk.Frame):
         canvas = FigureCanvasTkAgg(controller.f, self)
         canvas.show()
         canvas.get_tk_widget().grid(column=x, row=y, rowspan=7, columnspan=7)
-    
+
         x = 3
         y = 0
         self.p_value = tk.Label(self, text='', font=LARGE_FONT)
@@ -168,8 +168,11 @@ class TunePage(tk.Frame):
         self.pid_button.grid(column=x, row=y, columnspan=2, rowspan=2)
         x = x + 2
 
-        self.graph = tk.Label(self, text='', font=LARGE_FONT)
-        self.graph.grid(column=x, row=y)
+        self.clear = tk.Button(self, text='Clear Data', command=lambda: self.mah.clear_data(self.controller.graph))
+        self.clear.grid(column=x)
+
+        #self.graph = tk.Label(self, text='', font=LARGE_FONT)
+        #self.graph.grid(column=x, row=y)
 
         self.update_pid()
 
@@ -190,7 +193,7 @@ class TunePage(tk.Frame):
         self.p_value.config(text=p)
         self.i_value.config(text=i)
         self.d_value.config(text=d)
-        self.graph.config(text=str(self.controller.graph))
+        #self.graph.config(text=str(self.controller.graph))
 
     def set_pid(self):
         try:
@@ -199,7 +202,7 @@ class TunePage(tk.Frame):
             d = float(self.d_input.get())
         except:
             return
-        
+
         self.mah.tune(self.controller.graph, 0, p)
         self.mah.tune(self.controller.graph, 1, i)
         self.mah.tune(self.controller.graph, 2, d)

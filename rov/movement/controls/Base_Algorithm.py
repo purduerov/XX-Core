@@ -52,26 +52,26 @@ class Algorithm():
     def _current_position(self, dof):
         if dof == 0:
             self._last_position[dof] = self._position[dof]
-            self._position[dof] = self._sensor['imu']['linear-acceleration']['x'] 
+            self._position[dof] = self._sensor['imu']['linear-acceleration']['x']
             return self._position[dof]
-    
+
         elif dof == 1:
             self._last_position[dof] = self._position[dof]
             self._position[dof] = self._sensor['imu']['linear-acceleration']['y']
             return self._position[dof]
-    
+
         elif dof == 2:
             self._last_position[dof] = self._position[dof]
             self._position[dof] = self._sensor['pressure']['pressure']
             return self._position[dof]
-    
-        elif dof == 3: 
+
+        elif dof == 3:
             self._last_position[dof] = self._position[dof]
             position = self._sensor['imu']['euler']['roll']
             self._jump(position, dof)
             self._position[dof] = position + self._factor[dof] * self._degrees
             return self._position[dof]
-    
+
         elif dof == 4:
             self._last_position[dof] = self._position[dof]
             position = self._sensor['imu']['euler']['pitch']
@@ -88,29 +88,29 @@ class Algorithm():
 
     def _position_raw(self, dof):
         position = 0
-        
+
         if dof == 0:
-            position = self._sensor['imu']['linear-acceleration']['x'] 
+            position = self._sensor['imu']['linear-acceleration']['x']
 
         elif dof == 1:
             position = self._sensor['imu']['linear-acceleration']['y']
-    
+
         elif dof == 2:
             position = self._sensor['pressure']['pressure']
-    
-        elif dof == 3: 
+
+        elif dof == 3:
             position = self._sensor['imu']['euler']['roll']
-    
+
         elif dof == 4:
             position = self._sensor['imu']['euler']['pitch']
 
         elif dof == 5:
             position = self._sensor['imu']['euler']['yaw']
 
-        if dof > 2: 
+        if dof > 2:
             if position >= 180:
                 position -= 360
-        
+
         return position
 
     def _error(self):
@@ -119,7 +119,7 @@ class Algorithm():
     # checks if algorithm is activated
     def get_activated(self):
         return self._activated
- 
+
     # activated algorithm
     def activate(self):
         self._activated = True
@@ -144,8 +144,13 @@ class Algorithm():
     def has_data(self):
         return self._has_data
 
-    def calculate(self):         
-        pass        
+    def clear_data(self):
+        self._graph_data = [[], [], []]
+        self._has_data = False
+        self._count = 0
+
+    def calculate(self):
+        pass
 
     #tuner
     def get_p(self):
@@ -156,7 +161,7 @@ class Algorithm():
 
     def get_i(self):
         return self._pid.get_i()
-    
+
     def set_i(self, value):
         self._pid.set_i(value)
 
