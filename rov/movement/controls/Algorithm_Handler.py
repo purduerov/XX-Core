@@ -5,6 +5,8 @@ from Visualization import Visualization
 import matplotlib.pyplot as plt
 import threading
 import matplotlib.animation as animation
+import time
+from random import *
 
 # from Tkinter import ttk
 
@@ -237,8 +239,38 @@ if __name__ == "__main__":
             }
         }
 
+    lt = time.time()
+
+    def rand():
+        return 1#(random() / 5.0) + 0.9
+
+    def rand2():
+        return random() * 0.001# - 0.0005
+
+    def update_data(user_input, data, lt):
+        dt = time.time() - lt
+        lt = time.time()
+        data['sensors']['imu']['linear-acceleration']['x'] += user_input[0] * dt * rand() + rand2() * dt
+        data['sensors']['imu']['linear-acceleration']['y'] += user_input[1] * dt * rand() + rand2() * dt
+
+        data['sensors']['pressure']['pressure'] += user_input[2] * dt * rand() + rand2() * dt
+
+        data['sensors']['imu']['euler']['roll'] += user_input[3] * dt * rand() + rand2() * dt
+
+        data['sensors']['imu']['euler']['pitch'] += user_input[4] * dt * rand() + rand2() * dt
+
+        data['sensors']['imu']['euler']['yaw'] += user_input[5] * dt * rand() + rand2() * dt
+
+        if data['sensors']['imu']['euler']['roll'] > 360:
+            data['sensors']['imu']['euler']['roll'] -= 360
+        elif data['sensors']['imu']['euler']['roll'] < 0:
+            data['sensors']['imu']['euler']['roll'] += 360
+
 
     master = Master_Algorithm_Handler([0,0,0,0,0,0], data['sensors'])
+    user_input = [0,0,0,0,0,0]
+    frozen = [1,1,1,2,2,2]
     print(data)
     while True:
-        master.master([1,0,0,0,0,0], [1,1,0,0,0,0])
+        update_data(master.master(user_input, frozen), data, lt)
+        time.sleep(0.2)
