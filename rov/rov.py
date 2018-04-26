@@ -116,11 +116,11 @@ class ROV(object):
             print ("Failed updating things")
             print ("Exception: %s" % e)
             print (traceback.format_exc())
-        self.dearclient['obs'] = self.obs.data
-        self.dearclient['esc'] = self.esc.data
+        self.dearclient['sensors']['obs'] = self.obs.data
+        self.dearclient['sensors']['esc'] = self.esc.data
 
-        self.dearclient['imu'] = self.imu.data
-        self.dearclient['pressure'] = self.pressure.data
+        self.dearclient['sensors']['imu'] = self.imu.data
+        self.dearclient['sensors']['pressure'] = self.pressure.data
         self.dearclient['thrusters'] = self.controls.data
         #self.dearclient['obs_tool'] = self.obs_tool.data
         #self.dearclient['manipulator'] = self.manipulator.data
