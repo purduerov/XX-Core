@@ -75,7 +75,7 @@ class ROV(object):
         # Tools
         self.manipulator = Manipulator(self.motor_control, pin=MANIPULATOR_PIN)
         self.obs_tool = OBS_Tool(self.motor_control, pin=OBS_TOOL_PIN)
-        self.elecmagnet = Elecmagnet(self.motor_control,pin=ELECMAG_PIN)
+        self.elecmagnet = Elecmagnet()
         self.transmitter = Transmitter(self.motor_control, pin=TRANSMITTER_PIN)
 
         # Sensors
@@ -96,7 +96,9 @@ class ROV(object):
             # self.thruster_control.stop()
 
         try:
-            print(self.dearflask)
+            print(self.dearclient)
+            print('')
+            self.elecmagnet.update(df['magnet'])
             # Updating Sensors
             self.imu.update()
             self.pressure.update()
@@ -108,7 +110,6 @@ class ROV(object):
             self.obs_tool.update(self.dearflask['obs_tool'])
             self.manipulator.update(self.dearflask['manipulator'])
             #print df, '\n', self.dearclient, '\n\n'
-            self.elecmagnet.update(df['magnet'])
             self.transmitter.update(df['transmitter'])
 
         except Exception as e:
@@ -131,11 +132,11 @@ class ROV(object):
                                                                             minu=str(now.minute).zfill(2),
                                                                             sec=str(now.second).zfill(2),
                                                                             usec=str(now.microsecond).zfill(6))
-        print (self.dearclient['last_update'])
-        print (self.dearflask['thrusters']['desired_thrust'])
-        for i in self.dearclient['thrusters']:
-            print ("%.3f " % i, end='')
-        print ('')
+        #print (self.dearclient['last_update'])
+        #print (self.dearflask['thrusters']['desired_thrust'])
+        #for i in self.dearclient['thrusters']:
+        #    print ("%.3f " % i, end='')
+        #print ('')
 
         with self._data_lock:
             self._data['dearclient'] = self.dearclient
