@@ -28,10 +28,10 @@ class Visualization(tk.Tk):
         container.grid_columnconfigure(0, weight=1)
 
         self.frames = {}
-        frame = StartPage(container, self, mah)
-        self.frames[StartPage] = frame
+        frame = TunePage(container, self, mah)
+        self.frames[TunePage] = frame
         frame.grid(row=0, column=0, sticky="nsew")
-        self.show_frame(StartPage, -1)
+        self.show_frame(TunePage, 1)
 
 
     def show_frame(self, cont, graph):
@@ -77,8 +77,32 @@ class TunePage(tk.Frame):
         tk.Frame.__init__(self, parent)
         label = tk.Label(self, text="Tune Page", font=LARGE_FONT)
         label.pack(pady=10, padx=10)
-        button1 = tk.Button(self, text="Start Page", command=lambda: controller.show_frame(StartPage, -1))
+        button0 = tk.Button(self, text="Start Page", command=lambda: controller.show_frame(TunePage, 0))
+        button0.pack()
+        button1 = tk.Button(self, text="Start Page", command=lambda: controller.show_frame(TunePage, 1))
         button1.pack()
+        button2 = tk.Button(self, text="Start Page", command=lambda: controller.show_frame(TunePage, 2))
+        button2.pack()
+        button3 = tk.Button(self, text="Start Page", command=lambda: controller.show_frame(TunePage, 3))
+        button3.pack()
+        button4 = tk.Button(self, text="Start Page", command=lambda: controller.show_frame(TunePage, 4))
+        button4.pack()
+        button5 = tk.Button(self, text="Start Page", command=lambda: controller.show_frame(TunePage, 5))
+        button5.pack()
+        button6 = tk.Button(self, text="Start Page", command=lambda: controller.show_frame(TunePage, 6))
+        button6.pack()
+        button7 = tk.Button(self, text="Start Page", command=lambda: controller.show_frame(TunePage, 7))
+        button7.pack()
+        button8 = tk.Button(self, text="Start Page", command=lambda: controller.show_frame(TunePage, 8))
+        button8.pack()
+        button9 = tk.Button(self, text="Start Page", command=lambda: controller.show_frame(TunePage, 9))
+        button9.pack()
+        button10 = tk.Button(self, text="Start Page", command=lambda: controller.show_frame(TunePage, 10))
+        button10.pack()
+        button11 = tk.Button(self, text="Start Page", command=lambda: controller.show_frame(TunePage, 11))
+        button11.pack()
+        button12 = tk.Button(self, text="Start Page", command=lambda: controller.show_frame(TunePage, 12))
+        button12.pack()
 
         canvas = FigureCanvasTkAgg(controller.f, self)
         canvas.show()
