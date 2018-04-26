@@ -78,50 +78,97 @@ class TunePage(tk.Frame):
         self.controller = controller
         self.mah = mah
         tk.Frame.__init__(self, parent)
+        x = 0
+        y = 0
         self.label = tk.Label(self, text=self.get_title(controller.graph), font=LARGE_FONT)
-        self.label.pack(pady=10, padx=10)
-
+        self.label.grid(column=x, row=y, columnspan=2, rowspan=2)
+        y = y + 2
 
         button0 = tk.Button(self, text=self.get_title(0), command=lambda: self.change(0))
-        button0.pack()
+        button0.grid(column=x, row=y)
+        y = y + 1
+
         button1 = tk.Button(self, text=self.get_title(1), command=lambda: self.change(1))
-        button1.pack()
+        button1.grid(column=x, row=y)
+        y = y + 1
+
         button2 = tk.Button(self, text=self.get_title(2), command=lambda: self.change(2))
-        button2.pack()
+        button2.grid(column=x, row=y)
+        y = y + 1
+
         button3 = tk.Button(self, text=self.get_title(3), command=lambda: self.change(3))
-        button3.pack()
+        button3.grid(column=x, row=y)
+        y = y + 1
+
         button4 = tk.Button(self, text=self.get_title(4), command=lambda: self.change(4))
-        button4.pack()
+        button4.grid(column=x, row=y)
+        y = y + 1
+
         button5 = tk.Button(self, text=self.get_title(5), command=lambda: self.change(5))
-        button5.pack()
+        button5.grid(column=x, row=y)
+        x = x + 1
+        y = y - 5
+
         button6 = tk.Button(self, text=self.get_title(6), command=lambda: self.change(6))
-        button6.pack()
+        button6.grid(column=x, row=y)
+        y = y + 1
+
         button7 = tk.Button(self, text=self.get_title(7), command=lambda: self.change(7))
-        button7.pack()
+        button7.grid(column=x, row=y)
+        y = y + 1
+
         button8 = tk.Button(self, text=self.get_title(8), command=lambda: self.change(8))
-        button8.pack()
+        button8.grid(column=x, row=y)
+        y = y + 1
+
         button9 = tk.Button(self, text=self.get_title(9), command=lambda: self.change(9))
-        button9.pack()
+        button9.grid(column=x, row=y)
+        y = y + 1
+
         button10 = tk.Button(self, text=self.get_title(10), command=lambda: self.change(10))
-        button10.pack()
+        button10.grid(column=x, row=y)
+        y = y + 1
+
         button11 = tk.Button(self, text=self.get_title(11), command=lambda: self.change(11))
-        button11.pack()
+        button11.grid(column=x, row=y)
+        y = y + 1
+
         button12 = tk.Button(self, text=self.get_title(12), command=lambda: self.change(12))
-        button12.pack()
+        button12.grid(column=x-1, row=y, columnspan=2)
 
-
+        y = y - 6
+        x = x + 1
         canvas = FigureCanvasTkAgg(controller.f, self)
         canvas.show()
-        canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+        canvas.get_tk_widget().grid(column=x, row=y, rowspan=7, columnspan=7)
+    
 
-        toolbar = NavigationToolbar2TkAgg(canvas, self)
-        toolbar.update()
-        canvas._tkcanvas.pack()
+        pvalue =3 
+        self.p_value = tk.Label(self, text='', font=LARGE_FONT)
+        self.p_value.grid(column=3, row=0)
+        self.i_value = tk.Label(self, text='', font=LARGE_FONT)
+        self.i_value.grid(column=4, row=0)
+        self.d_value = tk.Label(self, text='', font=LARGE_FONT)
+        self.d_value.grid(column=5, row=0)
+        self.update_pid()
+        #toolbar = NavigationToolbar2TkAgg(canvas, self)
+        #toolbar.update()
+        #canvas._tkcanvas.pack()
 
     def change(self, index):
         self.controller.graph = index
         self.label.config(text=self.get_title(index))
-        self.label.pack(pady=10, padx=10)
+        self.update_pid()
+
+    def update_pid(self):
+
+        p = "P: " + str(self.mah.get_pid(self.controller.graph, 0))
+        i = "I: " + str(self.mah.get_pid(self.controller.graph, 1))
+        d = "D: " + str(self.mah.get_pid(self.controller.graph, 2))
+
+        self.p_value.config(text=p)
+        self.i_value.config(text=i)
+        self.d_value.config(text=d)
 
     def get_title(self, number):
         x = ( number / 6 ) + 1

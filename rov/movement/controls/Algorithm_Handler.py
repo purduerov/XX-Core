@@ -184,7 +184,7 @@ class Master_Algorithm_Handler():
             if pid == 2:
                 self._freeze_height.d = value
 
-    def getPid(self, pid):
+    def get_pid(self, alg, pid):
         x = ( alg / 6 ) + 1
         y = alg - (6 * x)
 
