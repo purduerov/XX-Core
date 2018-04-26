@@ -35,20 +35,25 @@ data = {'sensors':
     }
 
 def rand():
-    return (random() / 5.0) + 0.9
+    return 1#(random() / 5.0) + 0.9
 
 def rand2():
-    return random() * 0.001 - 0.0005
+    return random() * 0.001# - 0.0005
 
 def update_data(user_input, data, lt):
     dt = time.time() - lt
     lt = time.time()
-    data['sensors']['imu']['linear-acceleration']['x'] += user_input[0] * dt * rand() + rand2()
-    data['sensors']['imu']['linear-acceleration']['y'] += user_input[1] * dt * rand() + rand2()
-    data['sensors']['pressure']['pressure'] += user_input[2] * dt * rand() + rand2()
-    data['sensors']['imu']['euler']['roll'] += user_input[3] * dt * rand() + rand2()
-    data['sensors']['imu']['euler']['pitch'] += user_input[4] * dt * rand() + rand2()
-    data['sensors']['imu']['euler']['yaw'] += user_input[5] * dt * rand() + rand2()
+    data['sensors']['imu']['linear-acceleration']['x'] += user_input[0] * dt * rand() + rand2() * dt
+    data['sensors']['imu']['linear-acceleration']['y'] += user_input[1] * dt * rand() + rand2() * dt
+
+    data['sensors']['pressure']['pressure'] += user_input[2] * dt * rand() + rand2() * dt
+
+    data['sensors']['imu']['euler']['roll'] += user_input[3] * dt * rand() + rand2() * dt
+
+    data['sensors']['imu']['euler']['pitch'] += user_input[4] * dt * rand() + rand2() * dt
+
+    data['sensors']['imu']['euler']['yaw'] += user_input[5] * dt * rand() + rand2() * dt
+
     if data['sensors']['imu']['euler']['roll'] > 360:
         data['sensors']['imu']['euler']['roll'] -= 360
     elif data['sensors']['imu']['euler']['roll'] < 0:

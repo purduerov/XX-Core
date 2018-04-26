@@ -158,59 +158,59 @@ class Master_Algorithm_Handler():
     # BUT THIS WILL DO FOR NOW AND WILL BE QUICK TO CHANGE
     def tune(self, alg, pid, value):
         x = ( alg / 6 ) + 1
-        y = alg - (6 * x)
+        y = alg - (6 * x) + 6
 
         if x == 1:
             if pid == 0:
-                self._freeze[y].p = value
+                self._freeze[y].set_p(value)
             if pid == 1:
-                self._freeze[y].i = value
+                self._freeze[y].set_i(value)
             if pid == 2:
-                self._freeze[y].d = value
+                self._freeze[y].set_d(value)
 
         if x == 2:
             if pid == 0:
-                self._movement[y].p = value
+                self._movement[y].set_p(value)
             if pid == 1:
-                self._movement[y].i = value
+                self._movement[y].set_i(value)
             if pid == 2:
-                self._movement[y].d = value
+                self._movement[y].set_d(value)
 
         if x == 3:
             if pid == 0:
-                self._freeze_height.p = value
+                self._freeze_height.set_p(value)
             if pid == 1:
-                self._freeze_height.i = value
+                self._freeze_height.set_i(value)
             if pid == 2:
-                self._freeze_height.d = value
+                self._freeze_height.set_d(value)
 
     def get_pid(self, alg, pid):
         x = ( alg / 6 ) + 1
-        y = alg - (6 * x)
+        y = alg - (6 * x) + 6
 
         if x == 1:
             if pid == 0:
-                return self._freeze[y].p
+                return self._freeze[y].get_p()
             if pid == 1:
-                return self._freeze[y].i
+                return self._freeze[y].get_i()
             if pid == 2:
-                return self._freeze[y].d
+                return self._freeze[y].get_d()
 
         if x == 2:
             if pid == 0:
-                return self._movement[y].p
+                return self._movement[y].get_p()
             if pid == 1:
-                return self._movement[y].i
+                return self._movement[y].get_i()
             if pid == 2:
-                return self._movement[y].d
+                return self._movement[y].get_d()
 
         if x == 3:
             if pid == 0:
-                return self._freeze_height.p
+                return self._freeze_height.get_p()
             if pid == 1:
-                return self._freeze_height.i
+                return self._freeze_height.get_i()
             if pid == 2:
-                return self._freeze_height.d
+                return self._freeze_height.get_d()
 
 
 if __name__ == "__main__":
@@ -237,6 +237,8 @@ if __name__ == "__main__":
             }
         }
 
+
     master = Master_Algorithm_Handler([0,0,0,0,0,0], data['sensors'])
-    master.master([1,0,0,0,0,0], [0,0,0,0,0,0])
     print(data)
+    while True:
+        master.master([1,0,0,0,0,0], [1,1,0,0,0,0])

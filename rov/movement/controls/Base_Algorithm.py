@@ -148,29 +148,23 @@ class Algorithm():
         pass        
 
     #tuner
-    @property
-    def p(self):
-        return self._pid.p
+    def get_p(self):
+        return self._pid.get_p()
 
-    @p.setter
-    def p(self, value):
-        self._pid.p = value
+    def set_p(self, value):
+        self._pid.set_p(value)
 
-    @property
-    def i(self):
-        return self._pid.i
+    def get_i(self):
+        return self._pid.get_i()
     
-    @i.setter
-    def i(self, value):
-        self._pid.i = value
+    def set_i(self, value):
+        self._pid.set_i(value)
 
-    @property
-    def d(self):
-        return self._pid.d
+    def get_d(self):
+        return self._pid.get_d()
 
-    @d.setter
-    def d(self, value):
-        self._pid.d = value
+    def set_d(self, value):
+        self._pid.set_d(value)
 
     def _reset(self):
         pass

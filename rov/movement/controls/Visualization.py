@@ -142,15 +142,37 @@ class TunePage(tk.Frame):
         canvas.show()
         canvas.get_tk_widget().grid(column=x, row=y, rowspan=7, columnspan=7)
     
-
-        pvalue =3 
+        x = 3
+        y = 0
         self.p_value = tk.Label(self, text='', font=LARGE_FONT)
-        self.p_value.grid(column=3, row=0)
+        self.p_value.grid(column=x, row=y)
+        x = x + 1
         self.i_value = tk.Label(self, text='', font=LARGE_FONT)
-        self.i_value.grid(column=4, row=0)
+        self.i_value.grid(column=x, row=y)
+        x = x + 1
         self.d_value = tk.Label(self, text='', font=LARGE_FONT)
-        self.d_value.grid(column=5, row=0)
+        self.d_value.grid(column=x, row=y)
+        x = 3
+        y = 1
+        self.p_input = tk.Entry(self)
+        self.p_input.grid(column=x, row=y)
+        x = x + 1
+        self.i_input = tk.Entry(self)
+        self.i_input.grid(column=x, row=y)
+        x = x + 1
+        self.d_input = tk.Entry(self)
+        self.d_input.grid(column=x, row=y)
+        x = x + 1
+        y = 0
+        self.pid_button = tk.Button(self, text='set PID values', command=lambda: self.set_pid())
+        self.pid_button.grid(column=x, row=y, columnspan=2, rowspan=2)
+        x = x + 2
+
+        self.graph = tk.Label(self, text='', font=LARGE_FONT)
+        self.graph.grid(column=x, row=y)
+
         self.update_pid()
+
         #toolbar = NavigationToolbar2TkAgg(canvas, self)
         #toolbar.update()
         #canvas._tkcanvas.pack()
@@ -161,7 +183,6 @@ class TunePage(tk.Frame):
         self.update_pid()
 
     def update_pid(self):
-
         p = "P: " + str(self.mah.get_pid(self.controller.graph, 0))
         i = "I: " + str(self.mah.get_pid(self.controller.graph, 1))
         d = "D: " + str(self.mah.get_pid(self.controller.graph, 2))
@@ -169,6 +190,22 @@ class TunePage(tk.Frame):
         self.p_value.config(text=p)
         self.i_value.config(text=i)
         self.d_value.config(text=d)
+        self.graph.config(text=str(self.controller.graph))
+
+    def set_pid(self):
+        try:
+            p = float(self.p_input.get())
+            i = float(self.i_input.get())
+            d = float(self.d_input.get())
+        except:
+            return
+        
+        self.mah.tune(self.controller.graph, 0, p)
+        self.mah.tune(self.controller.graph, 1, i)
+        self.mah.tune(self.controller.graph, 2, d)
+        self.update_pid()
+
+
 
     def get_title(self, number):
         x = ( number / 6 ) + 1

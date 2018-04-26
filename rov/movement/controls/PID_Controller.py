@@ -3,7 +3,7 @@ import numpy
 class PID(object):
     """A generic PID loop controller which can be inherited and used in other control algorithms"""
 
-    def __init__(self, startingError, p=1, i=0, d=0):
+    def __init__(self, startingError, p=0, i=0, d=0):
         """Return a instance of a un tuned PID controller"""
         self._p = p
         self._i = i
@@ -30,26 +30,20 @@ class PID(object):
     def reset_esum(self):
         self._esum = 0
 
-    @property
-    def p(self):
+    def get_p(self):
         return self._p
 
-    @p.setter
-    def p(self, value):
+    def set_p(self, value):
         self._p = value
 
-    @property
-    def i(self):
+    def get_i(self):
         return self._i
 
-    @i.setter
-    def i(self, value):
+    def set_i(self, value):
         self._i = value
 
-    @property
-    def d(self):
+    def get_d(self):
         return self._d
 
-    @d.setter
-    def d(self, value):
+    def set_d(self, value):
         self._d = value
