@@ -4,30 +4,36 @@ import sys
 bus = smbus.SMBus(1)
 
 class Elecmagnet(object):
-    def __init__(self, address = 0x2b):
+    def __init__(self, address = 0x2c):
         self.address = address
-        self.electrostate = bus.read_byte(self.address)
+        self.setelectrostate(bus.read_byte(self.address))
         if self.electrostate:
-                self.electrostate = bus.read_byte(self.address)
+                self.setelectrostate(bus.read_byte(self.address))
+
+    def setelectrostate(self,ret):
+        print ret
+        if ret == 10 :
+                self.electrostate = False 
+        else:
+                self.electrostate = True
 
     def update(self, state):
         if state:
-                if not self.electrostate:
-                        self.electrostate = bus.read_byte(self.address)
+            if not self.electrostate:
+                self.setelectrostate(bus.read_byte(self.address))
         else:
-                if electrostate:
-                        bus.read_byte(self.address)
-                        self.electrostate = bus.read_byte(self.address)
+            if self.electrostate:
+                self.setelectrostate(bus.read_byte(self.address))
 if __name__ == "__main__":
-        state = false
+        mode = False
         elec = Elecmagnet()
         while True:
-                if state:
+                if mode:
                         print "turning on"
                 else:
                         print "turning off"
-                elec.update(state)
-                state = ~state
-                time.sleep(1) 
+                elec.update(mode)
+                mode = ~mode
+                time.sleep(60) 
                 
         
