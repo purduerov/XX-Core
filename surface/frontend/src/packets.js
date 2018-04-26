@@ -18,7 +18,7 @@ module.exports = {
                 0 // yaw:    left or right rotation
             ],
             disabled_thrusters: [false, false, false, false, false, false, false, false],
-            inverted_thrusters: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+            inverted_thrusters: [1.0, 1.0, -1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
         },
         manipulator: { power: 0.0 },
         obs_tool: { power: 0.0 },

@@ -54,8 +54,8 @@ class App extends React.Component {
             tool_scales: {
                 manipulator: {
                     master: .50,
-                    open: .50,
-                    close: .50,
+                    open: 0.15,
+                    close: 0.15,
                     invert: 1
                 },
                 obs_tool: {   //unused, we're stepping it up and then down manually
@@ -99,7 +99,7 @@ class App extends React.Component {
                       <Spawn />
                     </Card>
                     <Card title="CV view window">
-                      <CVview desc={"We love Ben, yes we do"} tdist={[0.0, 0.1, 0.2, 0.4, 0.7, 0.8]} ></CVview>
+                      <CVview desc={"Purdo drugs, Purdon't pass classes"} tdist={[0.0, 0.1, 0.2, 0.4, 0.7, 0.8]} ></CVview>
                     </Card>
                   </div>
                   <div className="data-column">
@@ -140,6 +140,9 @@ class App extends React.Component {
                     </Card>
                     <Card title="IMU">
                       <ShowObject obj={this.state.dearclient.sensors.imu} />
+                    </Card>
+                    <Card title="Pressure">
+                      <ShowObject obj={this.state.dearclient.sensors.pressure} />
                     </Card>
 
                   </div>
