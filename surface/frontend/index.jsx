@@ -54,8 +54,8 @@ class App extends React.Component {
             tool_scales: {
                 manipulator: {
                     master: .50,
-                    open: 0.15,
-                    close: 0.15,
+                    open: 0.4,
+                    close: 0.4,
                     invert: 1
                 },
                 obs_tool: {   //unused, we're stepping it up and then down manually
@@ -243,14 +243,12 @@ class App extends React.Component {
 
     // upon new data, save it locally
     socket.on("dearclient", (data) => {    //Updates the data sent back from the server
-        this.flaskcpy.last_update = data.last_update;
-        console.log(this.clientcpy);
-        console.log(data);
+        //this.flaskcpy.last_update = data.last_update;
         this.clientcpy = data;
-        //console.log(data)
+        //console.log(this.state.dearclient);
+        //console.log(data);
         this.setState({
-          dearclient: this.clientcpy,
-          dearflask: this.flaskcpy
+          dearclient: this.clientcpy
         });
     });
 
