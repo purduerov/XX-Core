@@ -30,19 +30,21 @@ class Visualization(tk.Tk):
         self.frames = {}
         frame = TunePage(container, self, mah)
         self.frames[TunePage] = frame
+
         frame.grid(row=0, column=0, sticky="nsew")
-        self.show_frame(TunePage, 1)
+        self.show_frame(TunePage, 0)
 
 
     def show_frame(self, cont, graph):
         self.graph = graph
+
         frame = self.frames[cont]
         frame.tkraise()
 
     def update(self):
         if (self.graph != -1):
             x = ( self.graph / 6 ) + 1
-            y = self.graph - (6 * x)
+            y = self.graph - (6 * x) + 6
             data = self.mah.get_data(x,y)
             self.a.clear()
             if data is None or len(data[0]) == 0:
@@ -60,7 +62,7 @@ class StartPage(tk.Frame):
         tk.Frame.__init__(self, parent)
         label = tk.Label(self, text="Start Page", font=LARGE_FONT)
         label.pack(pady=10, padx=10)
-        button1 = tk.Button(self, text="Tune Pid", command=lambda: controller.show_frame(TunePage, 0))
+        button1 = tk.Button(self, text="Tune Pid", command=lambda: controller.show_frame(TunePage, 1))
         button1.pack()
 
         canvas = FigureCanvasTkAgg(controller.f, self)
@@ -73,36 +75,40 @@ class StartPage(tk.Frame):
 
 class TunePage(tk.Frame):
     def __init__(self, parent, controller, mah):
+        self.controller = controller
         self.mah = mah
         tk.Frame.__init__(self, parent)
-        label = tk.Label(self, text="Tune Page", font=LARGE_FONT)
-        label.pack(pady=10, padx=10)
-        button0 = tk.Button(self, text="Start Page", command=lambda: controller.show_frame(TunePage, 0))
+        self.label = tk.Label(self, text=self.get_title(controller.graph), font=LARGE_FONT)
+        self.label.pack(pady=10, padx=10)
+
+
+        button0 = tk.Button(self, text=self.get_title(0), command=lambda: self.change(0))
         button0.pack()
-        button1 = tk.Button(self, text="Start Page", command=lambda: controller.show_frame(TunePage, 1))
+        button1 = tk.Button(self, text=self.get_title(1), command=lambda: self.change(1))
         button1.pack()
-        button2 = tk.Button(self, text="Start Page", command=lambda: controller.show_frame(TunePage, 2))
+        button2 = tk.Button(self, text=self.get_title(2), command=lambda: self.change(2))
         button2.pack()
-        button3 = tk.Button(self, text="Start Page", command=lambda: controller.show_frame(TunePage, 3))
+        button3 = tk.Button(self, text=self.get_title(3), command=lambda: self.change(3))
         button3.pack()
-        button4 = tk.Button(self, text="Start Page", command=lambda: controller.show_frame(TunePage, 4))
+        button4 = tk.Button(self, text=self.get_title(4), command=lambda: self.change(4))
         button4.pack()
-        button5 = tk.Button(self, text="Start Page", command=lambda: controller.show_frame(TunePage, 5))
+        button5 = tk.Button(self, text=self.get_title(5), command=lambda: self.change(5))
         button5.pack()
-        button6 = tk.Button(self, text="Start Page", command=lambda: controller.show_frame(TunePage, 6))
+        button6 = tk.Button(self, text=self.get_title(6), command=lambda: self.change(6))
         button6.pack()
-        button7 = tk.Button(self, text="Start Page", command=lambda: controller.show_frame(TunePage, 7))
+        button7 = tk.Button(self, text=self.get_title(7), command=lambda: self.change(7))
         button7.pack()
-        button8 = tk.Button(self, text="Start Page", command=lambda: controller.show_frame(TunePage, 8))
+        button8 = tk.Button(self, text=self.get_title(8), command=lambda: self.change(8))
         button8.pack()
-        button9 = tk.Button(self, text="Start Page", command=lambda: controller.show_frame(TunePage, 9))
+        button9 = tk.Button(self, text=self.get_title(9), command=lambda: self.change(9))
         button9.pack()
-        button10 = tk.Button(self, text="Start Page", command=lambda: controller.show_frame(TunePage, 10))
+        button10 = tk.Button(self, text=self.get_title(10), command=lambda: self.change(10))
         button10.pack()
-        button11 = tk.Button(self, text="Start Page", command=lambda: controller.show_frame(TunePage, 11))
+        button11 = tk.Button(self, text=self.get_title(11), command=lambda: self.change(11))
         button11.pack()
-        button12 = tk.Button(self, text="Start Page", command=lambda: controller.show_frame(TunePage, 12))
+        button12 = tk.Button(self, text=self.get_title(12), command=lambda: self.change(12))
         button12.pack()
+
 
         canvas = FigureCanvasTkAgg(controller.f, self)
         canvas.show()
@@ -111,3 +117,33 @@ class TunePage(tk.Frame):
         toolbar = NavigationToolbar2TkAgg(canvas, self)
         toolbar.update()
         canvas._tkcanvas.pack()
+
+    def change(self, index):
+        self.controller.graph = index
+        self.label.config(text=self.get_title(index))
+        self.label.pack(pady=10, padx=10)
+
+    def get_title(self, number):
+        x = ( number / 6 ) + 1
+        y = number - (6 * x) + 6
+
+        if x == 1:
+            name = "Freeze: "
+        elif x == 2:
+            name = "Movement: "
+        elif x == 3:
+            return "HeightStabilizer"
+        if y == 0:
+            dof = 'X'
+        elif y == 1:
+            dof = 'Y'
+        elif y == 2:
+            dof = 'Z'
+        elif y == 3:
+            dof = 'Roll'
+        elif y == 4:
+            dof = 'Pitch'
+        elif y == 5:
+            dof = 'Yaw'
+
+        return name + dof
