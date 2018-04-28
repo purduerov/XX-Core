@@ -1,5 +1,6 @@
 from PID_Controller import PID
 from Base_Algorithm import Algorithm
+from PID_Constants import *
 import time
 import math
 
@@ -34,6 +35,16 @@ class HeightStabilizer(Algorithm):
     def __init__(self, sensor_data):
         Algorithm.__init__(self, 2, sensor_data)
         self._desired_position = 0
+
+        pid = HEIGHT_PID
+
+        p = pid.split(',')[0]
+        i = pid.split(',')[1]
+        d = pid.split(',')[2]
+
+        self.set_p(float(p))
+        self.set_i(float(i))
+        self.set_d(float(d))
 
     # calculates error for pid
     def _error(self):

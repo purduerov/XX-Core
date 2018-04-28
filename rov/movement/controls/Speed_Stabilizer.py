@@ -1,5 +1,6 @@
 from PID_Controller import PID
 from Base_Algorithm import Algorithm
+from PID_Constants import *
 import time
 
 # Control Algorithm
@@ -46,6 +47,27 @@ class SpeedStabilizer(Algorithm):
 
         # sets sensor data and the proper function to retrieve the right data from _sensor
         self._sensor = sensor_data
+
+        if parameter == 0:
+            pid = SPEED_PID_X
+        elif parameter == 1:
+            pid = SPEED_PID_Y
+        elif parameter == 2:
+            pid = SPEED_PID_Z
+        elif parameter == 3:
+            pid = SPEED_PID_ROLL
+        elif parameter == 4:
+            pid = SPEED_PID_PITCH
+        elif parameter == 5:
+            pid = SPEED_PID_YAW
+
+        p = pid.split(',')[0]
+        i = pid.split(',')[1]
+        d = pid.split(',')[2]
+
+        self.set_p(float(p))
+        self.set_i(float(i))
+        self.set_d(float(d))
 
 
     # calculates error for the pid

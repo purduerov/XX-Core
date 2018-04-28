@@ -2,6 +2,7 @@ from PID_Controller import PID
 from Base_Algorithm import Algorithm
 from PID_Constants import *
 import time
+
 # Control Algorithm
 # README:
 #   Initalize with the parameter and sensor data
@@ -33,6 +34,27 @@ class PositionStabilizer(Algorithm):
     def __init__(self, parameter, sensor_data):
         Algorithm.__init__(self, parameter, sensor_data)
         self._desired_position = 0
+        if parameter == 0:
+            pid = POSITION_PID_X
+        elif parameter == 1:
+            pid = POSITION_PID_Y
+        elif parameter == 2:
+            pid = POSITION_PID_Z
+        elif parameter == 3:
+            pid = POSITION_PID_ROLL
+        elif parameter == 4:
+            pid = POSITION_PID_PITCH
+        elif parameter == 5:
+            pid = POSITION_PID_YAW
+
+        p = pid.split(',')[0]
+        i = pid.split(',')[1]
+        d = pid.split(',')[2]
+
+        self.set_p(float(p))
+        self.set_i(float(i))
+        self.set_d(float(d))
+
 
     # calculates error for pid
     def _error(self):

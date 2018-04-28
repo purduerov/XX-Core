@@ -1,6 +1,5 @@
 from PID_Controller import PID
 import time
-
 # Control Algorithm
 # README:
 #   Initalize with the parameter and sensor data

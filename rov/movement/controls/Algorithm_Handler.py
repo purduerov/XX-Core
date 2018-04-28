@@ -274,6 +274,7 @@ class Master_Algorithm_Handler():
         pid_values.write("# Height Algorithm\n")
         alg = self._freeze_height
         pid = str(alg.get_p()) + ',' + str(alg.get_i()) + ',' + str(alg.get_d())
+        title = 'HEIGHT_PID'
         output = title + " = '" + pid + "'\n"
         pid_values.write(output)
         pid_values.close()
