@@ -134,7 +134,7 @@ class Master_Algorithm_Handler():
 
         if x == 1:
             self._freeze[y].clear_data()
-            
+
         if x == 2:
             self._movement[y].clear_data()
 
@@ -286,4 +286,4 @@ if __name__ == "__main__":
     print(data)
     while True:
         update_data(master.master(user_input, frozen), data, lt)
-        time.sleep(0.2)
+        time.sleep(0.02)

@@ -11,7 +11,7 @@ class PID(object):
         self._esum = 0              #Error sum for integral term
         self._le = startingError    #Last error value
         self._count = 0
-        
+
     def calculate(self, error, dt):
 
         """Calculates the output of the PID controller"""

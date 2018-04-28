@@ -164,12 +164,15 @@ class TunePage(tk.Frame):
         self.d_input.grid(column=x, row=y)
         x = x + 1
         y = 0
-        self.pid_button = tk.Button(self, text='set PID values', command=lambda: self.set_pid())
-        self.pid_button.grid(column=x, row=y, columnspan=2, rowspan=2)
-        x = x + 2
+        self.set_button = tk.Button(self, text='SET PID', command=lambda: self.set_pid())
+        self.set_button.grid(column=x, row=y, columnspan=1, rowspan=2)
+        x = x + 1
+
+        self.save_button = tk.Button(self, text='SAVE PID', command=lambda: self.save())
+        self.save_button.grid(column=x, row=y, columnspan=1, rowspan=2)
 
         self.clear = tk.Button(self, text='Clear Data', command=lambda: self.mah.clear_data(self.controller.graph))
-        self.clear.grid(column=x)
+        self.clear.grid(column=x, row=10)
 
         #self.graph = tk.Label(self, text='', font=LARGE_FONT)
         #self.graph.grid(column=x, row=y)
@@ -180,10 +183,18 @@ class TunePage(tk.Frame):
         #toolbar.update()
         #canvas._tkcanvas.pack()
 
+    def save(self):
+        print "TODO: make a save function"
+
     def change(self, index):
         self.controller.graph = index
         self.label.config(text=self.get_title(index))
-        self.update_pid()
+        p = "P: " + str(self.mah.get_pid(self.controller.graph, 0))
+        i = "I: " + str(self.mah.get_pid(self.controller.graph, 1))
+        d = "D: " + str(self.mah.get_pid(self.controller.graph, 2))
+        self.p_value.config(text=p)
+        self.i_value.config(text=i)
+        self.d_value.config(text=d)
 
     def update_pid(self):
         p = "P: " + str(self.mah.get_pid(self.controller.graph, 0))
@@ -193,6 +204,8 @@ class TunePage(tk.Frame):
         self.p_value.config(text=p)
         self.i_value.config(text=i)
         self.d_value.config(text=d)
+        self.mah.clear_data(self.controller.graph)
+
         #self.graph.config(text=str(self.controller.graph))
 
     def set_pid(self):
