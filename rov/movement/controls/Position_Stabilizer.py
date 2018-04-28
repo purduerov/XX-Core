@@ -1,7 +1,7 @@
 from PID_Controller import PID
 from Base_Algorithm import Algorithm
+from PID_Constants import *
 import time
-
 # Control Algorithm
 # README:
 #   Initalize with the parameter and sensor data
@@ -67,7 +67,7 @@ class PositionStabilizer(Algorithm):
             self._reset()
         return self._output
 
-    # resets time and position values
+# resets time and position values
     def _reset(self):
         self._pid.reset(0)
         self._desired_position = self._current_position(self._dof)

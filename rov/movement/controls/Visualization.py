@@ -66,7 +66,7 @@ class StartPage(tk.Frame):
         button1.pack()
 
         canvas = FigureCanvasTkAgg(controller.f, self)
-        canvas.show()
+        canvas.draw()
         canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
         toolbar = NavigationToolbar2TkAgg(canvas, self)
@@ -168,7 +168,7 @@ class TunePage(tk.Frame):
         self.set_button.grid(column=x, row=y, columnspan=1, rowspan=2)
         x = x + 1
 
-        self.save_button = tk.Button(self, text='SAVE PID', command=lambda: self.save())
+        self.save_button = tk.Button(self, text='SAVE PID', command=lambda: self.mah.save_pid())
         self.save_button.grid(column=x, row=y, columnspan=1, rowspan=2)
 
         self.clear = tk.Button(self, text='Clear Data', command=lambda: self.mah.clear_data(self.controller.graph))

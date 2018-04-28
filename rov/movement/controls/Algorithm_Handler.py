@@ -227,6 +227,56 @@ class Master_Algorithm_Handler():
             if pid == 2:
                 return self._freeze_height.get_d()
 
+    def save_pid(self):
+        pid_values = open('PID_Constants.py', 'w')
+        pid_values.write("# PID Values\n\n")
+        
+        pid_values.write("# Position Algorithms\n")
+        for i in range(6):
+            alg = self._freeze[i]
+            pid = str(alg.get_p()) + ',' + str(alg.get_i()) + ',' + str(alg.get_d())
+            title = "POSITION_PID_"
+            if i == 0:
+                output = title + "X = '" + pid + "'\n"
+            elif i == 1:
+                output = title + "Y = '" + pid + "'\n"
+            elif i == 2:
+                output = title + "Z = '" + pid + "'\n"
+            elif i == 3:
+                output = title + "ROLL = '" + pid + "'\n"
+            elif i == 4:
+                output = title + "PITCH = '" + pid + "'\n"
+            elif i == 5:
+                output = title + "YAW = '" + pid + "'\n"
+
+            pid_values.write(output)
+
+        pid_values.write("# Speed Algorithms\n")
+        for i in range(6):
+            alg = self._movement[i]
+            pid = str(alg.get_p()) + ',' + str(alg.get_i()) + ',' + str(alg.get_d())
+            title = "SPEED_PID_"
+            if i == 0:
+                output = title + "X = '" + pid + "'\n"
+            elif i == 1:
+                output = title + "Y = '" + pid + "'\n"
+            elif i == 2:
+                output = title + "Z = '" + pid + "'\n"
+            elif i == 3:
+                output = title + "ROLL = '" + pid + "'\n"
+            elif i == 4:
+                output = title + "PITCH = '" + pid + "'\n"
+            elif i == 5:
+                output = title + "YAW = '" + pid + "'\n"
+
+            pid_values.write(output)
+
+        pid_values.write("# Height Algorithm\n")
+        alg = self._freeze_height
+        pid = str(alg.get_p()) + ',' + str(alg.get_i()) + ',' + str(alg.get_d())
+        output = title + " = '" + pid + "'\n"
+        pid_values.write(output)
+        pid_values.close()
 
 if __name__ == "__main__":
     data = {'sensors':

@@ -14,8 +14,7 @@ import time
 # How to used Control Algorithm class:
 # 1. control = ControlAlorithm('roll')
 #   -Initially deactivated
-# 2. control.activate()
-# 3. output = control.calculate()
+# 2. control.activate() # 3. output = control.calculate()
 # 4. output will now contain an array of the suggested output
 # ex: [0, 0, 0, 0.5, 0, 0]
 # - If you wish to turn off the algorithm use: control.deactivate()
@@ -150,6 +149,9 @@ class Algorithm():
         self._count = 0
 
     def calculate(self):
+        pass
+
+    def save_pid(self):
         pass
 
     #tuner
