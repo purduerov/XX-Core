@@ -3,7 +3,7 @@ import numpy
 class PID(object):
     """A generic PID loop controller which can be inherited and used in other control algorithms"""
 
-    def __init__(self, startingError, p=0, i=0, d=0):
+    def __init__(self, startingError, p=1, i=0, d=0):
         """Return a instance of a un tuned PID controller"""
         self._p = p
         self._i = i

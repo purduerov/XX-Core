@@ -1,5 +1,6 @@
 from PID_Controller import PID
 import time
+
 # Control Algorithm
 # README:
 #   Initalize with the parameter and sensor data
@@ -13,7 +14,8 @@ import time
 # How to used Control Algorithm class:
 # 1. control = ControlAlorithm('roll')
 #   -Initially deactivated
-# 2. control.activate() # 3. output = control.calculate()
+# 2. control.activate()
+# 3. output = control.calculate()
 # 4. output will now contain an array of the suggested output
 # ex: [0, 0, 0, 0.5, 0, 0]
 # - If you wish to turn off the algorithm use: control.deactivate()
@@ -50,9 +52,9 @@ class Algorithm():
     def _current_position(self, dof):
         if dof == 0:
             self._last_position[dof] = self._position[dof]
-            self._position[dof] = self._sensor['imu']['linear-acceleration']['x']
+            self._position[dof] = self._sensor['imu']['linear-acceleration']['x'] 
             return self._position[dof]
-
+    
         elif dof == 1:
             self._last_position[dof] = self._position[dof]
             self._position[dof] = self._sensor['imu']['linear-acceleration']['y']
@@ -63,7 +65,7 @@ class Algorithm():
             self._position[dof] = self._sensor['pressure']['pressure']
             return self._position[dof]
 
-        elif dof == 3:
+        elif dof == 3: 
             self._last_position[dof] = self._position[dof]
             position = self._sensor['imu']['euler']['roll']
             self._jump(position, dof)
@@ -105,10 +107,10 @@ class Algorithm():
         elif dof == 5:
             position = self._sensor['imu']['euler']['yaw']
 
-        if dof > 2:
+        if dof > 2: 
             if position >= 180:
                 position -= 360
-
+        
         return position
 
     def _error(self):

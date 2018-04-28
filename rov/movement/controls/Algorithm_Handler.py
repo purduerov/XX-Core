@@ -8,8 +8,6 @@ import matplotlib.animation as animation
 import time
 from random import *
 
-# from Tkinter import ttk
-
 # Algorithm_Handler
 # -----------
 #   README:
@@ -37,6 +35,7 @@ class Master_Algorithm_Handler():
         self._launch_visual = launch_visual
         self._dof_control = [0,0,0,0,0,0] # HOLDS THE OUTPUT FOR MOVEMENT
 
+        self._dof_control = [0,0,0,0,0,0] # HOLDS THE OUTPUT FOR MOVEMENT
         self._dof_names = ['x', 'y', 'z', 'roll', 'pitch', 'yaw']
         self._freeze = [] # CONTAINS THE POSITION STABILIZERS
         self._movement = [] # CONTAINS THE MOVEMENT STABILIZERS
@@ -165,7 +164,6 @@ class Master_Algorithm_Handler():
 
         plt.show()
         plt.close()
-
 
 
     # ALLOWS TUNING OF THE PID VALUES WHEN TESTING

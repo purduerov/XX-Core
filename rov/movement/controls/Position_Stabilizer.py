@@ -89,7 +89,7 @@ class PositionStabilizer(Algorithm):
             self._reset()
         return self._output
 
-# resets time and position values
+    # resets time and position values
     def _reset(self):
         self._pid.reset(0)
         self._desired_position = self._current_position(self._dof)

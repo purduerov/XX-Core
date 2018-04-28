@@ -1,6 +1,7 @@
 import multiprocessing
 import os
-from json import load, loads
+from json import load, loads, dumps
+from pprint import pprint as pp
 
 from flask import Flask
 from flask_socketio import SocketIO
@@ -23,7 +24,9 @@ data = manager.dict()
 data["dearclient"] = {}
 
 with open("rov/packets.json","r") as fh:
-        data["dearflask"] =load(fh)["dearflask"]
+    l = load(fh)
+    data["dearflask"] = l["dearflask"]
+    data["dearclient"] = l["dearclient"]
 
 @socketio.on('connect')
 def on_connect():

@@ -69,7 +69,6 @@ class SpeedStabilizer(Algorithm):
         self.set_i(float(i))
         self.set_d(float(d))
 
-
     # calculates error for the pid
     def _error(self, speed):
         error = self._desired_speed - speed

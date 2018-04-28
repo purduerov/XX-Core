@@ -7,7 +7,7 @@ import time
 from rov.movement.controls.Algorithm_Handler import Master_Algorithm_Handler
 from random import *
 
-buffer = 0.5
+buffer = 0.005
 # last time
 lt = time.time()
 
