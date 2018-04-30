@@ -17,8 +17,7 @@ class Visualization(tk.Tk):
         self.graph = 0
 
         self.a = self.f.add_subplot(1,1,1)
-
-        #self.update()
+#self.update()
 
 
         tk.Tk.__init__(self, *args, **kwargs)
@@ -168,7 +167,7 @@ class TunePage(tk.Frame):
         self.set_button.grid(column=x, row=y, columnspan=1, rowspan=2)
         x = x + 1
 
-        self.save_button = tk.Button(self, text='SAVE PID', command=lambda: self.mah.save_pid())
+        self.save_button = tk.Button(self, text='SAVE PID', command=lambda: self.save())
         self.save_button.grid(column=x, row=y, columnspan=1, rowspan=2)
 
         self.clear = tk.Button(self, text='Clear Data', command=lambda: self.mah.clear_data(self.controller.graph))
@@ -184,7 +183,8 @@ class TunePage(tk.Frame):
         #canvas._tkcanvas.pack()
 
     def save(self):
-        print "TODO: make a save function"
+        self.mah.save_pid()
+        print "PID Saved"
 
     def change(self, index):
         self.controller.graph = index

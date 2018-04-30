@@ -7,6 +7,7 @@ import threading
 import matplotlib.animation as animation
 import time
 from random import *
+import os
 
 # Algorithm_Handler
 # -----------
@@ -156,7 +157,6 @@ class Master_Algorithm_Handler():
                 plt.title('Movement: ' + self._dof_names[alg._dof])
                 plt.plot(alg.get_data()[0], alg.get_data()[1], 'r', alg.get_data()[0], alg.get_data()[2], 'b')
                 count += 1
-
         if self._freeze_height.has_data():
             plt.subplot(4, 4, count)
             plt.title('Height Control')
@@ -226,7 +226,10 @@ class Master_Algorithm_Handler():
                 return self._freeze_height.get_d()
 
     def save_pid(self):
-        pid_values = open('PID_Constants.py', 'w')
+        script_dir = os.path.dirname(__file__)
+        rel_path = "PID_Constants.py"
+        path = os.path.join(script_dir, rel_path)
+        pid_values = open(path, 'w')
         pid_values.write("# PID Values\n\n")
         
         pid_values.write("# Position Algorithms\n")
