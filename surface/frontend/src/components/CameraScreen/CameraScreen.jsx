@@ -221,21 +221,6 @@ export default class Camera_view extends Component {
                             {this.renderSquare(0, 4)}
                         </div>
                 </div>
-                    <header className={styles.header}>
-                        <div className={styles.whiteText}>Screen2: {this.renderCamSel(1)}</div>
-                    </header>
-                <div className={styles.contentBox}>
-                    <div className={styles.column2}>
-                        {this.renderStream(1)}
-                    </div>
-                        <div className={styles.column1}>
-                            {this.renderSquare(1, 0)}
-                            {this.renderSquare(1, 1)}
-                            {this.renderSquare(1, 2)}
-                            {this.renderSquare(1, 3)}
-                            {this.renderSquare(1, 4)}
-                        </div>
-                </div>
             </div>
         );
     }
