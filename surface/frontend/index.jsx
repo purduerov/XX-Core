@@ -46,10 +46,8 @@ class App extends React.Component {
                 roll: 1, yaw: 1,
             },
             thruster_control: [   //invert is -1/1 for easy multiplication
-                {power: 100, invert: 1}, {power: 100, invert: 1},
-                {power: 100, invert: 1}, {power: 100, invert: 1},
-                {power: 100, invert: 1}, {power: 100, invert: 1},
-                {power: 100, invert: 1}, {power: 100, invert: 1}
+                {power: 100, invert:  1}, {power: 100, invert:  1}, {power: 100, invert: -1}, {power: 100, invert:  1},
+                {power: 100, invert:  1}, {power: 100, invert:  1}, {power: 100, invert:  1}, {power: 100, invert:  1}
             ],
             tool_scales: {
                 manipulator: {
