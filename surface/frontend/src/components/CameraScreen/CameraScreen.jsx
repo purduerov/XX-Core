@@ -189,7 +189,7 @@ export default class Camera_view extends Component {
 	var IP
         if(this.state.pxybypass){
                 port = 8080;
-                query = this.state.stream.query + strnum;
+                query = this.state.stream.query + this.state.camscreens[strnum];
 		IP = this.state.stream.rovip
         }else{
 		IP = this.state.stream.ip
