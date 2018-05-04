@@ -18,6 +18,7 @@ export default class ThrusterInverts extends Component {
         this.rendRightScales = this.rendRightScales.bind(this);
 
         that = this;
+        this.props.rend(this.state.scales);
     }
 
     rendData(val, inv, i) {

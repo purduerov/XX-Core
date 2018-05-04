@@ -64,6 +64,7 @@ export default class ShowObject extends Component {
     }
 
     render() {
+        //console.log(this.props.obj)
         return (
             <div className={styles.container}>
                 <div>
