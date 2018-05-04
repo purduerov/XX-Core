@@ -22,11 +22,18 @@ class controller(object):
 
         self.algorithm_handler = Master_Algorithm_Handler(self._data['dearflask']["thrusters"]["frozen"], self._data['dearclient']["sensors"])
 
+        self._previous_desired_thrust = [0,0,0,0,0,0]
+
         self.__thruster_values = [0,0,0,0,0,0,0,0]
 
     def update(self):
 
         self.algorithm_handler.master(self._data['dearflask']["thrusters"]["desired_thrust"], self._data['dearflask']["thrusters"]["disabled_thrusters"])
+
+        for value in self._data['dearflask']["thrusters"]["desired_thrust"]:
+            difference = self._data['dearflask']["thrusters"]["desired_thrust"] - self._previous_desired_thrust
+            if abs(difference) > (value / 4):
+                self._data['dearflask']["thrusters"]["desired_thrust"] = self._data['dearflask']["thrusters"]["desired_thrust"] - (3*difference/4)
 
         thruster_values = self.thrust_mapper.calculate(self._data['dearflask']["thrusters"]["desired_thrust"], self._data['dearflask']["thrusters"]["disabled_thrusters"])
 
@@ -37,6 +44,8 @@ class controller(object):
         self.thrusters.set(thruster_values)
 
         self.__thruster_values = thruster_values
+
+        self._previous_desired_thrust = self._data['dearflask']["thrusters"]["desired_thrust"]
 
         #print (self._data['dearflask']['thrusters']['desired_thrust'])
         #for i in thruster_values:
