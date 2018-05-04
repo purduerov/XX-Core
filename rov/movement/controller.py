@@ -4,6 +4,7 @@ from hardware.Thrusters_PWM_Control import Thrusters
 from mapper.Complex_1 import Complex
 # from mapper.Simple import Mapper
 from controls.Algorithm_Handler import Master_Algorithm_Handler
+import copy
 
 class controller(object):
     def __init__(self, motor_control, data):
@@ -30,12 +31,16 @@ class controller(object):
 
         self.algorithm_handler.master(self._data['dearflask']["thrusters"]["desired_thrust"], self._data['dearflask']["thrusters"]["disabled_thrusters"])
 
-        for value in self._data['dearflask']["thrusters"]["desired_thrust"]:
-            difference = self._data['dearflask']["thrusters"]["desired_thrust"] - self._previous_desired_thrust
-            if abs(difference) > (value / 4):
-                self._data['dearflask']["thrusters"]["desired_thrust"] = self._data['dearflask']["thrusters"]["desired_thrust"] - (3*difference/4)
+        new_desired_thrust = [0 for _ in range(len(self._data['dearflask']["thrusters"]["desired_thrust"]))]
 
-        thruster_values = self.thrust_mapper.calculate(self._data['dearflask']["thrusters"]["desired_thrust"], self._data['dearflask']["thrusters"]["disabled_thrusters"])
+        for index, value in enumerate(self._data['dearflask']["thrusters"]["desired_thrust"]):
+            new_desired_thrust[index] = self._data['dearflask']["thrusters"]["desired_thrust"][index]
+
+            difference = value - self._previous_desired_thrust[index]
+            if abs(difference) > (value / 2.0):
+                new_desired_thrust[index] -= (difference/2.0)
+
+        thruster_values = self.thrust_mapper.calculate(new_desired_thrust, self._data['dearflask']["thrusters"]["disabled_thrusters"])
 
         # Account for dynamically inverted thrusters:
         for i in range(0,8):
@@ -45,7 +50,7 @@ class controller(object):
 
         self.__thruster_values = thruster_values
 
-        self._previous_desired_thrust = self._data['dearflask']["thrusters"]["desired_thrust"]
+        self._previous_desired_thrust = copy.deepcopy(new_desired_thrust)
 
         #print (self._data['dearflask']['thrusters']['desired_thrust'])
         #for i in thruster_values:
@@ -63,7 +68,7 @@ class controller(object):
         """The value of each thruster returned as a list"""
         return self.thrusters.get()
 
-    def set_thruster_values(self, values):
+    def set_thruster_avlues(self, values):
         """A decorated function for setting the thruster values"""
         self.thrusters.set(values)
 
