@@ -37,7 +37,7 @@ class controller(object):
             new_desired_thrust[index] = self._data['dearflask']["thrusters"]["desired_thrust"][index]
 
             difference = value - self._previous_desired_thrust[index]
-            if abs(difference) > (value / 2.0):
+            if abs(difference) > abs(value / 2.0):
                 new_desired_thrust[index] -= (difference/2.0)
 
         thruster_values = self.thrust_mapper.calculate(new_desired_thrust, self._data['dearflask']["thrusters"]["disabled_thrusters"])
@@ -68,7 +68,7 @@ class controller(object):
         """The value of each thruster returned as a list"""
         return self.thrusters.get()
 
-    def set_thruster_avlues(self, values):
+    def set_thruster_values(self, values):
         """A decorated function for setting the thruster values"""
         self.thrusters.set(values)
 
