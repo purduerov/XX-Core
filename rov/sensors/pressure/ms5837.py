@@ -2,9 +2,9 @@ try:
     import smbus
 except:
     print 'Try sudo apt-get install python-smbus'
-    
-from time import sleep
 
+import time
+    
 # Models
 MODEL_02BA = 0
 MODEL_30BA = 1
@@ -71,7 +71,7 @@ class MS5837(object):
         self._bus.write_byte(self._MS5837_ADDR, self._MS5837_RESET)
         
         # Wait for reset to complete
-        sleep(0.01)
+        time.sleep(0.01)
         
         self._C = []
         
@@ -119,7 +119,7 @@ class MS5837(object):
         # Maximum conversion time increases linearly with oversampling
         # max time (seconds) ~= 2.2e-6(x) where x = OSR = (2^8, 2^9, ..., 2^13)
         # We use 2.5e-6 for some overhead
-        sleep(2.5e-6 * 2**(8+oversampling))
+        time.sleep(2.5e-6 * 2**(8+oversampling))
         
         d = self._bus.read_i2c_block_data(self._MS5837_ADDR, self._MS5837_ADC_READ, 3)
         self._D1 = d[0] << 16 | d[1] << 8 | d[2]
@@ -128,7 +128,7 @@ class MS5837(object):
         self._bus.write_byte(self._MS5837_ADDR, self._MS5837_CONVERT_D2_256 + 2*oversampling)
     
         # As above
-        sleep(2.5e-6 * 2**(8+oversampling))
+        time.sleep(2.5e-6 * 2**(8+oversampling))
  
         d = self._bus.read_i2c_block_data(self._MS5837_ADDR, self._MS5837_ADC_READ, 3)
         self._D2 = d[0] << 16 | d[1] << 8 | d[2]
@@ -161,25 +161,24 @@ class MS5837(object):
     def depth(self):
         return (self.pressure(UNITS_Pa)-101300)/(self._fluidDensity*9.80665)
 
-	# Depth relative to surface pressure
-	@property
-	def data(self):
-		self._data['depth'] = self._data['pressure']*self.conv
-		return self._data
+    # Depth relative to surface pressure
+    @property
+    def data(self):
+        self._data['depth'] = self._data['pressure']*self.conv
+        return self._data
     
-	# update pressure and temperature
-	def update(self):
-		time.sleep(0.5)
-		if self.sensor.read():
-			# pressure in mBars
-			pressure = self.sensor.pressure() - self.initPressure
-			self._data['pressure'] = pressure
+    # update pressure and temperature
+    def update(self):
+        if self.read():
+            # pressure in mBars
+	    pressure = self.pressure() - self.initPressure
+	    self._data['pressure'] = pressure
 
-			# temp in celsius
-			temperature = self.sensor.temperature()
-			self._data['temperature'] = temperature
-		else:
-			pass
+	    # temp in celsius
+	    temperature = self.temperature()
+	    self._data['temperature'] = temperature
+	else:
+	    pass
 
     # Altitude relative to MSL pressure
     def altitude(self):

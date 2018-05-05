@@ -4,8 +4,8 @@
 
 def Pressure():
     try:
-        from BlueRobotics_Bar30 import Pressure as BlueRobotics_Bar30
-        pressure = BlueRobotics_Bar30()
+        import ms5837
+        pressure = ms5837.MS5837()
         # Call update so it can try writing some bytes
         # It should fail fast when not connected
         pressure.update()
