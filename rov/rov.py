@@ -24,8 +24,8 @@ from hardware.servo import Servo
 from movement import controller
 
 from sensors import OBS, ESC
-from sensors.BNO055 import BNO055 as IMU
-from sensors.MS5827 import MS5827 as Pressure
+from sensors import IMU
+from sensors import Pressure
 
 from camera import Cameras
 
