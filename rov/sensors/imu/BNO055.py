@@ -1,7 +1,7 @@
 from Adafruit_BNO055 import BNO055
 
 
-class IMU(object):
+class BNO055(object):
     def __init__(self):
         # IMU Reset Pin connected to Pin 18
         self._bno = BNO055.BNO055(rst=18)
