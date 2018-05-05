@@ -23,7 +23,8 @@ from hardware.servo import Servo
 # Class that controls the rov movement
 from movement import controller
 
-from sensors import Pressure, IMU, OBS, ESC
+from sensors import IMU, OBS, ESC
+from sensors import MS5827 as Pressure
 
 from camera import Cameras
 
