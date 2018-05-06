@@ -17,7 +17,7 @@ class Visualization(tk.Tk):
         self.graph = 0
 
         self.a = self.f.add_subplot(1,1,1)
-#self.update()
+        #self.update()
 
 
         tk.Tk.__init__(self, *args, **kwargs)
@@ -32,6 +32,7 @@ class Visualization(tk.Tk):
 
         frame.grid(row=0, column=0, sticky="nsew")
         self.show_frame(TunePage, 0)
+        
 
 
     def show_frame(self, cont, graph):
@@ -50,6 +51,15 @@ class Visualization(tk.Tk):
                 self.a.plot([0,1],[0,1],[0,1],[0,0])
             else:
                 self.a.plot(data[0], data[1], data[0], data[2])
+
+            for i in range(7):
+                index = len(data) - i - 1
+                if index >= 0 and index < len(data):
+                    try:
+                        out = str(data[3][index])
+                        self.frames[TunePage].output[i].config(text=out)
+                    except:
+                        pass
 
     def animate(self, i):
         self.update()
@@ -139,7 +149,13 @@ class TunePage(tk.Frame):
         x = x + 1
         canvas = FigureCanvasTkAgg(controller.f, self)
         canvas.show()
-        canvas.get_tk_widget().grid(column=x, row=y, rowspan=7, columnspan=7)
+        canvas.get_tk_widget().grid(column=x, row=y, rowspan=7, columnspan=4)
+
+        x = x + 4
+        self.output = [tk.Label(self, text='', font=LARGE_FONT) for i in range(7)]
+        for out in self.output:
+            out.grid(column=x, row=y)
+            y = y + 1
 
         x = 3
         y = 0
