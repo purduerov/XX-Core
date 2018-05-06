@@ -93,6 +93,7 @@ class HeightStabilizer(Algorithm):
                 self._graph_data[0].append(self._graph_data[0][self._count - 1] + delta_time)
             self._graph_data[1].append(self._current_position(self._dof))
             self._graph_data[2].append(self._desired_position)
+            self._graph_data[3].append(value)
 
             self._count += 1
 

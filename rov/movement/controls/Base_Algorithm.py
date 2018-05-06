@@ -35,7 +35,7 @@ class Algorithm():
         self._degrees = 360
         self._previous_time = time.time()
         self._dof = 0
-        self._graph_data = [[], [], []]
+        self._graph_data = [[], [], [], []]
         self._count = 0
         self._factor = [0,0,0,0,0,0]
         self._last_position = [0,0,0,0,0,0]
@@ -145,7 +145,7 @@ class Algorithm():
         return self._has_data
 
     def clear_data(self):
-        self._graph_data = [[], [], []]
+        self._graph_data = [[], [], [], []]
         self._has_data = False
         self._count = 0
 

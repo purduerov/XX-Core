@@ -109,6 +109,7 @@ class SpeedStabilizer(Algorithm):
                 self._count += 1
                 self._graph_data[1].append(self._current_speed)
                 self._graph_data[2].append(self._desired_speed)
+                self._graph_data[3].append(self._value)
             else:
                self._ready = True
                self._output[self._dof] = 0.0
