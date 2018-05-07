@@ -95,6 +95,8 @@ class BNO055(object):
         temp = self._bno.read_temp()
         self._data['temp'] = temp
 
+        return True
+
     def get_calibration(self):
         return self._bno.get_calibration()
 
@@ -129,21 +131,20 @@ class BNO055(object):
 
 if __name__ == '__main__':
     #BNO055().main()
-    import BNO055
     import time
 
     def main():
         sensor = BNO055() # Default I2C bus is 1 (Raspberry Pi 3)
 
         # We must initialize the sensor before reading it
-        if not sensor.init():
+        if not sensor:
                 print "Sensor could not be initialized"
                 exit(1)
 
         # We have to read values from sensor to update pressure and temperature
-        if not sensor.read():
-            print "Sensor read failed!"
-            exit(1)
+        #if not sensor.read():
+        #    print "Sensor read failed!"
+        #    exit(1)
 
         #print("Pressure: %.2f mbar") % (sensor.pressure())
 
@@ -155,8 +156,8 @@ if __name__ == '__main__':
 
         # Spew readings
         while True:
-                if sensor.read():
-                    print("%s \t%0.2f \t%0.2f \t%0.2f \t%0.2f \t%0.2f \t%0.2f \t%0.2f \t%0.2f \t%0.2f \t%0.2f \t%0.2f \t%0.2f") % (time.strftime("%H:%M:%S", time.localtime()) + '.%d' % (time.time() % 1 * 1000),
+                if sensor.update():
+                    print("%s \t%0.2f \t%0.2f \t%0.2f \t\t%0.2f \t%0.2f \t%0.2f \t\t%0.2f \t%0.2f \t%0.2f \t\t%0.2f \t%0.2f \t%0.2f") % (time.strftime("%H:%M:%S", time.localtime()) + '.%d' % (time.time() % 1 * 1000),
                         sensor.roll(),
                         sensor.pitch(),
                         sensor.yaw(),
@@ -169,6 +170,8 @@ if __name__ == '__main__':
                         sensor.linear_acceleration_x(),
                         sensor.linear_acceleration_y(),
                         sensor.linear_acceleration_z())
+
+                    time.sleep(0.005)
                 else:
                         print "Sensor read failed!"
                         exit(1)

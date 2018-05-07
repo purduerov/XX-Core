@@ -164,7 +164,9 @@ class MS5837(object):
     def data(self):
         #self._data['depth'] = self._data['pressure']*self.conv
         #return self._data
-        return depth()
+        self._data['pressure'] = self.pressure()
+        self._data['depth'] = self.depth()
+        return self._data
     
     # update pressure and temperature
     def update(self):
