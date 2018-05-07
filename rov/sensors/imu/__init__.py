@@ -4,8 +4,8 @@
 
 def IMU():
     try:
-        from BNO055 import IMU as Adafruit_BNO055
-        return Adafruit_BNO055()
+        from BNO055 import BNO055
+        return BNO055()
     except Exception as e:
         print "Failed to Initialize Sparkfun IMU"
         print "Error: %s" % e.message

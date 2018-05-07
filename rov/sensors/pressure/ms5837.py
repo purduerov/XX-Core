@@ -63,10 +63,9 @@ class MS5837(object):
         self._D1 = 0
         self._D2 = 0
         
-    def init(self):
         if self._bus is None:
             "No bus!"
-            return False
+            return
         
         self._bus.write_byte(self._MS5837_ADDR, self._MS5837_RESET)
         
@@ -84,9 +83,8 @@ class MS5837(object):
         crc = (self._C[0] & 0xF000) >> 12
         if crc != self._crc4(self._C):
             print "PROM read error, CRC failed!"
-            return False
+            return
         
-        return True
         
         # for pressure calibration for depth
         PressDepthConv=0.01    
@@ -136,7 +134,7 @@ class MS5837(object):
         # Calculate compensated pressure and temperature
         # using raw ADC values and internal calibration
         self._calculate()
-        
+
         return True
     
     def setFluidDensity(self, denisty):
@@ -164,8 +162,9 @@ class MS5837(object):
     # Depth relative to surface pressure
     @property
     def data(self):
-        self._data['depth'] = self._data['pressure']*self.conv
-        return self._data
+        #self._data['depth'] = self._data['pressure']*self.conv
+        #return self._data
+        return depth()
     
     # update pressure and temperature
     def update(self):
@@ -267,17 +266,15 @@ class MS5837_02BA(MS5837):
         MS5837.__init__(self, MODEL_02BA, bus)
 
 if __name__ == '__main__':
-    #MS5837().main()
-    import ms5837
     import time
 
     def main():
-        sensor = ms5837.MS5837_30BA() # Default I2C bus is 1 (Raspberry Pi 3)
+        sensor = MS5837() # Default I2C bus is 1 (Raspberry Pi 3)
 
         # We must initialize the sensor before reading it
-        if not sensor.init():
-                print "Sensor could not be initialized"
-                exit(1)
+        #if not sensor.init():
+        #        print "Sensor could not be initialized"
+        #        exit(1)
 
         # We have to read values from sensor to update pressure and temperature
         if not sensor.read():
@@ -297,7 +294,7 @@ if __name__ == '__main__':
                 if sensor.read():
                     print("%s \t%0.1f \t%0.2f") % (time.strftime("%H:%M:%S", time.localtime()) + '.%d' % (time.time() % 1 * 1000),
                         sensor.pressure(), # Default is mbar (no arguments)
-                        sensor.temperature()) # Default is degrees C (no arguments)
+                        sensor.depth()) # Default is degrees C (no arguments)
                 else:
                         print "Sensor read failed!"
                         exit(1)
