@@ -19,14 +19,14 @@ class OBS(object):
         self.y_tilt = 2
         self.z_tilt = 0
         self.time = list(range(16))
-        self.amplitude = [1, 0.5, 0.34, 0.2, 0.6]
+        self.amplitude = [0 for i in range(16)]
 
         self.timesconnected = 0
         self.connectionstostart = 5
         self.lastconnectattempt = time()
         self.voltage = 0
         
-        self.lastupdate = 9999
+        self.lastupdate = 0
         self.status = Status.unconnected
 
     def update(self):
@@ -59,11 +59,15 @@ class OBS(object):
                                 self.x_tilt = float(found.group("xangle"))
                                 self.y_tilt = float(found.group("yangle"))
 
+                                self.lastupdate = time()
+
                         elif "DATA" in rawdata: 
                                 query = "DATA:(?P<points>.*)"
                                 found = re.find(query,rawdata)
-                                cleanedfound = m.group("points").strip("\n").replace(" ","").split(",")
-                                self.amplitude = [int(c) for c in cleanedfound]                    
+                                cleanedfound = found.group("points").strip("\n").replace(" ","").split(",")
+                                self.amplitude = [int(c) for c in cleanedfound]
+
+                                self.lastupdate = time()
                         else:
                                 self.status = Status.idkman
                 
@@ -80,7 +84,7 @@ class OBS(object):
                 'amplitude': self.amplitude
             },
             'meta': {
-                'lastupdate': self.lastupdate,
+                'lastupdate': time() - self.lastupdate,
                 'connectstat': self.status,
                 'obsvoltage': self.voltage
              }
