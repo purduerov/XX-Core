@@ -14,7 +14,8 @@ class Status():
 
 class OBS(object):
 
-    def __init__(self):
+    def __init__(self,ip = "192.168.42.1",connstart=5):
+        self.ip = ip
         self.x_tilt = 1
         self.y_tilt = 2
         self.z_tilt = 0
@@ -22,7 +23,7 @@ class OBS(object):
         self.amplitude = [0 for i in range(16)]
 
         self.timesconnected = 0 # How many times we have successfully connected
-        self.connectionstostart = 5 # How many successful connection checks in order to begin requesting
+        self.connectionstostart = connstart # How many successful connection checks in order to begin requesting
         self.lastconnectattempt = time() # the last time we attempted a connection
         
         self.lastupdate = 0 # Last time we recieved correct data
@@ -46,15 +47,15 @@ class OBS(object):
                 self.lastconnectattempt = connecttime
         if self.timesconnected > self.connectionstostart:
                 try:
-                        r = requests.get("http://192.168.4.1",timeout = 0.1)
-                except Exception(requests.exceptions.Timeout):
+                        r = requests.get("http://{}".format(self.ip),timeout = 0.1)
+                except:
                         self.status = Status.datanotthrough
                 else:
                         self.status = Status.datathrough
                         rawdata = r.text
                         if "Xangle" in rawdata:
                                 query = "Voltage\s+(?P<volt>-?\d+\.\d+)?.*Xangle=(?P<xangle>-?\d+\.\d+)?.*Yangle=(?P<yangle>-?\d+\.\d+)?.*Count=(?P<count>\d+)"
-                                found = re.find(query,rawdata)
+                                found = re.search(query,rawdata)
                                 if found != None:
                                         self.voltage = float(found.group("volt"))
                                         self.x_tilt = float(found.group("xangle"))
@@ -65,7 +66,7 @@ class OBS(object):
                                         self.status = Status.idkman
                         elif "DATA" in rawdata: 
                                 query = "DATA:(?P<points>.*)"
-                                found = re.find(query,rawdata)
+                                found = re.search(query,rawdata)
                                 if found != None:
                                         cleanedfound = found.group("points").strip("\n").replace(" ","").split(",")
                                         self.amplitude = [int(c) for c in cleanedfound]
@@ -76,6 +77,7 @@ class OBS(object):
                         else:
                                 self.status = Status.idkman
                 
+                print self.data
     @property
     def data(self):
         return {
@@ -96,6 +98,6 @@ class OBS(object):
         }
 
 if __name__ == "__main__":
-    obs = OBS()
+    obs = OBS( ip = "192.168.43.176")
     while True:
             obs.update()
