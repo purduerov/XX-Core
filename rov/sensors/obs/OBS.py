@@ -21,12 +21,12 @@ class OBS(object):
         self.time = list(range(16))
         self.amplitude = [0 for i in range(16)]
 
-        self.timesconnected = 0
-        self.connectionstostart = 5
-        self.lastconnectattempt = time()
-        self.voltage = 0
+        self.timesconnected = 0 # How many times we have successfully connected
+        self.connectionstostart = 5 # How many successful connection checks in order to begin requesting
+        self.lastconnectattempt = time() # the last time we attempted a connection
         
-        self.lastupdate = 0
+        self.lastupdate = 0 # Last time we recieved correct data
+        self.voltage = 0 # OBS voltage
         self.status = Status.unconnected
 
     def update(self):
@@ -55,19 +55,24 @@ class OBS(object):
                         if "Xangle" in rawdata:
                                 query = "Voltage\s+(?P<volt>-?\d+\.\d+)?.*Xangle=(?P<xangle>-?\d+\.\d+)?.*Yangle=(?P<yangle>-?\d+\.\d+)?.*Count=(?P<count>\d+)"
                                 found = re.find(query,rawdata)
-                                self.voltage = float(found.group("volt"))
-                                self.x_tilt = float(found.group("xangle"))
-                                self.y_tilt = float(found.group("yangle"))
+                                if found != None:
+                                        self.voltage = float(found.group("volt"))
+                                        self.x_tilt = float(found.group("xangle"))
+                                        self.y_tilt = float(found.group("yangle"))
 
-                                self.lastupdate = time()
-
+                                        self.lastupdate = time()
+                                else:
+                                        self.status = Status.idkman
                         elif "DATA" in rawdata: 
                                 query = "DATA:(?P<points>.*)"
                                 found = re.find(query,rawdata)
-                                cleanedfound = found.group("points").strip("\n").replace(" ","").split(",")
-                                self.amplitude = [int(c) for c in cleanedfound]
+                                if found != None:
+                                        cleanedfound = found.group("points").strip("\n").replace(" ","").split(",")
+                                        self.amplitude = [int(c) for c in cleanedfound]
 
-                                self.lastupdate = time()
+                                        self.lastupdate = time()
+                                else:
+                                        self.status = Status.idkman
                         else:
                                 self.status = Status.idkman
                 
