@@ -42,7 +42,6 @@ class OBS(object):
                         self.timesconnected = 0
                         self.status = Status.unconnected
                          
-                print ips
     
                 self.lastconnectattempt = connecttime
         if self.timesconnected > self.connectionstostart:
@@ -77,7 +76,6 @@ class OBS(object):
                         else:
                                 self.status = Status.idkman
                 
-                print self.data
     @property
     def data(self):
         return {
