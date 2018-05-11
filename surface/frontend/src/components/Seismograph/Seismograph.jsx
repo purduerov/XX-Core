@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import styles from "./Seismograph.css";
+import SeismographGraph from "./SeismographGraph.jsx";
+
 //import './GoogleChartLibrary.js';
 
 //google.charts.load('current', {'packages':['corechart']});
@@ -10,9 +12,12 @@ export default class Seismograph extends Component {
     constructor(props) {
         super(props);
 
+        this.state = {graph: false};
+
         //this.state = {time: props.time, amp: props.amplitude};
         console.log(props.time+", "+props.amplitude)
 
+        this.disableRend = this.disableRend.bind(this);
         this.rendTime = this.rendTime.bind(this);
         this.rendAmp = this.rendAmp.bind(this);
     }
@@ -46,6 +51,22 @@ export default class Seismograph extends Component {
       });
     }
 
+    disableRend() {
+      this.setState({
+        graph: false
+      });
+    }
+
+    componentDidMount() {
+      $("."+styles.spawnButton).click(() => {
+        this.setState({
+          graph: true
+        }, () => {
+          console.log(this.state.graph);
+        });
+      });
+    }
+
     render() {
         return (
         <div className={styles.container}>
@@ -57,6 +78,15 @@ export default class Seismograph extends Component {
             <div>Amplitudes:</div>
             {this.rendAmp()}
           </div>
+          {
+            this.state.graph ?
+            <SeismographGraph
+              amplitude={this.props.amplitude}
+              time={this.props.time}
+              rend={this.disableRend}
+            ></SeismographGraph> : <p>"Press the button to generate a graph"</p>
+          }
+          <button className={styles.spawnButton}>Spawn Graph</button>
         </div>
         );
     }

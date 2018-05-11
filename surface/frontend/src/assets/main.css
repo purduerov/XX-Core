@@ -11,6 +11,8 @@ hr {
 
 body {
     font-family: 'Roboto', Helvetica, Arial, sans-serif;
+    position: absolute;
+    z-index: -1;
 }
 
 h1 {
