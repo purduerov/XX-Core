@@ -1,10 +1,10 @@
-from Adafruit_BNO055 import BNO055
+from Adafruit_BNO055 import BNO055 as _BNO055
 
 
-class IMU(object):
+class BNO055(object):
     def __init__(self):
         # IMU Reset Pin connected to Pin 18
-        self._bno = BNO055.BNO055(rst=18)
+        self._bno = _BNO055.BNO055(rst=18)
 
         # Fail if it cannot be initialized
         if not self._bno.begin():
@@ -40,6 +40,37 @@ class IMU(object):
     def data(self):
         return self._data
 
+    def roll(self):
+        return self._data['euler']['roll']
+
+    def pitch(self):
+        return self._data['euler']['pitch']
+
+    def yaw(self):
+        return self._data['euler']['yaw']
+
+    def gyro_x(self):
+        return self._data['gyro']['x']
+    def gyro_y(self):
+        return self._data['gyro']['y']
+    def gyro_z(self):
+        return self._data['gyro']['z']
+
+    def acceleration_x(self):
+        return self._data['acceleration']['x']
+    def acceleration_y(self):
+        return self._data['acceleration']['y']
+    def acceleration_z(self):
+        return self._data['acceleration']['z']
+
+    def linear_acceleration_x(self):
+        return self._data['linear_acceleration']['x']
+    def linear_acceleration_y(self):
+        return self._data['linear_acceleration']['y']
+    def linear_acceleration_z(self):
+        return self._data['linear_acceleration']['z']
+
+
     def update(self):
         euler = self._bno.read_euler()
         self._data['euler']['yaw']     = euler[0]
@@ -63,6 +94,8 @@ class IMU(object):
 
         temp = self._bno.read_temp()
         self._data['temp'] = temp
+
+        return True
 
     def get_calibration(self):
         return self._bno.get_calibration()
@@ -95,4 +128,53 @@ class IMU(object):
             return False
 
         return True
+
+if __name__ == '__main__':
+    #BNO055().main()
+    import time
+
+    def main():
+        sensor = BNO055() # Default I2C bus is 1 (Raspberry Pi 3)
+
+        # We must initialize the sensor before reading it
+        if not sensor:
+                print "Sensor could not be initialized"
+                exit(1)
+
+        # We have to read values from sensor to update pressure and temperature
+        #if not sensor.read():
+        #    print "Sensor read failed!"
+        #    exit(1)
+
+        #print("Pressure: %.2f mbar") % (sensor.pressure())
+
+        #print("Temperature: %.2f C") % (sensor.temperature(ms5837.UNITS_Centigrade))
+
+        #time.sleep(2)
+
+        print("Time \tRoll \tPitch \tYaw \tGyro: \tx \ty \tz \tACC: \tx \ty \tz \tLinear: \tx \ty \tz")
+
+        # Spew readings
+        while True:
+                if sensor.update():
+                    print("%s \t%0.2f \t%0.2f \t%0.2f \t\t%0.2f \t%0.2f \t%0.2f \t\t%0.2f \t%0.2f \t%0.2f \t\t%0.2f \t%0.2f \t%0.2f") % (time.strftime("%H:%M:%S", time.localtime()) + '.%d' % (time.time() % 1 * 1000),
+                        sensor.roll(),
+                        sensor.pitch(),
+                        sensor.yaw(),
+                        sensor.gyro_x(),
+                        sensor.gyro_y(),
+                        sensor.gyro_z(),
+                        sensor.acceleration_x(),
+                        sensor.acceleration_y(),
+                        sensor.acceleration_z(),
+                        sensor.linear_acceleration_x(),
+                        sensor.linear_acceleration_y(),
+                        sensor.linear_acceleration_z())
+
+                    time.sleep(0.005)
+                else:
+                        print "Sensor read failed!"
+                        exit(1)
+       
+    main()
 

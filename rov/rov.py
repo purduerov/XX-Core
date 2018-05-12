@@ -23,7 +23,9 @@ from hardware.servo import Servo
 # Class that controls the rov movement
 from movement import controller
 
-from sensors import Pressure, IMU, OBS, ESC
+from sensors import OBS, ESC
+from sensors import IMU
+from sensors import Pressure
 
 from camera import Cameras
 

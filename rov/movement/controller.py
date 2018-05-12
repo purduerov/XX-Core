@@ -4,6 +4,7 @@ from hardware.Thrusters_PWM_Control import Thrusters
 from mapper.Complex_1 import Complex
 # from mapper.Simple import Mapper
 from controls.Algorithm_Handler import Master_Algorithm_Handler
+import copy
 
 class controller(object):
     def __init__(self, motor_control, data):
@@ -22,13 +23,24 @@ class controller(object):
 
         self.algorithm_handler = Master_Algorithm_Handler(self._data['dearflask']["thrusters"]["frozen"], self._data['dearclient']["sensors"])
 
+        self._previous_desired_thrust = [0,0,0,0,0,0]
+
         self.__thruster_values = [0,0,0,0,0,0,0,0]
 
     def update(self):
 
         self.algorithm_handler.master(self._data['dearflask']["thrusters"]["desired_thrust"], self._data['dearflask']["thrusters"]["disabled_thrusters"])
 
-        thruster_values = self.thrust_mapper.calculate(self._data['dearflask']["thrusters"]["desired_thrust"], self._data['dearflask']["thrusters"]["disabled_thrusters"])
+        new_desired_thrust = [0 for _ in range(len(self._data['dearflask']["thrusters"]["desired_thrust"]))]
+
+        for index, value in enumerate(self._data['dearflask']["thrusters"]["desired_thrust"]):
+            new_desired_thrust[index] = self._data['dearflask']["thrusters"]["desired_thrust"][index]
+
+            difference = value - self._previous_desired_thrust[index]
+            if abs(difference) > abs(value / 2.0):
+                new_desired_thrust[index] -= (difference/2.0)
+
+        thruster_values = self.thrust_mapper.calculate(new_desired_thrust, self._data['dearflask']["thrusters"]["disabled_thrusters"])
 
         # Account for dynamically inverted thrusters:
         for i in range(0,8):
@@ -37,6 +49,8 @@ class controller(object):
         self.thrusters.set(thruster_values)
 
         self.__thruster_values = thruster_values
+
+        self._previous_desired_thrust = copy.deepcopy(new_desired_thrust)
 
         #print (self._data['dearflask']['thrusters']['desired_thrust'])
         #for i in thruster_values:
