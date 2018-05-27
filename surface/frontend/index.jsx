@@ -99,7 +99,10 @@ class App extends React.Component {
                       <Spawn />
                     </Card>
                     <Card title="CV view window">
-                      <CVview desc={"Purdo drugs, Purdon't pass classes"} tdist={[0.0, 0.1, 0.2, 0.4, 0.7, 0.8]} ></CVview>
+                      <CVview desc={"Purdo good, Purdon't let Eric make messages"} tdist={[0.0, 0.1, 0.2, 0.4, 0.7, 0.8]} ></CVview>
+                    </Card>
+                    <Card title="Crash Zone Calculator">
+                      <CrashZone />
                     </Card>
                   </div>
                   <div className="data-column">
@@ -126,9 +129,6 @@ class App extends React.Component {
                     </Card>
                   </div>
                   <div className="data-column">
-                    <Card title="Crash Zone Calculator">
-                      <CrashZone />
-                    </Card>
                     <Card title="Seismograph">
                       <Seismograph
                         amplitude={this.state.dearclient.sensors.obs.seismograph_data.amplitude}

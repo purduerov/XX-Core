@@ -1,84 +1,97 @@
 import React, { Component } from 'react';
 import styles from "./CalculateCrashZone.css";
 const math = require('mathjs');
+const { ipcRenderer } = window.require('electron');
 
 
 export default class CrashZone extends Component {
 
     constructor(props) {
         super(props);
+
+        this.state = {calc: true};
+
+        this.calcCrash = this.calcCrash.bind(this);
+        this.resetCalc = this.resetCalc.bind(this);
     }
 
     calcCrash() {
-        var heading = 184;
-        var Aairspeed = 93;
-        var ascent = 10;
-        var failure = 43;
-        var Dairspeed = 64;
-        var descentRate = 6;
-        var Wheading = 270 - 180;
+        var btn = $("#planeCalcStart>button");
+        if(btn.text() != "Please wait...") {
+            btn.text("Please wait...");
+            var planeParams = {}
 
+            planeParams.startPoint = $("#planeStartPoint").val();
+            planeParams.heading = Number($("#planeTakeoffHead").val());
+            planeParams.Aairspeed = Number($("#planeAscSpeed").val());
+            planeParams.ascentRate = Number($("#planeAscRate").val());
+            planeParams.failure = Number($("#timeOfFailure").val());
+            planeParams.Dairspeed = Number($("#planeDescSpeed").val());
+            planeParams.descentRate = Number($("#planeDescRate").val());
+            planeParams.Wheading = Number($("#windDirection").val());
+            planeParams.equation = $("#windEquation").val();
 
-        var radiusA = Aairspeed * failure;
-        var ya = radiusA * Math.cos(heading * Math.PI / 180); //y component of vector of ascent
-        var xa = radiusA * Math.sin(heading * Math.PI / 180); //x component of vector of ascent
-
-        var time = ascent * failure / descentRate;
-        var radiusD = time * Dairspeed;
-        var yd = radiusD * Math.cos(heading * Math.PI / 180); //y component of vector of descent
-        var xd = radiusD * Math.sin(heading * Math.PI / 180); //x component of vector of descent
-
-        var radiusW = 0;
-        var inc = 0.01;
-
-        var equation = "(-1/720 * x^2 + 25) * "+inc;
-
-        var b = function() {
-            var yw = radiusW * Math.cos(Wheading * Math.PI / 180); //y component of vector of wind
-            var xw = radiusW * Math.sin(Wheading * Math.PI / 180); //x component of vector of wind
-
-            var ysum = ya + yd + yw;
-            var xsum = xa + xd + xw;
-
-            var searchTheta = 180 / Math.PI * Math.atan(ysum / xsum);
-            var searchRadius = Math.sqrt(xsum**2 + ysum**2);
-
-            /*
-            console.log(xa)
-            console.log(ya)
-
-            console.log(xd)
-            console.log(yd)
-
-            console.log(xw)
-            console.log(yw)
-
-            console.log(searchTheta)
-            console.log(searchRadius)
-            */
-
-            console.log(radiusW);
-            console.log($("."+styles.crashzone).val())
+            ipcRenderer.send('calc-crash', planeParams);
+            
+            ipcRenderer.on('crash-found', (event, data) => {
+                if(data == 'error') {
+                    alert("Invalid parameters likely to the crash calculating process, please try again");
+                } else {
+                    
+                    this.setState({
+                        calc: false
+                    }, () => {
+                        $("#planeResults").text("The plane is roughly "+data.mag.toFixed(3)+" meters and "+data.angle.toFixed(3)+" degrees from "+planeParams.startPoint);
+                    });
+                }
+            });
         }
-        var a = function() {
-            radiusW += math.eval(['x='+time, equation])[1];
-            time -= inc;
-            if (time > 0) {
-                setTimeout(a, 0.0000000001);
-            } else {
-                console.log(time)
-                b()
-            }
-        }
+    }
 
-        setTimeout(a, 0.0000000001);
+    resetCalc() {
+        this.setState({
+            calc: true
+        }, () => {
+            $("#planeCalcStart>button").text("Calculate landing zone");
+        });
     }
 
     render() {
         return (
         <div className={styles.container}>
-            <input className={styles.crashzone} />
-            <button onClick={this.calcCrash} />
+            {this.state.calc && <div id="planeCalcStart">
+                <p>Wind speed equation (use t):</p>
+                <input id="windEquation" defaultValue="-(1/720)*t^2+25" width="100%"/>
+                <div className={styles.innerRow}>
+                    <div className={styles.halfLeft} >
+                        <p>Origin Location</p>
+                        <input id="planeStartPoint" defaultValue="Naval Air Station Sand Point"/>
+                        <p>Takeoff heading:</p>
+                        <input id="planeTakeoffHead" defaultValue="184" />
+                        <p>Ascent airspeed:</p>
+                        <input id="planeAscSpeed" defaultValue="93" />
+                        <p>Ascent rate:</p>
+                        <input id="planeAscRate" defaultValue="10" />
+                        
+                    </div>
+                    <div className={styles.halfRight} >
+                        <p>Time of Failure (sec):</p>
+                        <input id="timeOfFailure" defaultValue="43"/>
+                        <p>Descent airspeed:</p>
+                        <input id="planeDescSpeed" defaultValue="64" />
+                        <p>Descent rate:</p>
+                        <input id="planeDescRate" defaultValue="6" />
+                        <p>Wind blowing from:</p>
+                        <input id="windDirection" defaultValue="270" />
+
+                    </div>
+                </div>
+                <button onClick={this.calcCrash} >Calculate landing zone</button>
+            </div>}
+            {!this.state.calc && <div id="planeResultsContainer">
+                <p id="planeResults" />
+                <button onClick={this.resetCalc}>Reset Calculation</button>
+            </div>}
         </div>
         );
     }
