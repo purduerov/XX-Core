@@ -29,31 +29,35 @@ export default class CrashZone extends Component {
         var xd = radiusD * Math.sin(heading * Math.PI / 180); //x component of vector of descent
 
         var radiusW = 0;
-        var inc = 0.001
-        while ( time > 0 ) {
-            radiusW += (-(1.0/720) * time**2 + 25) * inc;
-            time -= inc;
-        }
-        var yw = radiusW * Math.cos(Wheading * Math.PI / 180); //y component of vector of wind
-        var xw = radiusW * Math.sin(Wheading * Math.PI / 180); //x component of vector of wind
+        var inc = 0.01;
 
-        var ysum = ya + yd + yw;
-        var xsum = xa + xd + xw;
+        var equation = "(-1/720 * x^2 + 25) * "+inc;
 
-        var searchTheta = 180 / Math.PI * Math.atan(ysum / xsum);
-        var searchRadius = Math.sqrt(xsum**2 + ysum**2);
+        var b = function() {
+            var yw = radiusW * Math.cos(Wheading * Math.PI / 180); //y component of vector of wind
+            var xw = radiusW * Math.sin(Wheading * Math.PI / 180); //x component of vector of wind
 
-        /*
-        console.log(xa)
-        console.log(ya)
-        console.log(xd)
-        console.log(yd)
-        console.log(xw)
-        console.log(yw)
-        console.log(searchTheta)
-        console.log(searchRadius)
-        */
+            var ysum = ya + yd + yw;
+            var xsum = xa + xd + xw;
 
+            var searchTheta = 180 / Math.PI * Math.atan(ysum / xsum);
+            var searchRadius = Math.sqrt(xsum**2 + ysum**2);
+
+            /*
+            console.log(xa)
+            console.log(ya)
+
+            console.log(xd)
+            console.log(yd)
+
+            console.log(xw)
+            console.log(yw)
+
+            console.log(searchTheta)
+            console.log(searchRadius)
+            */
+
+            console.log(radiusW);
             console.log($("."+styles.crashzone).val())
         }
         var a = function() {
