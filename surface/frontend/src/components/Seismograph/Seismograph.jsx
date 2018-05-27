@@ -61,8 +61,6 @@ export default class Seismograph extends Component {
       $("."+styles.spawnButton).click(() => {
         this.setState({
           graph: true
-        }, () => {
-          console.log(this.state.graph);
         });
       });
     }
