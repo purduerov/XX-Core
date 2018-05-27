@@ -3,6 +3,7 @@ import {render} from 'react-dom';
 import styles from './index.css';
 import packet from './src/packets.js';
 import CVview from './src/components/CVview/CVview.jsx'
+import CrashZone from './src/components/CalculateCrashZone/CalculateCrashZone.jsx'
 import ESCinfo from './src/components/ESCinfo/ESCinfo.jsx'
 import Seismograph from './src/components/Seismograph/Seismograph.jsx';
 import Card from './src/components/Card/Card.jsx';
@@ -125,6 +126,9 @@ class App extends React.Component {
                     </Card>
                   </div>
                   <div className="data-column">
+                    <Card title="Crash Zone Calculator">
+                      <CrashZone />
+                    </Card>
                     <Card title="Seismograph">
                       <Seismograph
                         amplitude={this.state.dearclient.sensors.obs.seismograph_data.amplitude}
