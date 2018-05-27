@@ -29,42 +29,38 @@ export default class CrashZone extends Component {
         var xd = radiusD * Math.sin(heading * Math.PI / 180); //x component of vector of descent
 
         var radiusW = 0;
-        var inc = 0.01;
+        var inc = 0.001
+        while ( time > 0 ) {
+            radiusW += (-(1.0/720) * time**2 + 25) * inc;
+            time -= inc;
+        }
+        var yw = radiusW * Math.cos(Wheading * Math.PI / 180); //y component of vector of wind
+        var xw = radiusW * Math.sin(Wheading * Math.PI / 180); //x component of vector of wind
 
-        var equation = "(-1/720 * x^2 + 25) * "+inc;
+        var ysum = ya + yd + yw;
+        var xsum = xa + xd + xw;
 
-        var b = function() {
-            var yw = radiusW * Math.cos(Wheading * Math.PI / 180); //y component of vector of wind
-            var xw = radiusW * Math.sin(Wheading * Math.PI / 180); //x component of vector of wind
-    
-            var ysum = ya + yd + yw;
-            var xsum = xa + xd + xw;
-    
-            var searchTheta = Math.atan(ysum / xsum);
-            var searchRadius = Math.sqrt(xsum**2 + ysum**2);
-            
-            /*
-            console.log(xa)
-            console.log(ya)
-    
-            console.log(xd)
-            console.log(yd)
-    
-            console.log(xw)
-            console.log(yw)
-    
-            console.log(searchTheta)
-            console.log(searchRadius)
-            */
+        var searchTheta = 180 / Math.PI * Math.atan(ysum / xsum);
+        var searchRadius = Math.sqrt(xsum**2 + ysum**2);
 
-            console.log(radiusW);
+        /*
+        console.log(xa)
+        console.log(ya)
+        console.log(xd)
+        console.log(yd)
+        console.log(xw)
+        console.log(yw)
+        console.log(searchTheta)
+        console.log(searchRadius)
+        */
+
             console.log($("."+styles.crashzone).val())
         }
         var a = function() {
             radiusW += math.eval(['x='+time, equation])[1];
             time -= inc;
             if (time > 0) {
-                setTimeout(a, 0.0000000001);  
+                setTimeout(a, 0.0000000001);
             } else {
                 console.log(time)
                 b()
