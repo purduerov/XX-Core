@@ -30,6 +30,7 @@
     "graceful-fs": "^4.1.11",
     "hawk": "^6.0.2",
     "jquery": "^3.2.1",
+    "mathjs": "^4.3.0",
     "minimatch": "^3.0.4",
     "node-cmd": "^3.0.0",
     "node-minify": "^2.3.1",

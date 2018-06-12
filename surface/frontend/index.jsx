@@ -3,6 +3,7 @@ import {render} from 'react-dom';
 import styles from './index.css';
 import packet from './src/packets.js';
 import CVview from './src/components/CVview/CVview.jsx'
+import CrashZone from './src/components/CalculateCrashZone/CalculateCrashZone.jsx'
 import ESCinfo from './src/components/ESCinfo/ESCinfo.jsx'
 import Seismograph from './src/components/Seismograph/Seismograph.jsx';
 import Card from './src/components/Card/Card.jsx';
@@ -98,7 +99,10 @@ class App extends React.Component {
                       <Spawn />
                     </Card>
                     <Card title="CV view window">
-                      <CVview desc={"Purdo drugs, Purdon't pass classes"} tdist={[0.0, 0.1, 0.2, 0.4, 0.7, 0.8]} ></CVview>
+                      <CVview desc={"Purdo good, Purdon't let Eric make messages"} tdist={[0.0, 0.1, 0.2, 0.4, 0.7, 0.8]} ></CVview>
+                    </Card>
+                    <Card title="Crash Zone Calculator">
+                      <CrashZone />
                     </Card>
                   </div>
                   <div className="data-column">

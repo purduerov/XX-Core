@@ -15,7 +15,7 @@ export default class Seismograph extends Component {
         this.state = {graph: false};
 
         //this.state = {time: props.time, amp: props.amplitude};
-        console.log(props.time+", "+props.amplitude)
+        //console.log(props.time+", "+props.amplitude)
 
         this.disableRend = this.disableRend.bind(this);
         this.rendTime = this.rendTime.bind(this);
