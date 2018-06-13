@@ -11,7 +11,7 @@ import CameraScreen from './src/components/CameraScreen/CameraScreen.jsx';
 import ForceScales from './src/components/ForceScales/ForceScales.jsx';
 import Titlebar from './src/components/Titlebar/Titlebar.jsx';
 import ThrusterInfo from './src/components/ThrusterInfo/ThrusterInfo.jsx';
-import ThrusterInverts from './src/components/ThrusterInverts/ThrusterInverts.jsx';
+import ThrusterScales from './src/components/ThrusterScales/ThrusterScales.jsx';
 import Gpinfo from './src/components/Gpinfo/Gpinfo.jsx';
 import ShowObject from './src/components/ShowObject/ShowObject.jsx'
 import ToolView from './src/components/ToolView/ToolView.jsx';
@@ -52,13 +52,13 @@ class App extends React.Component {
             ],
             tool_scales: {
                 manipulator: {
-                    master: .50,
-                    open: 0.4,
-                    close: 0.4,
+                    master: .25,
+                    open: 1,
+                    close: 1,
                     invert: 1
                 },
                 obs_tool: {   //unused, we're stepping it up and then down manually
-                    power: .30,
+                    master: .30,
                     invert: 1
                 }
             }
@@ -113,7 +113,7 @@ class App extends React.Component {
                         />
                     </Card>
                     <Card title="Thruster Control">
-                    	<ThrusterInverts rend={this.changeThrustScales}
+                    	<ThrusterScales rend={this.changeThrustScales}
                     					scales={this.state.config.thruster_control}
                     					/>
                     </Card>
