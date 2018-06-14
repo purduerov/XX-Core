@@ -170,7 +170,7 @@ var bind = {
                     react.confcpy.thrust_scales.master = 60;
 
                     react.setState({
-                        config: this.confcpy
+                        config: react.confcpy
                     });
                 }
             }
@@ -181,7 +181,7 @@ var bind = {
                     react.confcpy.thrust_scales.master = 35;
 
                     react.setState({
-                        config: this.confcpy
+                        config: react.confcpy
                     });
                 }
             }
