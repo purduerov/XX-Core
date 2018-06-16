@@ -31,6 +31,13 @@ from camera import Cameras
 
 from tools import Manipulator, OBS_Tool, Elecmagnet, Transmitter
 
+# THIS IS NEW and everyone's going to need to download psutil to work the rov file
+import psutil
+
+def memory_usage_psutil():
+    # return the memory usage in percentage like top
+    process = psutil.Process(os.getpid())
+    return process.memory_percent()
 
 class ROV(object):
 
@@ -99,6 +106,7 @@ class ROV(object):
 
         try:
             print(self.dearclient)
+            print(memory_usage_psutil())
             print('')
             self.elecmagnet.update(df['magnet'])
             # Updating Sensors
