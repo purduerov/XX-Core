@@ -1,0 +1,12 @@
+.container {}
+
+.count {}
+
+.number {
+    font-size: 4em;
+}
+
+.buttons {
+    display: flex;
+    flex-direction: row;
+}

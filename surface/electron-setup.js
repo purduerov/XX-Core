@@ -10,8 +10,8 @@ var cvbin = './pakfront/bin/';
 var cvspawns = {};
 var cvref = {};
 
-let win
-
+let win;
+let win2;
 
 // ----------------------------------------------------------------------------------------
 // Importing this adds a right-click menu with 'Inspect Element' option [worth it]
@@ -26,17 +26,28 @@ require('electron-context-menu')({
 
 function createWindow() {
     // Create the browser window.
-    win = new BrowserWindow({ width: 1600, height: 1200 })
+    win = new BrowserWindow({ width: 1600, height: 1200 });
 
     // and load the index.html of the app.
     win.loadURL(url.format({
         pathname: path.join(__dirname, 'frontend/main.html'),
         protocol: 'file:',
         slashes: true
-    }))
+    }));
+
+    // Create the browser window.
+    win2 = new BrowserWindow({ width: 1600, height: 1200 });
+
+    // and load the index.html of the app.
+    win2.loadURL(url.format({
+        pathname: path.join(__dirname, 'frontend/main2.html'),
+        protocol: 'file:',
+        slashes: true
+    }));
 
     // Open the DevTools.
-    win.webContents.openDevTools()
+    win.webContents.openDevTools();
+    win2.webContents.openDevTools();
 
     // Emitted when the window is closed.
     win.on('closed', () => {
@@ -44,13 +55,27 @@ function createWindow() {
         // in an array if your app supports multi windows, this is the time
         // when you should delete the corresponding element.
         win = null
-    })
+    });
+
+    // Emitted when the window is closed.
+    win2.on('closed', () => {
+        // Dereference the window object, usually you would store windows
+        // in an array if your app supports multi windows, this is the time
+        // when you should delete the corresponding element.
+        win2 = null
+    });
+
+    // Maximize first, so that when coming out of full screen the window
+    // is fully maximized.
+    // Removing full screen for dev/operation convenience for now
+    //win.maximize();
+    // mainWindow.setFullScreen(false)
 }
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow)
+app.on('ready', createWindow);
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
