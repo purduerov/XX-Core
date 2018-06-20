@@ -7,6 +7,7 @@ class Status():
     connected = "connected"
     unconnected = "unconnected"
     connecting = "connecting"
+    connectednovoltage = "connectednovoltage"
     datanotthrough = "connected,nodata"
     datathrough = "connected,withdata"
     level = "connected,OBSisLevel"
@@ -52,8 +53,18 @@ class OBS(object):
                 else:
                         self.status = Status.datathrough
                         rawdata = r.text
-                        if "Xangle" in rawdata:
-                                query = "Voltage\s+(?P<volt>-?\d+\.\d+)?.*Xangle=(?P<xangle>-?\d+\.\d+)?.*Yangle=(?P<yangle>-?\d+\.\d+)?.*Count=(?P<count>\d+)"
+                        if "DATA" in rawdata: 
+                                query = "DATA:(?P<points>.*)"
+                                found = re.search(query,rawdata)
+                                if found != None:
+                                        cleanedfound = found.group("points").strip("\n").replace(" ","").split(",")
+                                        self.amplitude = [int(c) for c in cleanedfound]
+
+                                        self.lastupdate = time()
+                                else:
+                                        self.status = Status.idkman
+                        elif "Xangle" in rawdata:
+                                query = "Voltage=(?P<volt>-?\d+\.\d+)?.*Xangle=(?P<xangle>-?\d+\.\d+)?.*Yangle=(?P<yangle>-?\d+\.\d+)?.*Count=(?P<count>\d+)"
                                 found = re.search(query,rawdata)
                                 if found != None:
                                         self.voltage = float(found.group("volt"))
@@ -63,14 +74,12 @@ class OBS(object):
                                         self.lastupdate = time()
                                 else:
                                         self.status = Status.idkman
-                        elif "DATA" in rawdata: 
-                                query = "DATA:(?P<points>.*)"
+                        elif "Voltage" in rawdata:
+                                self.status = Status.connectednovoltage
+                                query = "Voltage=(?P<volt>-?\d+\.\d+)?.*"
                                 found = re.search(query,rawdata)
                                 if found != None:
-                                        cleanedfound = found.group("points").strip("\n").replace(" ","").split(",")
-                                        self.amplitude = [int(c) for c in cleanedfound]
-
-                                        self.lastupdate = time()
+                                        self.voltage = float(found.group("volt"))
                                 else:
                                         self.status = Status.idkman
                         else:
