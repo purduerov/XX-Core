@@ -2,6 +2,7 @@ import subprocess
 import os
 import time
 import signal
+from camera import Camera
 
 DEVNULL = open(os.devnull, 'w')
 
@@ -16,6 +17,7 @@ class Cameras(object):
         self.resolution = resolution
         self.framerate = framerate
         self.port = port
+        self.cameras =[]
         self.output = 'output_http.so -p {port} {web}'.format(
             port=port,
             web='-w /usr/local/www'
@@ -25,11 +27,11 @@ class Cameras(object):
         if not devices:
             devs = ['/dev/' + dev for dev in os.listdir('/dev') if dev.startswith('video')]
             self.devices = []
-            
+
             # attempt to run a specfic camera to see if it works.
             temp = {}
             # variable to change the port
-            x = 1 
+            x = 1
             for dev in devs:
                 tempin = 'input_uvc.so -r {resolution} -d {device}'.format( resolution=self.resolution, device=dev)
                 try:
@@ -49,51 +51,59 @@ class Cameras(object):
                     self.devices.append(k)
         else:
             self.devices = devices
-        
+
         self.brightness = brightness
         self.contrast = contrast
         self.input = ['input_uvc.so -r {resolution} -d {device}'.format( resolution=self.resolution, device=d) for d in self.devices]
         self.status = 'killed'
+        for camnum, dev in enumerate(self.devices):
+            cam = Camera(
+                        resolution=self.resolution,
+                        framerate=self.framerate,
+                        device=dev,
+                        port=self.port + camnum,
+                        brightness=self.brightness,
+                        contrast=self.contrast
+            )
+            self.cameras.append(cam)
 
     def start(self):
-        """
-        sets up the command to be run using the devices that work then launches it in a subprocess
-        """
-        command = ['mjpg_streamer']
-        for i in self.input:
-            command.append('-i')
-            command.append(i)
-        command.append('-o')
-        command.append(self.output)
-        print command
-        self.process = subprocess.Popen(command)
-        self.status = 'active'
+        for cam in self.cameras:
+            time.sleep(0.2)
+            cam.start()
         return self
 
-    def stop(self):
-        """
-        if the process is currently exists kill the process
-        """
-        if self.process:
-            self.process.kill()
-            self.process = None
-            self.status = 'killed'
+    def kill(self):
+        for cam in self.cameras:
+            cam.kill()
+        self.system_kill()
 
-    def suspend(self):
-        """
-        suspend the process if it is active
-        """
-        if self.status == 'active':
-            os.kill(self.process.pid, signal.SIGSTOP)
-            self.status = 'suspended'
+    def system_kill(self):
+        os.system("pgrep 'mjpg' | xargs kill -9")
 
-    def resume(self):
-        """
-        resume the process if suspended
-        """
-        if self.status == 'suspended':
-            os.kill(self.process.pid, signal.SIGCONT)
-            self.status = 'active'
+    def status(self):
+        return {
+        'Cam_' + str(cam.port - self.port): {'port': cam.port, 'status': cam.get_status()}
+        for cam in self.cameras
+        }
+
+    def set_status(self,status):
+        for cam in self.cameras:
+            port = str(cam.port)
+            if port in status:
+                cam_status = cam.get_status()
+                if status[port] == 'active':
+                    if cam_status == 'suspended':
+                        cam.unsuspend()
+                elif status[port] == 'suspended':
+                    if cam_status == 'active':
+                        cam.suspend()
+                elif status[port] == 'killed':
+                    if cam.is_alive():
+                        cam.kill()
+                elif status[port] == 'start':
+                    if not cam.is_alive():
+                        cam.start()
 
 if __name__ == '__main__':
     cam = Cameras().start()

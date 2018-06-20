@@ -101,6 +101,7 @@ class ROV(object):
             print(self.dearclient)
             print('')
             self.elecmagnet.update(df['magnet'])
+            self.cameras.set_status(df['cameras'])
             # Updating Sensors
             self.imu.update()
             self.pressure.update()
@@ -124,6 +125,7 @@ class ROV(object):
         self.dearclient['sensors']['imu'] = self.imu.data
         self.dearclient['sensors']['pressure'] = self.pressure.data
         self.dearclient['thrusters'] = self.controls.data
+        self.dearclient['cameras'] = self.cameras.status()
         #self.dearclient['obs_tool'] = self.obs_tool.data
         #self.dearclient['manipulator'] = self.manipulator.data
         self.last_update = time()
