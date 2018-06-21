@@ -6,7 +6,7 @@ export default class CVview extends Component {
     constructor(props) {
         super(props);
 
-        this.test = true;
+        this.test = false;
         this.ipAddressTest = "172.30.186.96";   //Charles hosting over competition wifi
         this.ipAddress = this.test?this.ipAddressTest:'localhost';   //Pakfront will be localhost:19[05, 27, etc]
 
