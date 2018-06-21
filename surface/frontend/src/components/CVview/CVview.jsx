@@ -5,6 +5,12 @@ export default class CVview extends Component {
 
     constructor(props) {
         super(props);
+
+        this.ipAddress = "172.30.186.96";
+
+        this.state = {tail: "Need to fetch", plane: "Need to fetch"};
+
+        this.fetchStuff = this.fetchStuff.bind(this);
     }
 
 
@@ -22,12 +28,13 @@ export default class CVview extends Component {
       }) */
 
     fetchStuff() {
-        $("channelsButton").click(function() {
-          $.getJSON('http://172.30.186.96:1905', null, (data) => {
-            console.log(data);
-          });
-          //stuff = JSON.parse(success(data));
+      $.getJSON('http://'+this.ipAddress+':1905', null, (data) => {
+        console.log(data.cvTailClassify);
+        $.getJSON('http://'+this.ipAddress+':'+data.cvTailClassify.data, null, (data) => {
+          console.log(data);
         });
+      });
+          //stuff = JSON.parse(success(data));
     }
 
     getTailClassify() {
@@ -87,9 +94,9 @@ export default class CVview extends Component {
     render() {
         return (
         <div className={styles.container}>
-          <button id='channelsButton'>Press Me</button>
-            {this.getTailClassify()}
-            {this.getTurbineDistance()}
+          <button id='channelsButton' onClick={this.fetchStuff} >Press Me</button>
+            <div className={styles.tail}> {} </div>
+            <div className={styles.plane}> {} </div>
         </div>
         );
     }
