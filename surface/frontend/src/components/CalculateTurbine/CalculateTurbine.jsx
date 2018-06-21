@@ -42,7 +42,6 @@ export default class Turbine extends Component {
   }
 
   render() {
-    console.log(this.state.calc)
     return(
       <div className={styles.container}>
         {this.state.calc && <div id="turbineCalcStart">
