@@ -50,7 +50,7 @@ export default class CVview extends Component {
             console.log("Failed to get tail data");
           }
         },
-        timeout: 500,
+        timeout: 50,
         error: (data) => {
           console.log(data);
           console.log("An error occured on CVview");
@@ -60,7 +60,7 @@ export default class CVview extends Component {
       });
           //stuff = JSON.parse(success(data));
 
-      setTimeout(this.fetchStuff, 550);
+      setTimeout(this.fetchStuff, 55);
     }
 
     checkPort() {
