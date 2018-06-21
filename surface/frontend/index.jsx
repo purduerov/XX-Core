@@ -4,6 +4,7 @@ import styles from './index.css';
 import packet from './src/packets.js';
 import CVview from './src/components/CVview/CVview.jsx'
 import CrashZone from './src/components/CalculateCrashZone/CalculateCrashZone.jsx'
+import Turbine from './src/components/CalculateTurbine/CalculateTurbine.jsx'
 import ESCinfo from './src/components/ESCinfo/ESCinfo.jsx'
 import Seismograph from './src/components/Seismograph/Seismograph.jsx';
 import Card from './src/components/Card/Card.jsx';
@@ -131,6 +132,19 @@ class App extends React.Component {
                     </Card>
                     <Card title="CV Spawning">
                       <Spawn />
+                    </Card>
+                    <Card>
+                      <ToolView manipulator={this.state.dearflask.manipulator.power}
+                                obs_tool={this.state.dearflask.obs_tool.power}
+                                servo={this.state.dearflask.maincam_angle}
+                                transmitter={this.state.dearflask.transmitter}
+                                magnet={this.state.dearflask.magnet}
+                                conf={this.state.config.tool_scales}
+                                rend={this.rendTools}
+                      />
+                    </Card>
+                    <Card title="Turbine Power Calculator">
+                      <Turbine />
                     </Card>
 
                   </div>

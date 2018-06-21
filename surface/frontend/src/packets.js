@@ -70,6 +70,11 @@ module.exports = {
                 seismograph_data: {
                     time: [0.0, 0.1, 0.2],
                     amplitude: [0.0, 0.2, 0.4]
+                },
+                meta: {
+                    lastupdate: 0.0,
+                    connectstat: "foo",
+                    obsvoltage: 0.0
                 }
             },
             esc: {
