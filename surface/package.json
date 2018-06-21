@@ -26,6 +26,7 @@
     "electron-context-menu": "^0.9.1",
     "es6-promise": "^4.1.1",
     "extract-text-webpack-plugin": "^3.0.2",
+    "fetch": "^1.1.0",
     "fs": "0.0.1-security",
     "graceful-fs": "^4.1.11",
     "hawk": "^6.0.2",

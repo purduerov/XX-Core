@@ -1,11 +1,33 @@
 import React, { Component } from 'react';
 import styles from "./CVview.css";
 
-
 export default class CVview extends Component {
 
     constructor(props) {
         super(props);
+    }
+
+
+      /* fetch('http://localhost:1905', {
+        method: "GET",
+        //body: JSON.parse(data),
+        headers: {"Content-Type": "application/json"},
+        credentials: "same-origin" //not sure is necessary
+      }).then(function(response) {
+        data = JSON.parse(response);
+        console.log(data);
+        //assign parsed values as ports to listen to for functions underneath
+      }, function(error) {
+        //error message
+      }) */
+
+    fetchStuff() {
+        $("channelsButton").click(function() {
+          $.getJSON('http://172.30.186.96:1905', null, (data) => {
+            console.log(data);
+          });
+          //stuff = JSON.parse(success(data));
+        });
     }
 
     getTailClassify() {
@@ -65,6 +87,7 @@ export default class CVview extends Component {
     render() {
         return (
         <div className={styles.container}>
+          <button id='channelsButton'>Press Me</button>
             {this.getTailClassify()}
             {this.getTurbineDistance()}
         </div>

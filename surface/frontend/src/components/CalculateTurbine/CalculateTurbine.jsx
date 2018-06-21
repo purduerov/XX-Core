@@ -16,7 +16,6 @@ export default class Turbine extends Component {
     var btn = $("#turbineCalcStart>button");
     if(btn.text() != "Please wait...") {
       btn.text("Please wait...");
-      //var turbineParams = {}
 
       var count = Number($("#turbineCount").val());
       var diameter = Number($("#turbineDiameter").val());
@@ -25,13 +24,6 @@ export default class Turbine extends Component {
 
       var area = 3.14159 * ((diameter / 2) ** 2);
       var power = count * .5 * 1025 * area * (velocity ** 3) * efficiency;
-
-      //btn.text(count);
-      //btn.text("Power = " + power + " Watts");
-
-      //turbineParams.equation = $("turbineEquation").val();
-
-
 
       this.setState({
         calc:false
