@@ -104,6 +104,16 @@ class App extends React.Component {
                     <Card title="Crash Zone Calculator">
                       <CrashZone />
                     </Card>
+                    <Card>
+                      <ToolView manipulator={this.state.dearflask.manipulator.power}
+                                obs_tool={this.state.dearflask.obs_tool.power}
+                                servo={this.state.dearflask.maincam_angle}
+                                transmitter={this.state.dearflask.transmitter}
+                                magnet={this.state.dearflask.magnet}
+                                conf={this.state.config.tool_scales}
+                                rend={this.rendTools}
+                      />
+                    </Card>
                   </div>
                   <div className="data-column">
                     <Card title="Directional Control">
@@ -117,15 +127,8 @@ class App extends React.Component {
                     					scales={this.state.config.thruster_control}
                     					/>
                     </Card>
-                    <Card>
-                      <ToolView manipulator={this.state.dearflask.manipulator.power}
-                                obs_tool={this.state.dearflask.obs_tool.power}
-                                servo={this.state.dearflask.maincam_angle}
-                                transmitter={this.state.dearflask.transmitter}
-                                magnet={this.state.dearflask.magnet}
-                                conf={this.state.config.tool_scales}
-                                rend={this.rendTools}
-                      />
+                    <Card title="OBS">
+                      <ShowObject obj={this.state.dearclient.sensors.obs} />
                     </Card>
                   </div>
                   <div className="data-column">
