@@ -3,6 +3,7 @@ import {render} from 'react-dom';
 import styles from './index.css';
 import packet from './src/packets.js';
 import CVview from './src/components/CVview/CVview.jsx'
+import CamSimple from './src/components/CamViewSimple/CamViewSimple.jsx';
 import CrashZone from './src/components/CalculateCrashZone/CalculateCrashZone.jsx'
 import Turbine from './src/components/CalculateTurbine/CalculateTurbine.jsx'
 import ESCinfo from './src/components/ESCinfo/ESCinfo.jsx'
@@ -84,7 +85,7 @@ class App extends React.Component {
           </div>
           <div className="main-container">
               <div className="camera-width full-height center">
-                <CameraScreen next={this.state.gp.buttons.left} prev={this.state.gp.buttons.right}></CameraScreen>
+                <CamSimple></CamSimple>
               </div>
               <div className="data-width full-height">
                   <div className="data-column">
@@ -98,6 +99,9 @@ class App extends React.Component {
                     </Card>
                     <Card title="Crash Zone Calculator">
                       <CrashZone />
+                    </Card>
+                    <Card title="Turbine Power Calculator">
+                      <Turbine />
                     </Card>
                   </div>
                   <div className="data-column">
@@ -142,9 +146,6 @@ class App extends React.Component {
                                 conf={this.state.config.tool_scales}
                                 rend={this.rendTools}
                       />
-                    </Card>
-                    <Card title="Turbine Power Calculator">
-                      <Turbine />
                     </Card>
 
                   </div>
