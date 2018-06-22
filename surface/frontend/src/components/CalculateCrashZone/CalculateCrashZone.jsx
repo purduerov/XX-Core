@@ -13,6 +13,19 @@ export default class CrashZone extends Component {
 
         this.calcCrash = this.calcCrash.bind(this);
         this.resetCalc = this.resetCalc.bind(this);
+
+        ipcRenderer.on('crash-found', (event, data) => {
+            if(data == 'error') {
+                alert("Invalid parameters likely to the crash calculating process, please try again");
+            } else {
+
+                this.setState({
+                    calc: false
+                }, () => {
+                    $("#planeResults").text("The plane is roughly "+data.mag.toFixed(3)+" meters and "+data.angle.toFixed(3)+" degrees from "+planeParams.startPoint);
+                });
+            }
+        });
     }
 
     calcCrash() {
@@ -32,19 +45,6 @@ export default class CrashZone extends Component {
             planeParams.equation = $("#windEquation").val();
 
             ipcRenderer.send('calc-crash', planeParams);
-            
-            ipcRenderer.on('crash-found', (event, data) => {
-                if(data == 'error') {
-                    alert("Invalid parameters likely to the crash calculating process, please try again");
-                } else {
-                    
-                    this.setState({
-                        calc: false
-                    }, () => {
-                        $("#planeResults").text("The plane is roughly "+data.mag.toFixed(3)+" meters and "+data.angle.toFixed(3)+" degrees from "+planeParams.startPoint);
-                    });
-                }
-            });
         }
     }
 
@@ -72,7 +72,7 @@ export default class CrashZone extends Component {
                         <input id="planeAscSpeed" defaultValue="93" />
                         <p>Ascent rate:</p>
                         <input id="planeAscRate" defaultValue="10" />
-                        
+
                     </div>
                     <div className={styles.halfRight} >
                         <p>Time of Failure (sec):</p>

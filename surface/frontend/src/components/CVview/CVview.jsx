@@ -38,11 +38,11 @@ export default class CVview extends Component {
         },
         /*timeout: 50,
         error: (data) => {
-          console.log(data);
-          console.log("An error occured on CVview");
-          http://172.30.186.96:1927/
-          console.log('http://'+this.ipAddress+':'+this.state.cvClassPort+'/'); */
-        });
+          //console.log(data);
+          //console.log("An error occured on CVview");
+          //console.log('http://'+this.ipAddress+':'+this.state.cvClassPort+'/');
+        }
+      });
           //stuff = JSON.parse(success(data));
       //setTimeout(this.fetchStuff, 55);
     }
@@ -62,12 +62,11 @@ export default class CVview extends Component {
           }
         },
         //timeout: 500,
-        /*error: (data) => {
-          console.log(data);
-          console.log("An error occured on CVview");
-          http://172.30.186.96:1927/
-          console.log('http://'+this.ipAddress+':1927/');
-        }*/
+        error: (data) => {
+          //console.log(data);
+          //console.log("An error occured on CVview");
+          //console.log('http://'+this.ipAddress+':1927/');
+        }
       });
     }
 

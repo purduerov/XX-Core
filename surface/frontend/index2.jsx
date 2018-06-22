@@ -3,15 +3,15 @@ import {render} from 'react-dom';
 import styles from './index.css';
 import packet from './src/packets.js';
 import CVview from './src/components/CVview/CVview.jsx'
-import CamSimple from './src/components/CamViewSimple/CamViewSimple.jsx';
+import CamSimple from './src/components/CamViewSimple2/CamViewSimple2.jsx';
 import CrashZone from './src/components/CalculateCrashZone/CalculateCrashZone.jsx'
-import Turbine from './src/components/CalculateTurbine/CalculateTurbine.jsx'
 import ESCinfo from './src/components/ESCinfo/ESCinfo.jsx'
 import Seismograph from './src/components/Seismograph/Seismograph.jsx';
 import Card from './src/components/Card/Card.jsx';
 import CameraScreen from './src/components/CameraScreen/CameraScreen.jsx';
 import ForceScales from './src/components/ForceScales/ForceScales.jsx';
 import Titlebar from './src/components/Titlebar/Titlebar.jsx';
+import Timer from './src/components/Timer/Timer.jsx';
 import ThrusterInfo from './src/components/ThrusterInfo/ThrusterInfo.jsx';
 import ThrusterScales from './src/components/ThrusterScales/ThrusterScales.jsx';
 import Gpinfo from './src/components/Gpinfo/Gpinfo.jsx';
@@ -28,7 +28,7 @@ let socket = io.connect(socketHost, {transports: ['websocket']});
 let {shell, app, ipcRenderer} = window.require('electron');
 
 
-class App extends React.Component {
+class App2 extends React.Component {
   constructor(props) {
     super(props);
     this.state = require("./src/packets.js"); //= $.extend(true, {}, packets);
@@ -75,7 +75,6 @@ class App extends React.Component {
     this.changeThrustScales = this.changeThrustScales.bind(this);
     this.changeForceScales = this.changeForceScales.bind(this);
     this.rendTools = this.rendTools.bind(this);
-    this.updateCamsOn = this.updateCamsOn.bind(this);
   }
 
   render () {
@@ -86,82 +85,45 @@ class App extends React.Component {
           </div>
           <div className="main-container">
               <div className="camera-width full-height center">
-                <CamSimple rend={this.updateCamsOn}></CamSimple>
+                <CamSimple></CamSimple>
               </div>
               <div className="data-width full-height">
                   <div className="data-column">
-                    <Card>
-                      <ThrusterInfo thrusters={this.state.dearclient.thrusters}
-                        disabled={this.state.dearflask.thrusters.disabled_thrusters}
-                        manipulator={this.state.dearflask.manipulator.power}
-                        obs_tool={this.state.dearflask.obs_tool.power}
-                        rend={this.changeDisabled}
-                      />
-                    </Card>
-                    <Card title="Crash Zone Calculator">
-                      <CrashZone />
-                    </Card>
-                    <Card title="Turbine Power Calculator">
-                      <Turbine />
-                    </Card>
-                  </div>
-                  <div className="data-column">
-                    <Card title="Directional Control">
-                      <ForceScales rend={this.changeForceScales}
-                        scales={this.state.config.thrust_scales}
-                        invert={this.state.config.thrust_invert}
-                        />
-                    </Card>
-                    <Card title="Thruster Control">
-                    	<ThrusterScales rend={this.changeThrustScales}
-                    					scales={this.state.config.thruster_control}
-                    					/>
-                    </Card>
-                  </div>
-                  <div className="data-column">
                   <Card>
-                    <ToolView manipulator={this.state.dearflask.manipulator.power}
-                              obs_tool={this.state.dearflask.obs_tool.power}
-                              servo={this.state.dearflask.maincam_angle}
-                              transmitter={this.state.dearflask.transmitter}
-                              magnet={this.state.dearflask.magnet}
-                              conf={this.state.config.tool_scales}
-                              rend={this.rendTools}
+                    <ThrusterInfo thrusters={this.state.dearclient.thrusters}
+                      disabled={this.state.dearflask.thrusters.disabled_thrusters}
+                      manipulator={this.state.dearflask.manipulator.power}
+                      obs_tool={this.state.dearflask.obs_tool.power}
+                      rend={this.changeDisabled}
                     />
                   </Card>
-                    <Card title="Seismograph">
-                      <Seismograph
-                        amplitude={this.state.dearclient.sensors.obs.seismograph_data.amplitude}
-                        time={this.state.dearclient.sensors.obs.seismograph_data.time} >
-                      </Seismograph>
+                  <Card title="Timer">
+                    <Timer />
+                  </Card>
+                  </div>
+                  <div className="data-column">
+                    <Card title="ESC readings">
+                      <ESCinfo
+                        currents={this.state.dearclient.sensors.esc.currents}
+                        temp={this.state.dearclient.sensors.esc.temperatures}>
+                      </ESCinfo>
                     </Card>
-                    <Card title="CV Spawning">
-                      <Spawn />
+                    <Card title="Pressure">
+                      <ShowObject obj={this.state.dearclient.sensors.pressure} />
                     </Card>
-                    <Card>
-                      <ToolView manipulator={this.state.dearflask.manipulator.power}
-                                obs_tool={this.state.dearflask.obs_tool.power}
-                                servo={this.state.dearflask.maincam_angle}
-                                transmitter={this.state.dearflask.transmitter}
-                                magnet={this.state.dearflask.magnet}
-                                conf={this.state.config.tool_scales}
-                                rend={this.rendTools}
-                      />
+                    <Card title="CV view window">
+                      <CVview desc={"Purdo good, Purdon't let Eric make messages"} tdist={[0.0, 0.1, 0.2, 0.4, 0.7, 0.8]} ></CVview>
                     </Card>
-
+                  </div>
+                  <div className="data-column">
+                    <Card title="IMU">
+                      <ShowObject obj={this.state.dearclient.sensors.imu} />
+                    </Card>
                   </div>
               </div>
           </div>
       </div>
     );
-  }
-
-  updateCamsOn(cams) {
-    this.flaskcpy.camsOn = cams;
-
-    this.setState({
-      dearflask: this.flaskcpy
-    });
   }
 
   changeDisabled(dis) {
@@ -173,10 +135,11 @@ class App extends React.Component {
         all.dearclient.thrusters[i] = 0;
       }
     });
-    */
     this.setState({
       dearflask: this.flaskcpy
     });
+    */
+    console.log("Thrusters staying enabled on read-only window");
   }
 
   rendTools(cinvcpy) {
@@ -233,7 +196,6 @@ class App extends React.Component {
         all
       );
     }, 3000);
-    */
 
     setInterval(() => {
       if(this.gp.ready === false) {
@@ -250,6 +212,7 @@ class App extends React.Component {
         dearflask: this.flaskcpy
       });
     }, 100);
+    */
 
 
     // upon new data, save it locally
@@ -268,12 +231,15 @@ class App extends React.Component {
         socket.emit("dearclient");
     }, 50);
 
-    // send new data
+    // Don't send new data -- both windows sending different states will confuse the ROV
+    // This is the 2nd window, it's the view.
+    /*
     setInterval(() => {             //Sends a message down to the server with updated surface info
       //console.log(that.state.dearflask);
       socket.emit("dearflask", that.state.dearflask);
     }, 50);
+    */
   }
 }
 
-render(<App/>, document.getElementById('app'));
+render(<App2/>, document.getElementById('app2'));
