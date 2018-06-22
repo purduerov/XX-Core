@@ -68,6 +68,7 @@ export default class CamViewSimple extends Component {
       //console.log(data);
       try {
         Object.keys(data).forEach((val, i) => {
+          if(val.lower().startsWith("cv"))
           console.log(val, i);
         });
         this.cpy.cvCams = data.metacams;
