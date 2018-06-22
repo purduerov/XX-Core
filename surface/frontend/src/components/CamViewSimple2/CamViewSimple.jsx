@@ -12,16 +12,15 @@ export default class CamViewSimple extends Component {
         this.ipAddress = !this.test?this.ipAddressTest:'localhost';   //Pakfront will be localhost:19[05, 27, etc]
 
         this.state = {cvCams: {"CVsimulate":{"data":1923,"stream":1922}, "cvDistanceMeasure":{"data":1931,"stream":1930}, "cvTailClassify":{"data":1927,"stream":1926}},
-                      normCams: {"data":5,"stream":8080},
-                      feed: 8080
+                      normCams: {"data": 5,"stream":8080},
+                      feed: 8080,
+                      cams: [true, false, false, false, false]
                     };
         this.cpy = this.state;
 
         this.checkProcesses = this.checkProcesses.bind(this);
         this.switchFeed = this.switchFeed.bind(this);
         //this.switchFeed = this.switchFeed.bind(this);
-
-        ipcRenderer.on('camera-select', (change) => {console.log(change)});
     }
 
     checkProcesses() {
@@ -32,7 +31,7 @@ export default class CamViewSimple extends Component {
         success: (pakfrontInfo) => {
           data = pakfrontInfo;
         },
-        error: () => {
+        error: (e) {
           data = {"CVsimulate":{"data":1923,"stream":1922},"camnum0":{"data":-1,"stream":8000},"cvDistanceMeasure":{"data":1931,"stream":1930},"cvTailClassify":{"data":1927,"stream":1926},"metacams":{"numcams":0,"pakfront":5001,"rovdirect":5000},"socketio":{"numcams":0,"pakfront":5001,"rovdirect":5000}};
         },
         timeout: 500
@@ -47,7 +46,7 @@ export default class CamViewSimple extends Component {
         this.cpy.normCams = data.metacams;
 
         this.setState(this.cpy);
-      } catch (e) {
+      } catch () => {
         console.log("Unsuccessful port find");
       }
     }
@@ -55,6 +54,8 @@ export default class CamViewSimple extends Component {
     switchFeed(e) {
       var last = this.state.feed;
       this.cpy.feed = this.state.normCams.stream + $(e.currentTarget).text().slice(-1);
+
+      ipcRenderer.send('camera-select', {last: last, new: this.cpy.feed});
 
       this.setState(this.cpy);
     }

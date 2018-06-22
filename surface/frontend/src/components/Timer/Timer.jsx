@@ -57,19 +57,19 @@ export default class Timer extends Component {
     genNumber() {
         if (this.state.start.on) {
             this.cpy.show = ((Date.now() - this.cpy.start.val) / 1000 + this.cpy.pause.val);
-        
+
         } else if (this.state.pause.on) {
             this.cpy.show = this.cpy.pause.val;
-        
+
         } else {
             this.cpy.show = 0.00;
-        
+
         }
 
         this.cpy.show = this.cpy.show > 900 ? 900 : this.cpy.show;
 
         this.setState(this.cpy, () => {
-            console.log(this.state);
+            //console.log(this.state);
             setTimeout(this.genNumber, 30);
         });
     }
