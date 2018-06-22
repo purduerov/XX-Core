@@ -18,7 +18,7 @@ from init_hw_constants import *
 
 # Class that communicates to the i2c to pwm chip that controls the brushless motors
 from hardware.motor_control import MotorControl
-from hardware.servo import Servo
+#from hardware.servo import Servo
 
 # Class that controls the rov movement
 from movement import controller
@@ -32,12 +32,12 @@ from camera import Cameras
 from tools import Manipulator, OBS_Tool, Elecmagnet, Transmitter
 
 # THIS IS NEW and everyone's going to need to download psutil to work the rov file
-import psutil
+#import psutil
 
-def memory_usage_psutil():
+#def memory_usage_psutil():
     # return the memory usage in percentage like top
-    process = psutil.Process(os.getpid())
-    return process.memory_percent()
+#    process = psutil.Process(os.getpid())
+#    return process.memory_percent()
 
 class ROV(object):
 
@@ -76,7 +76,7 @@ class ROV(object):
             pos_max_power=POS_MAX_POWER,
             frequency=FREQUENCY
         )
-        self.maincam_servo = Servo()
+        #self.maincam_servo = Servo()
 
         # Thrusters
         self.controls = controller(self.motor_control, self._data)
@@ -106,17 +106,17 @@ class ROV(object):
 
         try:
             print(self.dearclient)
-            print(memory_usage_psutil())
+            #print(memory_usage_psutil())
             print('')
             self.elecmagnet.update(df['magnet'])
-            self.cameras.set_status(df['cameras'])
+            self.cameras.set_status(df['camsOn'])
             # Updating Sensors
             # self.imu.update()
             self.pressure.update()
             self.obs.update()
             self.esc.update()
             # Updating hardware
-            self.maincam_servo.setAngle(df['maincam_angle'])
+            #self.maincam_servo.setAngle(df['maincam_angle'])
             self.controls.update()
             self.obs_tool.update(self.dearflask['obs_tool'])
             self.manipulator.update(self.dearflask['manipulator'])

@@ -88,22 +88,15 @@ class Cameras(object):
         }
 
     def set_status(self,status):
-        for cam in self.cameras:
-            port = str(cam.port)
-            if port in status:
-                cam_status = cam.get_status()
-                if status[port] == 'active':
-                    if cam_status == 'suspended':
+        print("setting status")
+        for index, state in enumerate(status):
+            for cam in self.cameras:
+                print("setting status for cam {}".format(cam.port))
+                if cam.port-self.port == index:
+                    if state:
                         cam.unsuspend()
-                elif status[port] == 'suspended':
-                    if cam_status == 'active':
+                    else:
                         cam.suspend()
-                elif status[port] == 'killed':
-                    if cam.is_alive():
-                        cam.kill()
-                elif status[port] == 'start':
-                    if not cam.is_alive():
-                        cam.start()
 
 if __name__ == '__main__':
     cam = Cameras().start()

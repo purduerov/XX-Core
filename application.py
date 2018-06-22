@@ -39,7 +39,8 @@ def on_disconnect():
 def dearflask(indata):
     with lock:
         data['dearflask'] = indata
-    print data['dearflask']['thrusters']['desired_thrust']
+    print data['dearflask']['camsOn']
+    #print data['dearflask']['thrusters']['desired_thrust']
 
 @socketio.on('dearclient')
 def dearclient(*args):
