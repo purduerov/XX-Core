@@ -48,8 +48,10 @@ export default class Seismograph extends Component {
     }
 
     load() {
-      var string = Number($("#load").val());
-      console.log( string );
+      var string = ($("#data").val());
+      string.split(", ").forEach((val, i) => {
+        console.log(i+": "+parseFloat(val));
+      });
     }
 
     render() {
