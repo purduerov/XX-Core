@@ -5,8 +5,8 @@
 global.layouts = {
   rock: {
     "idMatch": ["Some other gamepad with the same mapping", "Xbox 360 Controller (XInput STANDARD GAMEPAD)"],
-    "buttons" : [        //array
-    {"indx": 0, "name": "a", "pressed": 1, "notpressed": 0, "where": "buttons"},        //object in array
+    "buttons" : [       
+    {"indx": 0, "name": "a", "pressed": 1, "notpressed": 0, "where": "buttons"},        
     {"indx": 1, "name": "b", "pressed": 1, "notpressed": 0, "where": "buttons"},
     {"indx": 2, "name": "x", "pressed": 1, "notpressed": 0, "where": "buttons"},
     {"indx": 3, "name": "y", "pressed": 1, "notpressed": 0, "where": "buttons"},

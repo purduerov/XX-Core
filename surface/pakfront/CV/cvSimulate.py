@@ -9,12 +9,13 @@ from multiprocessing import Process, Pool
 import time
 signal(SIGPIPE, SIG_DFL)
 
+#to use cv simulate, place a test image in your home directory named "testimage.jpg" an example working test image was placed in the pakfront foler
 if __name__ == "__main__":
+    curimage = cv2.imread("$HOME/testimage.jpg")
     while True:
-        curimage = get_image(0)
+        #curimage = get_image(0)
         data = {"Foo":"https://i.pinimg.com/originals/00/21/52/002152ecac89b72d602059193ebdc161.jpg"}
         time.sleep(0.1)
-        grayimg = cv2.cvtColor(curimage, cv2.COLOR_BGR2GRAY)
         # CV stuff goes here
-        pushframe(grayimg,1)
+        pushframe(curimage,1)
         pushdata(data,1)

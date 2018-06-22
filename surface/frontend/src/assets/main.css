@@ -19,7 +19,8 @@ h1 {
     font-size: 30px;
 }
 
-#app {
+#app,
+#app2 {
     height: 100%;
     width: 100%;
 }

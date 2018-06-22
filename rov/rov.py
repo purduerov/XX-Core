@@ -24,13 +24,20 @@ from hardware.servo import Servo
 from movement import controller
 
 from sensors import OBS, ESC
-from sensors import IMU
+# from sensors import IMU # IMU is broken
 from sensors import Pressure
 
 from camera import Cameras
 
 from tools import Manipulator, OBS_Tool, Elecmagnet, Transmitter
 
+# THIS IS NEW and everyone's going to need to download psutil to work the rov file
+import psutil
+
+def memory_usage_psutil():
+    # return the memory usage in percentage like top
+    process = psutil.Process(os.getpid())
+    return process.memory_percent()
 
 class ROV(object):
 
@@ -81,7 +88,7 @@ class ROV(object):
         self.transmitter = Transmitter(self.motor_control, pin=TRANSMITTER_PIN)
 
         # Sensors
-        self.imu = IMU()
+        # self.imu = IMU()
         self.pressure = Pressure()
         self.obs = OBS()
         self.esc = ESC()
@@ -99,11 +106,12 @@ class ROV(object):
 
         try:
             print(self.dearclient)
+            print(memory_usage_psutil())
             print('')
             self.elecmagnet.update(df['magnet'])
             self.cameras.set_status(df['cameras'])
             # Updating Sensors
-            self.imu.update()
+            # self.imu.update()
             self.pressure.update()
             self.obs.update()
             self.esc.update()
@@ -122,7 +130,7 @@ class ROV(object):
         self.dearclient['sensors']['obs'] = self.obs.data
         self.dearclient['sensors']['esc'] = self.esc.data
 
-        self.dearclient['sensors']['imu'] = self.imu.data
+        # self.dearclient['sensors']['imu'] = self.imu.data
         self.dearclient['sensors']['pressure'] = self.pressure.data
         self.dearclient['thrusters'] = self.controls.data
         self.dearclient['cameras'] = self.cameras.status()

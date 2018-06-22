@@ -1,0 +1,26 @@
+.container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+
+.modeSelect {
+  display: flex;
+  flex-direction: column;
+  width: 10%;
+}
+
+.camView {
+  width: 90%;
+}
+
+.buttonSelect {
+  display: flex;
+  flex-direction: column;
+  height: 50%;
+}
+
+.btn {
+  height: calc(20% - 2px);
+  width:100%;
+}
