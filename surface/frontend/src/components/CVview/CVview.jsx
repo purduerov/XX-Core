@@ -1,72 +1,82 @@
 import React, { Component } from 'react';
 import styles from "./CVview.css";
 
-
 export default class CVview extends Component {
 
     constructor(props) {
         super(props);
+
+        this.test = false;
+        this.ipAddressTest = "172.30.186.96";   //Charles hosting over competition wifi
+        this.ipAddress = this.test?this.ipAddressTest:'localhost';   //Pakfront will be localhost:19[05, 27, etc]
+
+        this.state = {cvClassPort: 1927, ipTail: "Need to fetch", Aircraft: "Need to fetch"};
+        this.cpy = {cvClassPort: 1927, ipTail: "Need to fetch", Aircraft: "Need to fetch"};
+
+        this.fetchStuff = this.fetchStuff.bind(this);
+        this.checkPort = this.checkPort.bind(this);
+
+        this.checkPort();
+
+        this.fetchStuff();
     }
 
-    getTailClassify() {
-        var description;
-        if(this.props.desc) {
-          description = this.props.desc;
-        } else {
-          description = "";     //this will get replaced with the method to actually get the CV response, if the CV process is active
-        }
+    fetchStuff() {
+      $.ajax({
+        dataType: 'json',
+        url: 'http://'+this.ipAddress+':'+this.state.cvClassPort+'/',//'http://'+this.ipAddress+':'+this.state.cvClassPort+'/',
+        success: (data) => {
+          // console.log(data);
+          try {
+            this.cpy.Tail = data.Tail;
+            this.cpy.Aircraft = data.Aircraft;
 
-        if(description) {
-          return (
-            <div>
-              <div>
-                Tail Classification:
-              </div>
-              <p className={styles.offLeft}>{description}</p>
-            </div>
-          )
-        } else {
-          return (
-            <div>
-              <p className={styles.offLeft}>Tail currently unclassified</p>
-            </div>
-          )
-        }
+            this.setState(this.cpy);
+          } catch(e) {
+            console.log("Failed to get tail data");
+          }
+        },
+        /*timeout: 50,
+        error: (data) => {
+          console.log(data);
+          console.log("An error occured on CVview");
+          http://172.30.186.96:1927/
+          console.log('http://'+this.ipAddress+':'+this.state.cvClassPort+'/'); */
+        });
+          //stuff = JSON.parse(success(data));
+      //setTimeout(this.fetchStuff, 55);
     }
 
-    getTurbineDistance() {
-      var dist;
-      if(this.props.tdist) {
-        dist = this.props.tdist;
-      } else {
-        dist = [];    //this will get replaced with the method to actually get the CV response, if the CV process is active
-      }
+    checkPort() {
+      $.ajax({
+        dataType: 'json',
+        url: 'http://'+this.ipAddress+':1905/',//'http://'+this.ipAddress+':'+this.state.cvClassPort+'/',
+        success: (data) => {
+          //console.log(data);
+          try {
+            this.cpy.cvClassPort = data.cvTailClassify.data;
 
-      if(dist) {
-        return (
-          <div>
-            <div>
-              Turbine Distance:
-            </div>
-            <p className={styles.offLeft}>{dist.join(', ')}</p>
-          </div>
-        )
-      } else {
-        return (
-          <div>
-            <p className={styles.offLeft}>Turbine distance not guaged</p>
-          </div>
-        )
-      }
+            this.setState(this.cpy);
+          } catch (e) {
+            console.log("Unsuccessful port find");
+          }
+        },
+        //timeout: 500,
+        /*error: (data) => {
+          console.log(data);
+          console.log("An error occured on CVview");
+          http://172.30.186.96:1927/
+          console.log('http://'+this.ipAddress+':1927/');
+        }*/
+      });
     }
-
-    getTail
 
     render() {
         return (
         <div className={styles.container}>
-            {this.getTailClassify()}
-            {this.getTurbineDistance()}
+            <div className={styles.tail}> Plane tail: {this.state.Tail} </div>
+            <div className={styles.plane}> Plane class: {this.state.Aircraft} </div>
+            <button onClick={this.checkPort}>Check Port</button>
         </div>
         );
     }

@@ -16,7 +16,7 @@ try {
     args = JSON.parse(process.argv[2]);
 
     //console.log(typeof args);
-    //console.log(typeof args.heading);
+    //console.log(args.heading);
 
     //console.log(args);
 
@@ -31,6 +31,8 @@ try {
     var descentRate = args.descentRate
     var Wheading = args.Wheading > 180 ? args.Wheading - 180 : args.Wheading + 180;
 
+    var time = failure;
+
     var radiusA = Aairspeed * failure;
     var ya = radiusA * Math.cos(heading * Math.PI / 180); //y component of vector of ascent
     var xa = radiusA * Math.sin(heading * Math.PI / 180); //x component of vector of ascent
@@ -39,6 +41,8 @@ try {
     var radiusD = time * Dairspeed;
     var yd = radiusD * Math.cos(heading * Math.PI / 180); //y component of vector of descent
     var xd = radiusD * Math.sin(heading * Math.PI / 180); //x component of vector of descent
+
+    //console.log(time+" "+ascentRate+" "+Dairspeed+" "+failure);
 
     var radiusW = 0;
 

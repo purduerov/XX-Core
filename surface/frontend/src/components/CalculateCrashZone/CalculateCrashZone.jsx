@@ -32,12 +32,13 @@ export default class CrashZone extends Component {
             planeParams.equation = $("#windEquation").val();
 
             ipcRenderer.send('calc-crash', planeParams);
-            
+
             ipcRenderer.on('crash-found', (event, data) => {
+                console.log(data);
                 if(data == 'error') {
                     alert("Invalid parameters likely to the crash calculating process, please try again");
                 } else {
-                    
+
                     this.setState({
                         calc: false
                     }, () => {
@@ -72,7 +73,7 @@ export default class CrashZone extends Component {
                         <input id="planeAscSpeed" defaultValue="93" />
                         <p>Ascent rate:</p>
                         <input id="planeAscRate" defaultValue="10" />
-                        
+
                     </div>
                     <div className={styles.halfRight} >
                         <p>Time of Failure (sec):</p>

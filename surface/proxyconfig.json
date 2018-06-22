@@ -1,8 +1,8 @@
 {
-  "Rovip":"10.42.0.177",
+  "Rovip":"raspberrypi.local",
   "TransPortStart": 8000,
   "GetInfo":1905,
-  "NumCams": 2,
+  "NumCams": 1,
   "Socketio":{
     "Port_to_rov":5000,
     "Port_to_client":5001
@@ -11,7 +11,7 @@
     "Number_of_images":50,
     "Size_of_image":150000,
     "Size_of_data":500,
-    "Num_processes":2,
+    "Num_processes":3,
     "Processes":[
       {
         "Name":"CVsimulate",
@@ -20,6 +20,10 @@
       {
         "Name":"cvTailClassify",
 	"ID":2
+      },
+      {
+        "Name":"cvDistanceMeasure",
+  "ID":3
       }
     ]
   }

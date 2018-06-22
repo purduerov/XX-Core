@@ -10,6 +10,7 @@ export default class SeismographD3 extends Component {
     super(props);
 
     //this.state = {time: props.time, amp: props.amplitude};
+
   }
 
   componentDidMount() {
@@ -17,12 +18,13 @@ export default class SeismographD3 extends Component {
     var points = []
     var i;
 
-    for (i = 0; i < this.props.time.length; i++) {
-      points[i] = {x: this.props.time[i], y: this.props.amplitude[i]}
+    //console.log(this.props.amplitude);
+    for (i = 0; i < 16; i++) {
+      points.push({x: (i + 1), y: this.props.amplitude[i]});
     }
 
     var options = {
-      animationEnabled: true,  
+      animationEnabled: true,
       title:{
         text: "Seismograph Data"
       },

@@ -4,6 +4,7 @@ import styles from './index.css';
 import packet from './src/packets.js';
 import CVview from './src/components/CVview/CVview.jsx'
 import CrashZone from './src/components/CalculateCrashZone/CalculateCrashZone.jsx'
+import Turbine from './src/components/CalculateTurbine/CalculateTurbine.jsx'
 import ESCinfo from './src/components/ESCinfo/ESCinfo.jsx'
 import Seismograph from './src/components/Seismograph/Seismograph.jsx';
 import Card from './src/components/Card/Card.jsx';
@@ -20,7 +21,7 @@ import betterlayouts from './src/gamepad/betterlayouts.js';
 import Spawn from './src/components/spawning/spawn.jsx';
 
 //var packets = require("./src/packets.js");
-let socketHost = `ws://raspberrypi.local:5000`;
+let socketHost = `ws://localhost:5001`;
 
 let socket = io.connect(socketHost, {transports: ['websocket']});
 let {shell, app, ipcRenderer} = window.require('electron');
@@ -117,15 +118,8 @@ class App extends React.Component {
                     					scales={this.state.config.thruster_control}
                     					/>
                     </Card>
-                    <Card>
-                      <ToolView manipulator={this.state.dearflask.manipulator.power}
-                                obs_tool={this.state.dearflask.obs_tool.power}
-                                servo={this.state.dearflask.maincam_angle}
-                                transmitter={this.state.dearflask.transmitter}
-                                magnet={this.state.dearflask.magnet}
-                                conf={this.state.config.tool_scales}
-                                rend={this.rendTools}
-                      />
+                    <Card title="OBS">
+                      <ShowObject obj={this.state.dearclient.sensors.obs} />
                     </Card>
                   </div>
                   <div className="data-column">
@@ -141,11 +135,21 @@ class App extends React.Component {
                         temp={this.state.dearclient.sensors.esc.temperatures}>
                       </ESCinfo>
                     </Card>
-                    <Card title="IMU">
-                      <ShowObject obj={this.state.dearclient.sensors.imu} />
-                    </Card>
                     <Card title="Pressure">
                       <ShowObject obj={this.state.dearclient.sensors.pressure} />
+                    </Card>
+                    <Card>
+                      <ToolView manipulator={this.state.dearflask.manipulator.power}
+                                obs_tool={this.state.dearflask.obs_tool.power}
+                                servo={this.state.dearflask.maincam_angle}
+                                transmitter={this.state.dearflask.transmitter}
+                                magnet={this.state.dearflask.magnet}
+                                conf={this.state.config.tool_scales}
+                                rend={this.rendTools}
+                      />
+                    </Card>
+                    <Card title="Turbine Power Calculator">
+                      <Turbine />
                     </Card>
 
                   </div>

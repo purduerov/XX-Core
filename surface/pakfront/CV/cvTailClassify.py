@@ -1,5 +1,5 @@
 #!/usr/bin/env  python
-# Return Structure {Tail: String}
+# Return Structure {Tail: String, Aircraft: String}
 import subprocess
 import io
 import cv2
@@ -53,11 +53,13 @@ if __name__ == "__main__":
         shape = cv2.approxPolyDP(c, 10, True) # Well that was easy
         colors = ((0,0,255), (0,255,255), (255,0,0))
         color_names = ("Red_Rect", "Yellow_Rect", "Blue_Rect", "Red_Triangle", "Yellow_Triangle", "Blue_Triangle")
+        aircraft_names = ("A", "B", "C", "D", "E", "F")
         shapes = ("Rect", "Triangle")
 
         cv2.drawContours(curimage, [np.array(shape)], 0, colors[index], 5)
         tailType = color_names[index+3] if len(shape) == 3 else color_names[index]
-        data = {"Tail": tailType}
+        aircraftType = aircraft_names[index+3] if len(shape) == 3 else aircraft_names[index]
+        data = {"Tail": tailType, "Aircraft": aircraftType}
         # CV stuff goes here
         pushframe(curimage,2)
         pushdata(data,2)
