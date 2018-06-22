@@ -21,20 +21,6 @@ export default class CVview extends Component {
         this.fetchStuff();
     }
 
-
-      /* fetch('http://localhost:1905', {
-        method: "GET",
-        //body: JSON.parse(data),
-        headers: {"Content-Type": "application/json"},
-        credentials: "same-origin" //not sure is necessary
-      }).then(function(response) {
-        data = JSON.parse(response);
-        console.log(data);
-        //assign parsed values as ports to listen to for functions underneath
-      }, function(error) {
-        //error message
-      }) */
-
     fetchStuff() {
       $.ajax({
         dataType: 'json',
