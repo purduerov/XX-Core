@@ -117,6 +117,7 @@ ipcMain.on('calc-crash', (event, args) => {
 
     plane.stdout.on('data', (data) => {
         data = data.toString();
+        console.log(data)
         try {
             data = JSON.parse(data);
             event.sender.send('crash-found', data);
