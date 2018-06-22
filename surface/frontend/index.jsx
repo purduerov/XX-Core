@@ -3,7 +3,6 @@ import {render} from 'react-dom';
 import styles from './index.css';
 import packet from './src/packets.js';
 import CVview from './src/components/CVview/CVview.jsx'
-import CamSimple from './src/components/CamViewSimple/CamViewSimple.jsx';
 import CrashZone from './src/components/CalculateCrashZone/CalculateCrashZone.jsx'
 import Turbine from './src/components/CalculateTurbine/CalculateTurbine.jsx'
 import ESCinfo from './src/components/ESCinfo/ESCinfo.jsx'
@@ -75,7 +74,6 @@ class App extends React.Component {
     this.changeThrustScales = this.changeThrustScales.bind(this);
     this.changeForceScales = this.changeForceScales.bind(this);
     this.rendTools = this.rendTools.bind(this);
-    this.updateCamsOn = this.updateCamsOn.bind(this);
   }
 
   render () {
@@ -85,9 +83,6 @@ class App extends React.Component {
           <Titlebar/>
           </div>
           <div className="main-container">
-              <div className="camera-width full-height center">
-                <CamSimple rend={this.updateCamsOn}></CamSimple>
-              </div>
               <div className="data-width full-height">
                   <div className="data-column">
                     <Card>
@@ -98,11 +93,14 @@ class App extends React.Component {
                         rend={this.changeDisabled}
                       />
                     </Card>
+                    <Card title="CV Spawning">
+                      <Spawn />
+                    </Card>
+                    <Card title="CV view window">
+                      <CVview desc={"Purdo good, Purdon't let Eric make messages"} tdist={[0.0, 0.1, 0.2, 0.4, 0.7, 0.8]} ></CVview>
+                    </Card>
                     <Card title="Crash Zone Calculator">
                       <CrashZone />
-                    </Card>
-                    <Card title="Turbine Power Calculator">
-                      <Turbine />
                     </Card>
                   </div>
                   <div className="data-column">
@@ -117,26 +115,25 @@ class App extends React.Component {
                     					scales={this.state.config.thruster_control}
                     					/>
                     </Card>
+                    <Card title="OBS">
+                      <ShowObject obj={this.state.dearclient.sensors.obs} />
+                    </Card>
                   </div>
                   <div className="data-column">
-                  <Card>
-                    <ToolView manipulator={this.state.dearflask.manipulator.power}
-                              obs_tool={this.state.dearflask.obs_tool.power}
-                              servo={this.state.dearflask.maincam_angle}
-                              transmitter={this.state.dearflask.transmitter}
-                              magnet={this.state.dearflask.magnet}
-                              conf={this.state.config.tool_scales}
-                              rend={this.rendTools}
-                    />
-                  </Card>
                     <Card title="Seismograph">
                       <Seismograph
                         amplitude={this.state.dearclient.sensors.obs.seismograph_data.amplitude}
                         time={this.state.dearclient.sensors.obs.seismograph_data.time} >
                       </Seismograph>
                     </Card>
-                    <Card title="CV Spawning">
-                      <Spawn />
+                    <Card title="ESC readings">
+                      <ESCinfo
+                        currents={this.state.dearclient.sensors.esc.currents}
+                        temp={this.state.dearclient.sensors.esc.temperatures}>
+                      </ESCinfo>
+                    </Card>
+                    <Card title="Pressure">
+                      <ShowObject obj={this.state.dearclient.sensors.pressure} />
                     </Card>
                     <Card>
                       <ToolView manipulator={this.state.dearflask.manipulator.power}
@@ -148,20 +145,15 @@ class App extends React.Component {
                                 rend={this.rendTools}
                       />
                     </Card>
+                    <Card title="Turbine Power Calculator">
+                      <Turbine />
+                    </Card>
 
                   </div>
               </div>
           </div>
       </div>
     );
-  }
-
-  updateCamsOn(cams) {
-    this.flaskcpy.camsOn = cams;
-
-    this.setState({
-      dearflask: this.flaskcpy
-    });
   }
 
   changeDisabled(dis) {

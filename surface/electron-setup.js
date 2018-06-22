@@ -26,7 +26,7 @@ require('electron-context-menu')({
 
 function createWindow() {
     // Create the browser window.
-    win = new BrowserWindow({ width: 1600, height: 1200 });
+    win = new BrowserWindow({ width: 1100, height: 1200 });
 
     // and load the index.html of the app.
     win.loadURL(url.format({
@@ -36,7 +36,7 @@ function createWindow() {
     }));
 
     // Create the browser window.
-    win2 = new BrowserWindow({ width: 1600, height: 1200 });
+    win2 = new BrowserWindow({ width: 1100, height: 1200 });
 
     // and load the index.html of the app.
     win2.loadURL(url.format({

@@ -84,9 +84,6 @@ class App2 extends React.Component {
           <Titlebar/>
           </div>
           <div className="main-container">
-              <div className="camera-width full-height center">
-                <CamSimple></CamSimple>
-              </div>
               <div className="data-width full-height">
                   <div className="data-column">
                   <Card>
