@@ -27,7 +27,7 @@ from sensors import OBS, ESC
 # from sensors import IMU # IMU is broken
 from sensors import Pressure
 
-from camera import Cameras
+#from camera import Cameras
 
 from tools import Manipulator, OBS_Tool, Elecmagnet, Transmitter
 
@@ -62,6 +62,7 @@ class ROV(object):
         self.init_hw()
 
     def init_hw(self):
+        """
         self.cameras = Cameras(
             resolution='640x480',
             framerate=30,
@@ -69,6 +70,7 @@ class ROV(object):
             brightness=16,
             contrast=32
         ).start()
+        """
 
         self.motor_control = MotorControl(
             zero_power=ZERO_POWER,
