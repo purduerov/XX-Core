@@ -65,9 +65,9 @@ export default class Camera_view extends Component {
         super(props);
 
         this.state = {
-            pxybypass: false,
+            pxybypass: true,
             pakconf:{},
-            numcams:2, //Change to the number of accessable cams. For future growth use pakfornt api
+            numcams:1, //Change to the number of accessable cams. For future growth use pakfornt api
             camscreens: [
                 0,
                 1
