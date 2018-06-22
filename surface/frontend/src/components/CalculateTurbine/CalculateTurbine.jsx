@@ -28,7 +28,7 @@ export default class Turbine extends Component {
       this.setState({
         calc:false
       }, () => {
-        $("#turbineResults").text("Power: " + power + " Watts");
+        $("#turbineResults").text("Power: " + (power).toFixed(4) + " Watts");
       });
     }
   }
