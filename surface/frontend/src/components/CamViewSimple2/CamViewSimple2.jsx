@@ -7,13 +7,13 @@ export default class CamViewSimple extends Component {
     constructor(props) {
         super(props);
 
-        this.test = true;
-        this.ipAddressTest = "localhost";   //Charles hosting over competition wifi
-        this.ipAddress = !this.test?this.ipAddressTest:'localhost';   //Pakfront will be localhost:19[05, 27, etc]
+        this.test = false;
+        this.ipAddressTest = "192.168.43.176";   //Charles hosting over competition wifi
+        this.ipAddress = this.test?this.ipAddressTest:'localhost';   //Pakfront will be localhost:19[05, 27, etc]
 
         this.state = {cvCams: {"CVsimulate":{"data":1923,"stream":1922}, "cvDistanceMeasure":{"data":1931,"stream":1930}, "cvTailClassify":{"data":1927,"stream":1926}},
-                      normCams: {"data": 5,"stream":8080},
-                      feed: 8080
+                      normCams: {"data": 5,"stream":8000},
+                      feed: 8000
                     };
         this.cpy = $.extend(true, {}, this.state);
 
@@ -75,7 +75,7 @@ export default class CamViewSimple extends Component {
         return (
         <div className={styles.container}>
             <div className={styles.camView}>
-              <img width="100%" src={"http://"+this.ipAddress+":"+this.state.feed+(this.test?"/?action=stream":"/")} />
+              <img width="100%" src={"http://"+this.ipAddress+":"+this.state.feed+"/"} />
             </div>
             <div className={styles.modeSelect}>
               <div className={styles.buttonSelect}>
