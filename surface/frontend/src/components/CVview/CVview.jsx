@@ -13,28 +13,14 @@ export default class CVview extends Component {
         this.fetchStuff = this.fetchStuff.bind(this);
     }
 
-
-      /* fetch('http://localhost:1905', {
-        method: "GET",
-        //body: JSON.parse(data),
-        headers: {"Content-Type": "application/json"},
-        credentials: "same-origin" //not sure is necessary
-      }).then(function(response) {
-        data = JSON.parse(response);
-        console.log(data);
-        //assign parsed values as ports to listen to for functions underneath
-      }, function(error) {
-        //error message
-      }) */
-
     fetchStuff() {
       $.getJSON('http://'+this.ipAddress+':1905', null, (data) => {
         console.log(data.cvTailClassify);
         $.getJSON('http://'+this.ipAddress+':'+data.cvTailClassify.data, null, (data) => {
-          console.log(data);
+          console.log(data.Aircraft);
+          <button id="channelsButton">data.Aircraft</button>
         });
       });
-          //stuff = JSON.parse(success(data));
     }
 
     getTailClassify() {

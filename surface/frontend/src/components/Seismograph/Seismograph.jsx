@@ -15,6 +15,7 @@ export default class Seismograph extends Component {
 
         this.rendTime = this.rendTime.bind(this);
         this.rendAmp = this.rendAmp.bind(this);
+        this.load = this.load.bind(this);
     }
 
     rendTime() {
@@ -46,6 +47,11 @@ export default class Seismograph extends Component {
       });
     }
 
+    load() {
+      var string = Number($("#load").val());
+      console.log( string );
+    }
+
     render() {
         return (
         <div className={styles.container}>
@@ -56,6 +62,10 @@ export default class Seismograph extends Component {
           <div className={styles.halfLeft}>
             <div>Amplitudes:</div>
             {this.rendAmp()}
+          </div>
+          <div className={styles.bottom}>
+            <input id="data" defaultValue="Insert comma Ordered List"></input>
+            <button id="load" onClick={this.load} >Load Data</button>
           </div>
         </div>
         );
