@@ -24,7 +24,7 @@ export default class CVview extends Component {
     fetchStuff() {
       $.ajax({
         dataType: 'json',
-        url: 'http://'+this.ipAddress+':'+this.state.cvClassPort+'/',//'http://'+this.ipAddress+':'+this.state.cvClassPort+'/',
+        url: 'http://localhost:1927/',
         success: (data) => {
           // console.log(data);
           try {
@@ -36,15 +36,15 @@ export default class CVview extends Component {
             console.log("Failed to get tail data");
           }
         },
-        /*timeout: 50,
+        //timeout: 50,
         error: (data) => {
           console.log(data);
           console.log("An error occured on CVview");
-          http://172.30.186.96:1927/
-          console.log('http://'+this.ipAddress+':'+this.state.cvClassPort+'/'); */
-        });
+          console.log('http://'+this.ipAddress+':'+this.state.cvClassPort+'/');
+        }
+      });
           //stuff = JSON.parse(success(data));
-      //setTimeout(this.fetchStuff, 55);
+      setTimeout(this.fetchStuff, 55);
     }
 
     checkPort() {
@@ -62,12 +62,11 @@ export default class CVview extends Component {
           }
         },
         //timeout: 500,
-        /*error: (data) => {
+        error: (data) => {
           console.log(data);
           console.log("An error occured on CVview");
-          http://172.30.186.96:1927/
           console.log('http://'+this.ipAddress+':1927/');
-        }*/
+        }
       });
     }
 
