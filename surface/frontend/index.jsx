@@ -75,6 +75,7 @@ class App extends React.Component {
     this.changeThrustScales = this.changeThrustScales.bind(this);
     this.changeForceScales = this.changeForceScales.bind(this);
     this.rendTools = this.rendTools.bind(this);
+    this.updateCamsOn = this.updateCamsOn.bind(this);
   }
 
   render () {
@@ -85,7 +86,7 @@ class App extends React.Component {
           </div>
           <div className="main-container">
               <div className="camera-width full-height center">
-                <CamSimple></CamSimple>
+                <CamSimple rend={this.updateCamsOn}></CamSimple>
               </div>
               <div className="data-width full-height">
                   <div className="data-column">
@@ -153,6 +154,14 @@ class App extends React.Component {
           </div>
       </div>
     );
+  }
+
+  updateCamsOn(cams) {
+    this.flaskcpy.camsOn = cams;
+
+    this.setState({
+      dearflask: this.flaskcpy
+    });
   }
 
   changeDisabled(dis) {

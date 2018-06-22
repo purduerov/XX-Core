@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import styles from "./CamViewSimple.css";
+import styles from "./CamViewSimple2.css";
 const { ipcRenderer } = window.require('electron');
 
 export default class CamViewSimple extends Component {
@@ -13,10 +13,9 @@ export default class CamViewSimple extends Component {
 
         this.state = {cvCams: {"CVsimulate":{"data":1923,"stream":1922}, "cvDistanceMeasure":{"data":1931,"stream":1930}, "cvTailClassify":{"data":1927,"stream":1926}},
                       normCams: {"data": 5,"stream":8080},
-                      feed: 8080,
-                      cams: [true, false, false, false, false]
+                      feed: 8080
                     };
-        this.cpy = this.state;
+        this.cpy = $.extend(true, {}, this.state);
 
         this.checkProcesses = this.checkProcesses.bind(this);
         this.switchFeed = this.switchFeed.bind(this);
@@ -31,7 +30,7 @@ export default class CamViewSimple extends Component {
         success: (pakfrontInfo) => {
           data = pakfrontInfo;
         },
-        error: (e) {
+        error: () => {
           data = {"CVsimulate":{"data":1923,"stream":1922},"camnum0":{"data":-1,"stream":8000},"cvDistanceMeasure":{"data":1931,"stream":1930},"cvTailClassify":{"data":1927,"stream":1926},"metacams":{"numcams":0,"pakfront":5001,"rovdirect":5000},"socketio":{"numcams":0,"pakfront":5001,"rovdirect":5000}};
         },
         timeout: 500
@@ -46,16 +45,16 @@ export default class CamViewSimple extends Component {
         this.cpy.normCams = data.metacams;
 
         this.setState(this.cpy);
-      } catch () => {
+      } catch (e) {
         console.log("Unsuccessful port find");
       }
     }
 
     switchFeed(e) {
       var last = this.state.feed;
-      this.cpy.feed = this.state.normCams.stream + $(e.currentTarget).text().slice(-1);
+      this.cpy.feed = this.state.normCams.stream + Number($(e.currentTarget).text().slice(-1));
 
-      ipcRenderer.send('camera-select', {last: last, new: this.cpy.feed});
+      ipcRenderer.send('camera-send', {new: this.cpy.feed});
 
       this.setState(this.cpy);
     }

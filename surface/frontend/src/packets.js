@@ -30,6 +30,7 @@ module.exports = {
             camera_leds: false
         },
         maincam_angle: 0.0,
+        camsOn: [true, false, false, false, false],
         last_update: ""
     },
     dearclient: {

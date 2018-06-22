@@ -155,7 +155,12 @@ ipcMain.on('calc-crash', (event, args) => {
         console.log(data.toString());
         event.sender.send('crash-found', 'error')
     });
-})
+});
+
+ipcMain.on('camera-send', (event, args) => {
+  console.log(args);
+  win.webContents.send('camera-select', args);
+});
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.

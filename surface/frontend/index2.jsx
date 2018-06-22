@@ -3,6 +3,7 @@ import {render} from 'react-dom';
 import styles from './index.css';
 import packet from './src/packets.js';
 import CVview from './src/components/CVview/CVview.jsx'
+import CamSimple from './src/components/CamViewSimple2/CamViewSimple2.jsx';
 import CrashZone from './src/components/CalculateCrashZone/CalculateCrashZone.jsx'
 import ESCinfo from './src/components/ESCinfo/ESCinfo.jsx'
 import Seismograph from './src/components/Seismograph/Seismograph.jsx';
@@ -84,7 +85,7 @@ class App2 extends React.Component {
           </div>
           <div className="main-container">
               <div className="camera-width full-height center">
-                <CameraScreen next={this.state.gp.buttons.left} prev={this.state.gp.buttons.right}></CameraScreen>
+                <CamSimple></CamSimple>
               </div>
               <div className="data-width full-height">
                   <div className="data-column">
@@ -231,7 +232,7 @@ class App2 extends React.Component {
     }, 50);
 
     // Don't send new data -- both windows sending different states will confuse the ROV
-    // This is the 2nd window, it's the view. 
+    // This is the 2nd window, it's the view.
     /*
     setInterval(() => {             //Sends a message down to the server with updated surface info
       //console.log(that.state.dearflask);

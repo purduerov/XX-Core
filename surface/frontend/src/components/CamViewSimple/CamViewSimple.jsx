@@ -13,15 +13,38 @@ export default class CamViewSimple extends Component {
 
         this.state = {cvCams: {"CVsimulate":{"data":1923,"stream":1922}, "cvDistanceMeasure":{"data":1931,"stream":1930}, "cvTailClassify":{"data":1927,"stream":1926}},
                       normCams: {"data":5,"stream":8080},
-                      feed: 8080
+                      feed: {here: 8080, other: 8080},
+                      cams: [true, false, false, false, false]
                     };
-        this.cpy = this.state;
+        this.cpy = $.extend(true, {}, this.state);
 
         this.checkProcesses = this.checkProcesses.bind(this);
+        this.chooseStreams = this.chooseStreams.bind(this);
         this.switchFeed = this.switchFeed.bind(this);
         //this.switchFeed = this.switchFeed.bind(this);
 
-        ipcRenderer.on('camera-select', (change) => {console.log(change)});
+        ipcRenderer.on('camera-select', (event, change) => {
+          this.cpy.feed.other = change.new;
+
+          this.chooseStreams();
+        });
+    }
+
+    chooseStreams() {
+      var a = [false, false, false, false, false];
+      var refInd = this.cpy.feed;
+      var refMod = this.state.normCams.stream;
+
+      console.log((refInd.here%refMod) +" vs "+(refInd.other%refMod));
+
+      a[refInd.here%refMod] = true;
+      a[refInd.other%refMod] = true;
+
+      this.cpy.cams = a;
+
+      this.setState(this.cpy, () => {
+        this.props.rend(this.state.cams);
+      });
     }
 
     checkProcesses() {
@@ -54,9 +77,9 @@ export default class CamViewSimple extends Component {
 
     switchFeed(e) {
       var last = this.state.feed;
-      this.cpy.feed = this.state.normCams.stream + $(e.currentTarget).text().slice(-1);
+      this.cpy.feed.here = this.state.normCams.stream + Number($(e.currentTarget).text().slice(-1));
 
-      this.setState(this.cpy);
+      this.chooseStreams();
     }
 
     rendButtons() {
@@ -75,7 +98,7 @@ export default class CamViewSimple extends Component {
         return (
         <div className={styles.container}>
             <div className={styles.camView}>
-              <img width="100%" src={"http://"+this.ipAddress+":"+this.state.feed+(this.test?"/?action=stream":"/")} />
+              <img width="100%" src={"http://"+this.ipAddress+":"+this.state.feed.here+(this.test?"/?action=stream":"/")} />
             </div>
             <div className={styles.modeSelect}>
               <div className={styles.buttonSelect}>
