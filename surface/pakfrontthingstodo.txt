@@ -1,0 +1,6 @@
+before you start, activate the venv in XX-Core
+run `source ~/.profile`
+to start npm run proxyup
+only turn on the proxy after the ROV is on
+order to run ROV, then PROXY, then FRONTED
+
