@@ -12,7 +12,7 @@ import CameraScreen from './src/components/CameraScreen/CameraScreen.jsx';
 import ForceScales from './src/components/ForceScales/ForceScales.jsx';
 import Titlebar from './src/components/Titlebar/Titlebar.jsx';
 import ThrusterInfo from './src/components/ThrusterInfo/ThrusterInfo.jsx';
-import ThrusterInverts from './src/components/ThrusterInverts/ThrusterInverts.jsx';
+import ThrusterScales from './src/components/ThrusterScales/ThrusterScales.jsx';
 import Gpinfo from './src/components/Gpinfo/Gpinfo.jsx';
 import ShowObject from './src/components/ShowObject/ShowObject.jsx'
 import ToolView from './src/components/ToolView/ToolView.jsx';
@@ -21,7 +21,7 @@ import betterlayouts from './src/gamepad/betterlayouts.js';
 import Spawn from './src/components/spawning/spawn.jsx';
 
 //var packets = require("./src/packets.js");
-let socketHost = `ws://raspberrypi.local:5000`;
+let socketHost = `ws://localhost:5001`;
 
 let socket = io.connect(socketHost, {transports: ['websocket']});
 let {shell, app, ipcRenderer} = window.require('electron');
@@ -53,13 +53,13 @@ class App extends React.Component {
             ],
             tool_scales: {
                 manipulator: {
-                    master: .50,
-                    open: 0.4,
-                    close: 0.4,
+                    master: .25,
+                    open: 1,
+                    close: 1,
                     invert: 1
                 },
                 obs_tool: {   //unused, we're stepping it up and then down manually
-                    power: .30,
+                    master: .30,
                     invert: 1
                 }
             }
@@ -114,22 +114,12 @@ class App extends React.Component {
                         />
                     </Card>
                     <Card title="Thruster Control">
-                    	<ThrusterInverts rend={this.changeThrustScales}
+                    	<ThrusterScales rend={this.changeThrustScales}
                     					scales={this.state.config.thruster_control}
                     					/>
                     </Card>
-                    <Card>
-                      <ToolView manipulator={this.state.dearflask.manipulator.power}
-                                obs_tool={this.state.dearflask.obs_tool.power}
-                                servo={this.state.dearflask.maincam_angle}
-                                transmitter={this.state.dearflask.transmitter}
-                                magnet={this.state.dearflask.magnet}
-                                conf={this.state.config.tool_scales}
-                                rend={this.rendTools}
-                      />
-                    </Card>
-                    <Card title="Turbine Power Calculator">
-                      <Turbine />
+                    <Card title="OBS">
+                      <ShowObject obj={this.state.dearclient.sensors.obs} />
                     </Card>
                   </div>
                   <div className="data-column">
@@ -145,11 +135,21 @@ class App extends React.Component {
                         temp={this.state.dearclient.sensors.esc.temperatures}>
                       </ESCinfo>
                     </Card>
-                    <Card title="IMU">
-                      <ShowObject obj={this.state.dearclient.sensors.imu} />
-                    </Card>
                     <Card title="Pressure">
                       <ShowObject obj={this.state.dearclient.sensors.pressure} />
+                    </Card>
+                    <Card>
+                      <ToolView manipulator={this.state.dearflask.manipulator.power}
+                                obs_tool={this.state.dearflask.obs_tool.power}
+                                servo={this.state.dearflask.maincam_angle}
+                                transmitter={this.state.dearflask.transmitter}
+                                magnet={this.state.dearflask.magnet}
+                                conf={this.state.config.tool_scales}
+                                rend={this.rendTools}
+                      />
+                    </Card>
+                    <Card title="Turbine Power Calculator">
+                      <Turbine />
                     </Card>
 
                   </div>

@@ -1,9 +1,9 @@
 
 
-def OBS():
+def OBS(ip="192.168.42.1"):
     try:
         from OBS import OBS
-        return OBS()
+        return OBS(ip = ip)
     except Exception as e:
         print("Failed to Initialize OBS")
         print("Error: %s" % e.message)

@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import styles from "./Seismograph.css";
+import SeismographGraph from "./SeismographGraph.jsx";
+
 //import './GoogleChartLibrary.js';
 
 //google.charts.load('current', {'packages':['corechart']});
@@ -10,12 +12,17 @@ export default class Seismograph extends Component {
     constructor(props) {
         super(props);
 
+        this.state = {graph: false, points: []};
+
         //this.state = {time: props.time, amp: props.amplitude};
         //console.log(props.time+", "+props.amplitude)
 
+        this.disableRend = this.disableRend.bind(this);
         this.rendTime = this.rendTime.bind(this);
         this.rendAmp = this.rendAmp.bind(this);
         this.load = this.load.bind(this);
+        this.componentDidMount = this.componentDidMount.bind(this);
+        this.chartStuff = this.chartStuff.bind(this);
     }
 
     rendTime() {
@@ -49,8 +56,29 @@ export default class Seismograph extends Component {
 
     load() {
       var string = ($("#data").val());
+      var pnts = [];
       string.split(", ").forEach((val, i) => {
         console.log(i+": "+parseFloat(val));
+        pnts.push(parseFloat(val));
+      });
+      this.setState({
+        points: pnts
+      }, () => {
+        //console.log(this.state);
+      });
+    }
+
+    disableRend() {
+      this.setState({
+        graph: false
+      });
+    }
+
+    componentDidMount() {
+      $("."+styles.spawnButton).click(() => {
+        this.setState({
+          graph: true
+        });
       });
     }
 
@@ -69,6 +97,14 @@ export default class Seismograph extends Component {
             <input id="data" defaultValue="Insert comma Ordered List"></input>
             <button id="load" onClick={this.load} >Load Data</button>
           </div>
+          {
+            this.state.graph ?
+            <SeismographGraph
+              amplitude={this.state.points}
+              rend={this.disableRend}
+            ></SeismographGraph> : <p>"Press the button to generate a graph"</p>
+          }
+          <button className={styles.spawnButton}>Spawn Graph</button>
         </div>
         );
     }

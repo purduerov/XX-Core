@@ -6,7 +6,7 @@ export default class CVview extends Component {
     constructor(props) {
         super(props);
 
-        this.test = true;
+        this.test = false;
         this.ipAddressTest = "172.30.186.96";   //Charles hosting over competition wifi
         this.ipAddress = this.test?this.ipAddressTest:'localhost';   //Pakfront will be localhost:19[05, 27, etc]
 
@@ -36,17 +36,15 @@ export default class CVview extends Component {
             console.log("Failed to get tail data");
           }
         },
-        //timeout: 500,
+        /*timeout: 50,
         error: (data) => {
           console.log(data);
           console.log("An error occured on CVview");
           http://172.30.186.96:1927/
-          console.log('http://'+this.ipAddress+':'+this.state.cvClassPort+'/');
-        }
-      });
+          console.log('http://'+this.ipAddress+':'+this.state.cvClassPort+'/'); */
+        });
           //stuff = JSON.parse(success(data));
-
-      setTimeout(this.fetchStuff, 550);
+      //setTimeout(this.fetchStuff, 55);
     }
 
     checkPort() {
@@ -64,12 +62,12 @@ export default class CVview extends Component {
           }
         },
         //timeout: 500,
-        error: (data) => {
+        /*error: (data) => {
           console.log(data);
           console.log("An error occured on CVview");
           http://172.30.186.96:1927/
           console.log('http://'+this.ipAddress+':1927/');
-        }
+        }*/
       });
     }
 

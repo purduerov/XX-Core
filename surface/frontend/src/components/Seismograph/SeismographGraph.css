@@ -1,0 +1,48 @@
+.halfLeft {
+    width: calc(50% - 10px);
+    float: left;
+    box-sizing: border-box;
+}
+
+.halfRight {
+    width: calc(50% - 10px);
+    float: right;
+    box-sizing: border-box;
+}
+
+.hideButton {
+    position: absolute;
+    margin-bottom: 10px;
+    height: 30px;
+    right: 0px;
+    bottom: 0px;
+}
+
+.container {
+    width: calc(880px - 20px);
+    height: calc(600px - 50px);
+    margin-left: 10px;
+    margin-top: 10px;
+    position: fixed;
+    right: 0px;
+    top: 0px;
+    z-index: 1;
+}
+
+.fullMid {
+    height: 100%;
+    width: 100%;
+}
+
+.squashed {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.time {
+    text-align: center;
+}
+
+.amplitude {
+    text-align: center;
+}
