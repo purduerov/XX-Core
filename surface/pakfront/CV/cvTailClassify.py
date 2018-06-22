@@ -53,7 +53,7 @@ if __name__ == "__main__":
         shape = cv2.approxPolyDP(c, 10, True) # Well that was easy
         colors = ((0,0,255), (0,255,255), (255,0,0))
         color_names = ("Red_Rect", "Yellow_Rect", "Blue_Rect", "Red_Triangle", "Yellow_Triangle", "Blue_Triangle")
-        aircraft_names = ("Red_A", "Yellow_B", "Blue_C", "Red_D", "Yellow_E", "Blue_F")
+        aircraft_names = ("A", "B", "C", "D", "E", "F")
         shapes = ("Rect", "Triangle")
 
         cv2.drawContours(curimage, [np.array(shape)], 0, colors[index], 5)
