@@ -37,8 +37,10 @@ class controller(object):
             new_desired_thrust[index] = self._data['dearflask']["thrusters"]["desired_thrust"][index]
 
             difference = value - self._previous_desired_thrust[index]
-            if abs(difference) > abs(value / 2.0):
-                new_desired_thrust[index] -= (difference/2.0)
+            if difference > 0:
+                new_desired_thrust[index] = self._previous_desired_thrust[index] + 0.1
+            elif difference < 0:
+                new_desired_thrust[index] = self._previous_desired_thrust[index] - 0.1
 
         thruster_values = self.thrust_mapper.calculate(new_desired_thrust, self._data['dearflask']["thrusters"]["disabled_thrusters"])
 
