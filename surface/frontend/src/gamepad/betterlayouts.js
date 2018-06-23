@@ -69,7 +69,7 @@ global.layouts = {
   },
 
   LinuxOne : {
-    "idMatch": ["Microsoft Controller (STANDARD GAMEPAD Vendor:"],
+    "idMatch": ["Microsoft Controller (STANDARD GAMEPAD Vendor:", "Xbox One Wired Controller (STANDARD GAMEPAD Vendor:"],
     "buttons": [
       {"indx": 0, "name": "a", "pressed": 1, "notpressed": 0, "where": "buttons"},
       {"indx": 1, "name": "b", "pressed": 1, "notpressed": 0, "where": "buttons"},
@@ -95,5 +95,34 @@ global.layouts = {
       {"indx": 6, "name": "Ltrigger", "min": 0,"max": 1, "where": "buttons", "constant": 0},
       {"indx": 7, "name": "Rtrigger", "min": 0,"max": 1, "where": "buttons", "constant": 0},
     ]
+  },
+  MacRocks : {
+    "idMatch": ["Xbox 360 Wired Controller (Vendor:"],
+    "buttons": [
+      {"indx": 0, "name": "a", "pressed": 1, "notpressed": 0, "where": "buttons"},
+      {"indx": 1, "name": "b", "pressed": 1, "notpressed": 0, "where": "buttons"},
+      {"indx": 2, "name": "x", "pressed": 1, "notpressed": 0, "where": "buttons"},
+      {"indx": 3, "name": "y", "pressed": 1, "notpressed": 0, "where": "buttons"},
+      {"indx": 4, "name": "lb", "pressed": 1, "notpressed": 0, "where": "buttons"},
+      {"indx": 5, "name": "rb", "pressed": 1, "notpressed": 0, "where": "buttons"},
+      {"indx": 6, "name": "lpress", "pressed": 1, "notpressed": 0, "where": "buttons"},
+      {"indx": 7, "name": "rpress", "pressed": 1, "notpressed": 0, "where": "buttons"},
+      {"indx": 8, "name": "start", "pressed": 1, "notpressed": 0, "where": "buttons"},
+      {"indx": 9, "name": "select", "pressed": 1, "notpressed": 0, "where": "buttons"},
+      {"indx": 10, "name": "home", "pressed": 1, "notpressed": 0, "where": "buttons"},
+      {"indx": 11, "name": "up", "pressed": 1, "notpressed": 0, "where": "buttons"},
+      {"indx": 12, "name": "down", "pressed": 1, "notpressed": 0, "where": "buttons"},
+      {"indx": 13, "name": "left", "pressed": 1, "notpressed": 0, "where": "buttons"},
+      {"indx": 14, "name": "right", "pressed": 1, "notpressed": 0, "where": "buttons"}
+    ],
+    "axes": [
+      {"indx": 0, "name": "LstickXaxis", "min": -1,"max": 1, "where": "axes", "constant": 0},
+      {"indx": 1, "name": "LstickYaxis", "min": -1,"max": 1, "where": "axes", "constant": 0},
+      {"indx": 2, "name": "Ltrigger", "min": -1,"max": 1, "where": "buttons", "constant": 0},
+      {"indx": 3, "name": "RstickXaxis", "min": -1,"max": 1, "where": "axes", "constant": 0},
+      {"indx": 4, "name": "RstickYaxis", "min": -1,"max": 1, "where": "axes", "constant": 0},
+      {"indx": 5, "name": "Rtrigger", "min": -1,"max": 1, "where": "buttons", "constant": 0},
+    ]
+
   }
 }
