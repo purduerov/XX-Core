@@ -69,7 +69,7 @@ global.layouts = {
   },
 
   LinuxOne : {
-    "idMatch": ["Microsoft Controller (STANDARD GAMEPAD Vendor:"],
+    "idMatch": ["Microsoft Controller (STANDARD GAMEPAD Vendor:", "Xbox One Wired Controller (STANDARD GAMEPAD Vendor:"],
     "buttons": [
       {"indx": 0, "name": "a", "pressed": 1, "notpressed": 0, "where": "buttons"},
       {"indx": 1, "name": "b", "pressed": 1, "notpressed": 0, "where": "buttons"},
